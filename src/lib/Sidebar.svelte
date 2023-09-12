@@ -48,14 +48,6 @@
             return;
         }
 
-        for(var i=0; i<actions.length; i++){
-            if(actions[i] !== act){
-                actions[i].open = false;
-                if(actions[i].node !== null){
-                    actions[i].node.style.height = 0 +"px";
-                }
-            }
-        }
         if(act.open = !act.open){
             act.node.style.height = act.node.scrollHeight +"px";
         }

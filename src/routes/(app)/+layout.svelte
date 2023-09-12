@@ -55,6 +55,5 @@
 <body>
     <slot/>
 
-    <br style="margin-bottom: 0rem;">
     <div class="footer"><h1>Placeholder</h1></div>
 </body>
