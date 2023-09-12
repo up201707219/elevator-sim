@@ -3,7 +3,7 @@
   import logo from "./assets/img/S+_logo.png"
   import searchIcon from "./assets/svg/search.svg"
 
-  export var hasSidebar = false;
+  export let hasSidebar = false;
 
 </script>
 

@@ -3,7 +3,7 @@
     import quiz2 from "$lib/assets/img/quiz2.jpg"
     import quiz3 from "$lib/assets/img/quiz3.jpg"
 
-  var quizes = [
+  let quizes = [
     {
         type: "Prova Teste",
         image: quiz1

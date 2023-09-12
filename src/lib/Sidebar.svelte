@@ -3,7 +3,7 @@
     import menuIcon from "./assets/svg/menu.svg"
     import logo from "./assets/img/S+_logo.png"
 
-    export var colapsed = true;
+    export let colapsed = true;
 
     
     let actions = [
@@ -35,26 +35,31 @@
     
     export function toggleSidebar(){
         colapsed = !colapsed;
-        for(var i=0; i<actions.length; i++){
+        for(let i=0; i<actions.length; i++){
             actions[i].open = false;
-            if(actions[i].node !== null){
-                actions[i].node.style.height = 0 +"px";
-            }
         }
     }
 
-    function toggleAcordion(act){
-        if(act.children.length === 0){
+    $: {
+        actions.forEach( (action) => {
+            if(action.node === null){
+                return;
+            }
+            if(action.open){
+                action.node.style.height = action.node.scrollHeight +"px";
+            }
+            else{
+                action.node.style.height = 0 +"px";
+            }
+        })
+    }
+
+    function toggleAcordion(index){
+        if(actions[index].children.length === 0){
             return;
         }
 
-        if(act.open = !act.open){
-            act.node.style.height = act.node.scrollHeight +"px";
-        }
-        else{
-            act.node.style.height = 0 +"px";
-        }
-        
+        actions[index].open = !actions[index].open;
 
     }
 
@@ -75,7 +80,7 @@
         {#each actions as action, i}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
-            <div class="block-item {action.open ? "active" : ""}" on:click={() => toggleAcordion(action)}>
+            <div class="block-item {action.open ? "active" : ""}" on:click={() => toggleAcordion(i)}>
                 <!-- svelte-ignore a11y-missing-attribute -->
                 <a>{action.name}</a>
                 {#if action.children.length !== 0}

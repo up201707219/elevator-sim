@@ -2,10 +2,10 @@
     import Navbar from "$lib/Navbar.svelte";
     import Sidebar from "$lib/Sidebar.svelte";
 
-    var hasSidebar = true;
+    let hasSidebar = true;
     
-    var toggleSidebar;
-    var colapsed;
+    let toggleSidebar;
+    let colapsed;
 
     function onMenuClick(){
         toggleSidebar();

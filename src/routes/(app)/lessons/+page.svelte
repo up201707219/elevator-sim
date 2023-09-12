@@ -3,7 +3,7 @@
     import example2 from "$lib/assets/img/example2.jpg"
     import example3 from "$lib/assets/img/example3.jpg"
 
-    var lessonModules = [
+    let lessonModules = [
         {
             name:"Cabina",
             image: example1,
