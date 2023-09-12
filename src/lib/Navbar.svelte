@@ -16,10 +16,10 @@
   </div>
   
   <div class="navbar-menu">
-    <a href="">Home</a>
-    <a href="">Content</a>
-    <a href="">About Us</a>
-    <a href="">Help</a>
+    <a href="/">Início</a>
+    <a href="/lessons">Lições</a>
+    <a href="/quiz">Provas</a>
+    <a href="">Simulador</a>
   </div>
   
   <div class="right">
@@ -51,6 +51,7 @@
     padding-top: 2rem;
     padding-bottom: 0;
     width: 98%;
+    z-index: 10;
     
     /* end of fixed bar */
     

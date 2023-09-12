@@ -1,15 +1,11 @@
 <script>
     
-    var colapsed = true;
+    import menuIcon from "./assets/svg/menu.svg"
+    import logo from "./assets/img/S+_logo.png"
 
-    export function toggleSidebar(){
-        
-        colapsed = !colapsed;
-         
-        
-        document.body.classList.toggle("colapsed");
-    }
+    export var colapsed = true;
 
+    
     let actions = [
         {
             name:"Ação 1",
@@ -36,6 +32,10 @@
             node: null
         }
     ];
+    
+    export function toggleSidebar(){
+        colapsed = !colapsed;
+    }
 
     function toggleAcordion(act){
         if(act.children.length === 0){
@@ -62,15 +62,23 @@
 
 </script>
 
-<div class="overlay {colapsed ? "" : "close"}" id="myOverlay"></div>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<div class="overlay {colapsed ? "" : "close"}" id="myOverlay" on:click={colapsed ? "" : toggleSidebar}></div>
 <div class="sidebar {colapsed ? "closed": ""}" id="mySidebar">
     <div class="flex-container">
-        <a class="sidebar-button" on:click={toggleSidebar}><img src="svg/menu.svg" alt="menu" class="sidebar-icon"></a>
-        <img class="logo" src="img/S+_logo.png" alt="logo">
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+        <!-- svelte-ignore a11y-missing-attribute -->
+        <a class="sidebar-button" on:click={toggleSidebar}><img src={menuIcon} alt="menu" class="sidebar-icon"></a>
+        <img class="logo" src={logo} alt="logo">
     </div>
     <div class="block-container">
         {#each actions as action, i}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             <div class="block-item {action.open ? "active" : ""}" on:click={() => toggleAcordion(action)}>
+                <!-- svelte-ignore a11y-missing-attribute -->
                 <a>{action.name}</a>
                 {#if action.children.length !== 0}
                     <span style="float: right;">{action.open ? "-" : "+"}</span>
@@ -98,7 +106,6 @@
         opacity: 0%;
         z-index:-1;
         transition: 0.5s;
-        scroll-behavior: auto;
     }
     .overlay.close{
         z-index: 19;
@@ -127,7 +134,6 @@
     }
     .sidebar.closed{
         width: 0;
-        z-index: -1;
     }
 
     .sidebar .flex-container{
@@ -178,7 +184,7 @@
         overflow: hidden;
         background-color: white;
         height: 0; 
-        transition: 1s;
+        transition: 0.3s;
     }
 
     .panel-item{
