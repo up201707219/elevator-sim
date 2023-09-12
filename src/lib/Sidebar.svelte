@@ -35,6 +35,12 @@
     
     export function toggleSidebar(){
         colapsed = !colapsed;
+        for(var i=0; i<actions.length; i++){
+            actions[i].open = false;
+            if(actions[i].node !== null){
+                actions[i].node.style.height = 0 +"px";
+            }
+        }
     }
 
     function toggleAcordion(act){
