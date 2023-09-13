@@ -72,7 +72,6 @@
         grid-template-columns: repeat(3, 1fr);
         grid-auto-rows: 1fr;
         padding: 1rem;
-        /* background-color: aliceblue; */
     }
     .lessons{
         margin: auto;

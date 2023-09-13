@@ -1,31 +1,33 @@
 <script>
-    import quiz1 from "$lib/assets/img/quiz1.jpg"
-    import quiz2 from "$lib/assets/img/quiz2.jpg"
-    import quiz3 from "$lib/assets/img/quiz3.jpg"
+//     import quiz1 from "$lib/assets/img/quiz1.jpg"
+//     import quiz2 from "$lib/assets/img/quiz2.jpg"
+//     import quiz3 from "$lib/assets/img/quiz3.jpg"
 
-  let quizes = [
-    {
-        type: "Prova Teste",
-        image: quiz1
-    },
-    {
-        type: "Prova Real",
-        image: quiz2
-    },
-    {
-        type: "Pergunta Aleatória",
-        image: quiz3
-    }
-  ]
+//   let quizes = [
+//     {
+//         type: "Prova Teste",
+//         image: quiz1
+//     },
+//     {
+//         type: "Prova Real",
+//         image: quiz2
+//     },
+//     {
+//         type: "Pergunta Aleatória",
+//         image: quiz3
+//     }
+//   ]
+
+    export let data;
 </script>
 
 <div class="container">
-    {#each quizes as quiz}
+    {#each data.quizes as quiz}
         <div class="option-container">
             <p>{quiz.type}</p>
-            <div class="quiz-options">
+            <a href={quiz.type === "Pergunta Aleatória" ? "/quiz/{quiz.type}":""} class="quiz-options">
                 <img class="quiz-image" src={quiz.image} alt="">
-            </div>
+            </a>
         </div>      
     {/each}
 </div>

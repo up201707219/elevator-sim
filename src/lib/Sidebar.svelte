@@ -4,34 +4,6 @@
     import logo from "./assets/img/S+_logo.png"
 
     export let colapsed = true;
-
-    
-    let actions = [
-        {
-            name:"Ação 1",
-            children: ["teste 1", "teste 2"],
-            open: false,
-            node: null
-        },
-        {
-            name:"Ação 2",
-            children: ["teste 1"],
-            open: false,
-            node: null
-        },
-        {
-            name:"Ação 3",
-            children: [],
-            open: false,
-            node: null
-        },
-        {
-            name:"Ação 4",
-            children: ["teste 1", "teste 2", "teste 3"],
-            open: false,
-            node: null
-        }
-    ];
     
     export function toggleSidebar(){
         colapsed = !colapsed;
@@ -39,6 +11,33 @@
             actions[i].open = false;
         }
     }
+
+    let actions = [
+    {
+        name:"Ação 1",
+        children: ["teste 1", "teste 2"],
+        open: false,
+        node: null
+    },
+    {
+        name:"Ação 2",
+        children: ["teste 1"],
+        open: false,
+        node: null
+    },
+    {
+        name:"Ação 3",
+        children: [],
+        open: false,
+        node: null
+    },
+    {
+        name:"Ação 4",
+        children: ["teste 1", "teste 2", "teste 3"],
+        open: false,
+        node: null
+    }
+];
 
     $: {
         actions.forEach( (action) => {
@@ -58,6 +57,12 @@
         if(actions[index].children.length === 0){
             return;
         }
+
+        actions.forEach( (action, i) => {
+            if(i !== index){
+                action.open = false;
+            }
+        })
 
         actions[index].open = !actions[index].open;
 
@@ -120,7 +125,6 @@
     .block-container{
         display: block;
         text-align: left;
-        border-bottom: 1px solid white;
     }
 
     .sidebar{
@@ -165,16 +169,18 @@
     }
 
     .block-item{
-        border: 1px solid rgb(100, 183, 255);
         color: rgb(149, 149, 149);
         padding: 1rem;
+        transition-property: color, background-color;
         transition: 0.3s;
-        border-top: 1px solid white;
         cursor: pointer;
     }
-    .active, .block-item:hover{
-        background-color: aqua;
+    .active{
+        background-color: rgb(109, 187, 255);
+    }
+    .block-item:hover{
         color: black;
+        background-color: rgb(109, 187, 255);
     }
     .block-item a{
         font-size: 16pt;
@@ -185,20 +191,22 @@
 
     .panel{
         overflow: hidden;
-        background-color: white;
+        background-color: rgb(92, 168, 235);
+        color: rgb(149, 149, 149);
         height: 0; 
-        transition: 0.3s;
+        transition: 0.5s;
     }
-
     .panel-item{
         padding: 1rem;
         padding-left: 6rem;
         padding-bottom: 1rem;
         white-space: nowrap;
+        transition: 0.3s;
         cursor: pointer;
     }
     .panel-item:hover{
-        background-color: antiquewhite;
+        background-color: rgb(97, 176, 246);
+        color: black;
     }
 
     .logo{
