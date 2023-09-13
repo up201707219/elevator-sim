@@ -25,7 +25,7 @@
     {#each data.quizes as quiz}
         <div class="option-container">
             <p>{quiz.type}</p>
-            <a href={quiz.type === "Pergunta Aleatória" ? "/quiz/{quiz.type}":""} class="quiz-options">
+            <a href="/quiz/{quiz.totalQuestions}" class="quiz-options">
                 <img class="quiz-image" src={quiz.image} alt="">
             </a>
         </div>      
