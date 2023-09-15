@@ -10,7 +10,7 @@
 
     function selectQuestion(index){
         //indexDisplayed = index;
-        let newUrl = "/quiz/"+data.quiz.length+"+"+index;
+        let newUrl = "/quiz/"+$page.params.totalQuestions+"+"+index;
         let currentUrl = $page.url.pathname;
         if(newUrl === currentUrl){
             return;
