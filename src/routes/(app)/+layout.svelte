@@ -9,12 +9,24 @@
 
     function onMenuClick(){
         toggleSidebar();
-        console.log(colapsed);
     }
 </script>
 
+{#if hasSidebar}
+    <Navbar hasSidebar on:click={onMenuClick}/>
+    <Sidebar bind:toggleSidebar={toggleSidebar}/>
+{:else}
+    <Navbar/>    
+{/if}
+
+<body>
+    <slot/>
+
+    <div class="footer"><h1>Placeholder</h1></div>
+</body>
+
 <style>
-    @import url('https://fonts.googleapis.com/css?family=Open Sans');
+@import url('https://fonts.googleapis.com/css?family=Open Sans');
     :root{
         font-family: 'Open Sans', sans-serif;
     }
@@ -46,16 +58,3 @@
         color: white;
     }
 </style>
-
-{#if hasSidebar}
-    <Navbar hasSidebar on:click={onMenuClick}/>
-    <Sidebar bind:toggleSidebar={toggleSidebar}/>
-{:else}
-    <Navbar/>    
-{/if}
-
-<body>
-    <slot/>
-
-    <div class="footer"><h1>Placeholder</h1></div>
-</body>

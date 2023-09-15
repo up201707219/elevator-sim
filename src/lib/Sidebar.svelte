@@ -12,7 +12,7 @@
         }
     }
 
-    let actions = [
+    export let actions = [
     {
         name:"Ação 1",
         children: ["teste 1", "teste 2"],

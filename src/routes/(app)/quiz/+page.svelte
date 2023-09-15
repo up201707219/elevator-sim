@@ -1,31 +1,34 @@
 <script>
-//     import quiz1 from "$lib/assets/img/quiz1.jpg"
-//     import quiz2 from "$lib/assets/img/quiz2.jpg"
-//     import quiz3 from "$lib/assets/img/quiz3.jpg"
+    import quiz1 from "$lib/assets/img/quiz1.jpg"
+    import quiz2 from "$lib/assets/img/quiz2.jpg"
+    import quiz3 from "$lib/assets/img/quiz3.jpg"
 
-//   let quizes = [
-//     {
-//         type: "Prova Teste",
-//         image: quiz1
-//     },
-//     {
-//         type: "Prova Real",
-//         image: quiz2
-//     },
-//     {
-//         type: "Pergunta Aleatória",
-//         image: quiz3
-//     }
-//   ]
+    const quizes = [
+        {
+            type: "Prova Teste",
+            totalQuestions: 10,
+            image: quiz1
+        },
+        {
+            type: "Prova Real",
+            totalQuestions: 5,
+            image: quiz2
+        },
+        {
+            type: "Pergunta Aleatória",
+            totalQuestions: 1,
+            image: quiz3
+        }
+    ];
 
-    export let data;
+    // export let data;
 </script>
 
 <div class="container">
-    {#each data.quizes as quiz}
+    {#each quizes as quiz}
         <div class="option-container">
             <p>{quiz.type}</p>
-            <a href="/quiz/{quiz.totalQuestions}" class="quiz-options">
+            <a href="/quiz/{quiz.totalQuestions}+0" class="quiz-options">
                 <img class="quiz-image" src={quiz.image} alt="">
             </a>
         </div>      
