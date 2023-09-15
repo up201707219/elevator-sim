@@ -24,7 +24,6 @@ export function load({params}){
         quiz: quests.map((question) => ({
             context: question.context,
             answers: question.answers
-        })),
-        indexDisplay: params.indexQuestion
+        }))
     };
 }
