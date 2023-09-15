@@ -28,7 +28,7 @@
     {#each quizes as quiz}
         <div class="option-container">
             <p>{quiz.type}</p>
-            <a href="/quiz/{quiz.totalQuestions}+0" class="quiz-options">
+            <a href="/quiz/{quiz.totalQuestions}+0" target="_blank" class="quiz-options">
                 <img class="quiz-image" src={quiz.image} alt="">
             </a>
         </div>      
