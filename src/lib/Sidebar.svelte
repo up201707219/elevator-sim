@@ -58,11 +58,11 @@
             return;
         }
 
-        actions.forEach( (action, i) => {
-            if(i !== index){
-                action.open = false;
-            }
-        })
+        // actions.forEach( (action, i) => {
+        //     if(i !== index){
+        //         action.open = false;
+        //     }
+        // })
 
         actions[index].open = !actions[index].open;
 
@@ -214,5 +214,11 @@
         margin-top: 10px;
         max-height: 30px;
         max-width: 130px
+    }
+
+    @media (max-width: 420px){
+        .sidebar{
+            width:100%;
+        }
     }
 </style>

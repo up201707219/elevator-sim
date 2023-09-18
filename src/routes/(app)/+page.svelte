@@ -12,7 +12,7 @@
         margin: 2rem;
         margin-left: 10%;
         margin-right: 10%;
-        margin-top: 8rem;
+        /* margin-top: 8rem; */
         font-size: 14pt;
     }
 </style>

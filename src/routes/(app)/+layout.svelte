@@ -2,24 +2,27 @@
     import Navbar from "$lib/Navbar.svelte";
     import Sidebar from "$lib/Sidebar.svelte";
 
-    let hasSidebar = true;
+    let hasSidebar = false;
     
     let toggleSidebar;
-    let colapsed;
+    let navbarFixed = false;
 
     function onMenuClick(){
         toggleSidebar();
     }
 </script>
 
+<body>
 {#if hasSidebar}
-    <Navbar hasSidebar on:click={onMenuClick}/>
+    <Navbar navbarFixed={navbarFixed} hasSidebar on:click={onMenuClick}/>
     <Sidebar bind:toggleSidebar={toggleSidebar}/>
 {:else}
-    <Navbar/>    
+    <Navbar navbarFixed={navbarFixed}/>    
 {/if}
 
-<body>
+    {#if navbarFixed}
+        <br style="margin-top: 7rem;">
+    {/if}
     <slot/>
 
     <div class="footer"><h1>Placeholder</h1></div>

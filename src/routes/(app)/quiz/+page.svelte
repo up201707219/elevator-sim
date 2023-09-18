@@ -41,7 +41,7 @@
         grid-template-columns: repeat(3, 1fr);
         grid-auto-rows: 1fr;
         padding: 1rem;
-        margin-top: 8rem;
+        /* margin-top: 8rem; */
     }
 
     .option-container{
@@ -89,8 +89,15 @@
             grid-auto-rows: 1fr; */
         }
         .option-container{
-            width: 400px;
+            width: min(400px, 90%);
+            height: auto;
             margin-bottom: 2rem;
+        }
+    }
+
+    @media (max-width: 420px){
+        .quiz-options{
+            height: 16rem;
         }
     }
 </style>

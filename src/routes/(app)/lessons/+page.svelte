@@ -63,7 +63,7 @@
         margin: 2rem;
         margin-left: 10%;
         margin-right: 10%;
-        margin-top: 8rem;
+        /* margin-top: 8rem; */
         text-align: center;
     }
 
@@ -82,7 +82,7 @@
         overflow: hidden;
         background-color: white;
         border-radius: 10px;
-        box-shadow: 3px 3px 5px 3px rgba(87, 87, 87, 0.123);
+        box-shadow: 5px 3px 5px 3px rgba(87, 87, 87, 0.219);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -93,6 +93,7 @@
     }
     .lessons:hover{
         transform: scale(1.08);
+        box-shadow: 10px 8px 7px 5px rgba(87, 87, 87, 0.144);
     }
     .lesson-image{
         min-width: 100%;
@@ -140,6 +141,19 @@
             grid-template-columns: repeat(2, 1fr);
             grid-auto-rows: 1fr;
             padding: 1rem;
+        }
+    }
+    @media (max-width: 420px) {
+        .container-grid{
+            display: block;
+            
+        }
+        .container{
+            width: 90%;
+            margin: auto;
+        }
+        .lessons{
+            margin-bottom: 3rem;
         }
     }
 </style>

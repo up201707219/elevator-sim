@@ -4,10 +4,22 @@
   import searchIcon from "./assets/svg/search.svg"
 
   export let hasSidebar = false;
+  export let navbarFixed = true;
+
+  let mobileNavOpen = false;
+  function toggleNav(){
+    mobileNavOpen = !mobileNavOpen;
+  }
 
 </script>
+<div class="mobile">{#if hasSidebar}
+  <span on:click>sidebar</span>
+{/if}
+  <img src={menuIcon} alt="nav" class="navbar-icon" on:click={toggleNav}>
+</div>
 
-<nav class="navbar">
+
+<nav class="navbar {navbarFixed ? "fixed" : ""} {mobileNavOpen ? "open" : ""}">
   <div class="left">
     {#if hasSidebar}
         <a id="nav-button" on:click><img src={menuIcon} alt="menu" class="sidebar-icon"></a>
@@ -23,40 +35,41 @@
   </div>
   
   <div class="right">
-      <a><img src={searchIcon} alt="search" class="sidebar-icon"></a>
+      <a href=""><img src={searchIcon} alt="search" class="sidebar-icon" ></a>
   </div>
 </nav>
 
 <style>
+  .mobile{
+    display: none;
+  }
   .navbar{
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    
-    /* beginning of top bar */
 
-    /* margin: 1rem;
-    margin-top: 2rem;
-    padding-bottom: 0rem; */
-
-    /* end of top bar */
-
+    padding: 1%;
+    padding-top: 2rem;
+    padding-bottom: 0rem;
+    z-index: 10;
+    width: 98%;
 
     /* beggining of fixed bar */
     
-    position: fixed;
+    /* position: fixed;
     top: 0;
     left: 0;
-    padding: 1%;
-    padding-top: 2rem;
-    padding-bottom: 0;
-    width: 98%;
-    z-index: 10;
+     */
     
     /* end of fixed bar */
     
     background-color: white;
     border-bottom: 1px solid black;
+}
+.navbar.fixed{
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 .left{
@@ -93,5 +106,47 @@
     margin-bottom: 20px;
     max-height: 30px;
     max-width: 130px
+}
+
+.right{
+  margin-right: 20px;
+}
+
+@media (max-width: 420px){
+  .mobile{
+    display: flex;
+    /* display: none; */
+    justify-content: space-between;
+    width: 92%;
+    padding: 4%;
+    position: relative;
+    top: 0;
+    z-index: 18;
+  }
+  .navbar{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: none;
+  }
+  .left{
+    display: none;
+  }
+  .right{
+    display: none;
+  }
+  .navbar.open{
+    display: block;
+  }
+  .navbar-menu{
+    margin:0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .navbar-icon{
+    width: 30px;
+    z-index: 18;
+  }
 }
 </style>
