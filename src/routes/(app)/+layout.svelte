@@ -2,10 +2,10 @@
     import Navbar from "$lib/Navbar.svelte";
     import Sidebar from "$lib/Sidebar.svelte";
 
-    let hasSidebar = false;
+    let hasSidebar = true;
     
     let toggleSidebar;
-    let navbarFixed = false;
+    let navbarFixed = true;
 
     function onMenuClick(){
         toggleSidebar();
@@ -29,11 +29,6 @@
 </body>
 
 <style>
-@import url('https://fonts.googleapis.com/css?family=Open Sans');
-    :root{
-        font-family: 'Open Sans', sans-serif;
-    }
-
     body{
         min-width: 100%;
         min-height: 100vh;

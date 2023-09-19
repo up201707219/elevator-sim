@@ -18,12 +18,14 @@ function getRandomQuestions(numberOfQuestions){
 }
 
 export function load({params}){
-    let quests = getRandomQuestions(params.totalQuestions);
+    // let quests = getRandomQuestions(params.totalQuestions);
+    let quests = questions;
 
     return {
         quiz: quests.map((question) => ({
             context: question.context,
             answers: question.answers
-        }))
+        })),
+        totalQuestions: params.totalQuestions
     };
 }
