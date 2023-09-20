@@ -19,7 +19,7 @@
 <main>
     <div class="question-content">
         <div class="question-header">
-            <h1>Question Displayed: {displayedQuestion.context}</h1>
+            <h1>Pergunta {parseInt($page.params.indexQuestion)+1}: {displayedQuestion.context}</h1>
         </div>
         <ul>
             {#each displayedQuestion.answers as answer}
