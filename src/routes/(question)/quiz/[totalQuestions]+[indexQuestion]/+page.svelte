@@ -17,6 +17,9 @@
 
 <svelte:window on:beforeunload={alertUser}/>
 <main>
+    <!-- {#if }
+        
+    {/if} -->
     <div class="question-content">
         <div class="question-header">
             <h1>Pergunta {parseInt($page.params.indexQuestion)+1}: {displayedQuestion.context}</h1>

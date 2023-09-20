@@ -24,3 +24,5 @@ export const questions = [
         answers: ["resposta a)", "resposta b)", "resposta c)", "resposta d)"]
     },
 ];
+
+export const breakdowns = "";
