@@ -1,19 +1,23 @@
 <script>
     export let data;
-    console.log(data.lessons);
 </script>
 
 <main>
+    <h1>{data.name}</h1>
     {#each data.lessons as lesson, i}
         <div class="lessons">
             <span class="lessons-content">
-                Lesson {i}: {lesson}
+                Lição {i+1}: {lesson}
             </span>
         </div>    
     {/each}
 </main>
 
 <style>
+    h1{
+        text-align: center;
+        margin-bottom: 5rem;
+    }
     .lessons{
         width: 80%;
         margin:2rem auto auto auto;
