@@ -1,40 +1,7 @@
 <script>
-    import example1 from "$lib/assets/img/example1.jpg"
-    import example2 from "$lib/assets/img/example2.jpg"
-    import example3 from "$lib/assets/img/example3.jpg"
+    
+    import { lessonModules } from "./data.js"
 
-    let lessonModules = [
-        {
-            name:"Comando do ascensor",
-            image: example2,
-            lessonsDone: 0,
-            lessonsTotal: 4
-        },    
-        {
-            name:"Cabina",
-            image: example1,
-            lessonsDone: 50,
-            lessonsTotal: 100
-        },
-        {
-            name:"Poço",
-            image: example3,
-            lessonsDone: 4,
-            lessonsTotal: 15
-        },
-        // {
-        //     name:"Caixa de Máquinas",
-        //     image: example2,
-        //     lessonsDone: 20,
-        //     lessonsTotal: 25
-        // },
-        // {
-        //     name:"Lição 5",
-        //     image: example2,
-        //     lessonsDone: 28,
-        //     lessonsTotal: 28
-        // }
-    ];
 </script>
 
 <div class="container">
@@ -42,16 +9,18 @@
     <div class="container-grid">
         {#each lessonModules as module}
             <div class="lessons">
-                <img src={module.image} alt="Not found" class="lesson-image">
-                <span style="margin-bottom: 2rem;">
-                    {module.name}
-                </span>
-                <div class="completion">
-                    <span>
-                        {module.lessonsDone}/{module.lessonsTotal}
+                <a href="/lessons/{module.id}">
+                    <img src={module.image} alt="Not found" class="lesson-image">
+                    <span style="margin-bottom: 2rem;">
+                        {module.name}
                     </span>
-                    <progress value={module.lessonsDone} max={module.lessonsTotal} class="completion-bar"></progress>
-                </div>
+                    <div class="completion">
+                        <span>
+                            {module.lessonsDone}/{module.lessonsTotal}
+                        </span>
+                        <progress value={module.lessonsDone} max={module.lessonsTotal} class="completion-bar"></progress>
+                    </div>
+                </a>
             </div>
         {/each}
     </div>
@@ -94,6 +63,10 @@
     .lessons:hover{
         transform: scale(1.08);
         box-shadow: 10px 8px 7px 5px rgba(87, 87, 87, 0.144);
+    }
+    .lessons a{
+        text-decoration: none;
+        color: black;
     }
     .lesson-image{
         min-width: 100%;
