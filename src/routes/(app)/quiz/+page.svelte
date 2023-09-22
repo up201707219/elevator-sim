@@ -53,6 +53,7 @@
         font-size: 18pt;
         overflow: hidden;
         cursor: pointer;
+        pointer-events: none;
         transition: 0.5s;
     }
     .option-container:hover{
@@ -73,6 +74,7 @@
         justify-content: center;
         overflow: hidden;
         z-index: 2;
+        pointer-events: auto;
         transition: 0.5s;
     }
     .quiz-image{
