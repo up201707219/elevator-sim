@@ -43,8 +43,8 @@
         margin: 0%;
         /* margin-top: 10px; */
         margin-top: auto;
-        margin-bottom: -10px;
-        padding-bottom: 5px;
+        margin-bottom: 0px;
+        padding-bottom:0px;
         bottom: 0px;
         width: 100%;
         height: 16rem;
