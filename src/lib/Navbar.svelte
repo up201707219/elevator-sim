@@ -31,7 +31,7 @@
     <a href="/">Início</a>
     <a href="/lessons">Lições</a>
     <a href="/quiz">Provas</a>
-    <a href="">Simulador</a>
+    <a href="/in_construction">Simulador</a>
   </div>
   
   <div class="right">
