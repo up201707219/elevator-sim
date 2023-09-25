@@ -8,20 +8,18 @@
     <h1> Lições </h1>
     <div class="container-grid">
         {#each lessonModules as module}
-            <div class="lessons">
-                <a href="/lessons/{module.id}">
-                    <img src={module.image} alt="Not found" class="lesson-image">
-                    <span style="margin-bottom: 2rem;">
-                        {module.name}
+            <a href="/lessons/{module.id}" class="lessons">
+                <img src={module.image} alt="Not found" class="lesson-image">
+                <span style="margin-bottom: 2rem;">
+                    {module.name}
+                </span>
+                <div class="completion">
+                    <span>
+                        {module.lessonsDone}/{module.lessonsTotal}
                     </span>
-                    <div class="completion">
-                        <span>
-                            {module.lessonsDone}/{module.lessonsTotal}
-                        </span>
-                        <progress value={module.lessonsDone} max={module.lessonsTotal} class="completion-bar"></progress>
-                    </div>
-                </a>
-            </div>
+                    <progress value={module.lessonsDone} max={module.lessonsTotal} class="completion-bar"></progress>
+                </div>
+            </a>
         {/each}
     </div>
 </div>
@@ -64,7 +62,7 @@
         transform: scale(1.08);
         box-shadow: 10px 8px 7px 5px rgba(87, 87, 87, 0.144);
     }
-    .lessons a{
+    a{
         text-decoration: none;
         color: black;
     }
