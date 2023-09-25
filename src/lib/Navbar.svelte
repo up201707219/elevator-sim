@@ -4,7 +4,7 @@
   import searchIcon from "./assets/svg/search.svg"
 
   export let hasSidebar = false;
-  export let navbarFixed = true;
+  export let navbarFixed = false;
 
   let mobileNavOpen = false;
   function toggleNav(){
