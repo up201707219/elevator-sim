@@ -48,7 +48,7 @@
         margin: auto;
         margin-top: 3rem;
         z-index: 2;
-        width: 100%;
+        width: 90%;
         text-align: center;
         font-size: 18pt;
         overflow: hidden;
