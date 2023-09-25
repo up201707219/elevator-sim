@@ -5,11 +5,11 @@
 <main>
     <h1>{data.name}</h1>
     {#each data.lessons as lesson, i}
+    <a href="/in_construction">
         <div class="lessons">
-            <span class="lessons-content">
-                Lição {i+1}: {lesson}
-            </span>
+            <span class="lessons-content">Lição {i+1}: {lesson}</span>
         </div>    
+    </a>
     {/each}
 </main>
 
@@ -29,6 +29,10 @@
         background-color: rgb(146, 146, 146);
     }
     .lessons-content{
-        margin-left: 2rem
+        margin-left: 2rem;
+    }
+    a{
+        text-decoration: none;
+        color: black;
     }
 </style>
