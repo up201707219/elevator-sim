@@ -192,7 +192,7 @@
     .panel{
         overflow: hidden;
         background-color: rgb(92, 168, 235);
-        color: rgb(149, 149, 149);
+        color: rgb(128, 128, 128);
         height: 0; 
         transition: 0.5s;
     }
