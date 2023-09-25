@@ -24,16 +24,16 @@ export const lessonModules = [
         lessonsDone: 4,
         lessonsTotal: 15
     },
-    // {
-    //     name:"Caixa de Máquinas",
-    //     image: example2,
-    //     lessonsDone: 20,
-    //     lessonsTotal: 25
-    // },
-    // {
-    //     name:"Lição 5",
-    //     image: example2,
-    //     lessonsDone: 28,
-    //     lessonsTotal: 28
-    // }
+    {
+        name:"Caixa de Máquinas",
+        image: example2,
+        lessonsDone: 20,
+        lessonsTotal: 25
+    },
+    {
+        name:"Lição 5",
+        image: example2,
+        lessonsDone: 28,
+        lessonsTotal: 28
+    }
 ];
