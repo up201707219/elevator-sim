@@ -1,7 +1,7 @@
-import { quizes } from "./data";
+// import { quizes } from "./data";
 
-export function load () {
-    return {
-        quizes
-    };
-}
+// export function load () {
+//     return {
+//         quizes
+//     };
+// }
