@@ -5,9 +5,12 @@
 <main>
     <h1>{data.name}</h1>
     {#each data.lessons as lesson, i}
-        <div class="lessons">
-            <span class="lessons-content">Módulo {i+1}: {lesson}</span>
-        </div>    
+
+        <a href="/in_construction">
+            <div class="lessons">
+                <span class="lessons-content">Módulo {i+1}: {lesson}</span>
+            </div>
+        </a>  
     {/each}
     {#if data.lessons.length === 0}
         <h2>Não existem lições para este módulo</h2>
@@ -23,6 +26,10 @@
     h2{
         text-align: center;
         margin-top: 3rem;
+    }
+    a{
+        text-decoration: none;
+        color: black;
     }
     .lessons{
         width: 80%;
