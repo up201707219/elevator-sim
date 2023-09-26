@@ -12,7 +12,8 @@
   }
 
 </script>
-<div class="mobile">{#if hasSidebar}
+<div class="mobile">
+{#if hasSidebar}
   <span class="position: sticky;" on:click>sidebar</span>
 {/if}
   <img src={menuIcon} alt="nav" class="navbar-icon" on:click={toggleNav}>
