@@ -13,7 +13,7 @@
 
 </script>
 <div class="mobile">{#if hasSidebar}
-  <span on:click>sidebar</span>
+  <span class="position: sticky;" on:click>sidebar</span>
 {/if}
   <img src={menuIcon} alt="nav" class="navbar-icon" on:click={toggleNav}>
 </div>
@@ -145,6 +145,7 @@
     align-items: center;
   }
   .navbar-icon{
+    position: sticky;
     width: 30px;
     z-index: 18;
   }
