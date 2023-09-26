@@ -7,7 +7,7 @@
     {#each data.lessons as lesson, i}
     <a href="/in_construction">
         <div class="lessons">
-            <span class="lessons-content">Lição {i+1}: {lesson}</span>
+            <span class="lessons-content">Módulo {i+1}: {lesson}</span>
         </div>    
     </a>
     {/each}

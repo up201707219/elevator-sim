@@ -5,7 +5,7 @@
 </script>
 
 <div class="container">
-    <h1> Lições </h1>
+    <h1> Cursos </h1>
     <div class="container-grid">
         {#each lessonModules as module}
         <a href="/lessons/{module.id}" class="lessons">

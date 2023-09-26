@@ -30,8 +30,8 @@
   
   <div class="navbar-menu">
     <a href="/">Início</a>
-    <a href="/lessons">Lições</a>
-    <a href="/quiz">Provas</a>
+    <a href="/lessons">Cursos</a>
+    <a href="/quiz">Formações</a>
     <a href="/in_construction">Simulador</a>
   </div>
   
