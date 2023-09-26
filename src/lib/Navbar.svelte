@@ -12,8 +12,9 @@
   }
 
 </script>
-<div class="mobile">{#if hasSidebar}
-  <span on:click>sidebar</span>
+<div class="mobile">
+{#if hasSidebar}
+  <span class="position: sticky;" on:click>sidebar</span>
 {/if}
   <img src={menuIcon} alt="nav" class="navbar-icon" on:click={toggleNav}>
 </div>
@@ -29,9 +30,9 @@
   
   <div class="navbar-menu">
     <a href="/">Início</a>
-    <a href="/lessons">Lições</a>
-    <a href="/quiz">Provas</a>
-    <a href="">Simulador</a>
+    <a href="/lessons">Cursos</a>
+    <a href="/quiz">Formações</a>
+    <a href="/in_construction">Simulador</a>
   </div>
   
   <div class="right">
@@ -145,6 +146,7 @@
     align-items: center;
   }
   .navbar-icon{
+    position: sticky;
     width: 30px;
     z-index: 18;
   }

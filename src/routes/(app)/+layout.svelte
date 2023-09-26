@@ -21,7 +21,7 @@
 {/if}
 
     <slot/>
-
+    <br style="margin-bottom: 3rem;">
     <div class="footer"><h1>Placeholder</h1></div>
 </body>
 
