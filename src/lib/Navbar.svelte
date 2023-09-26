@@ -4,7 +4,7 @@
   import searchIcon from "./assets/svg/search.svg"
 
   export let hasSidebar = false;
-  export let navbarFixed = false;
+  export let navbarFixed = true;
 
   let mobileNavOpen = false;
   function toggleNav(){
@@ -31,7 +31,7 @@
     <a href="/">Início</a>
     <a href="/lessons">Lições</a>
     <a href="/quiz">Provas</a>
-    <a href="/in_construction">Simulador</a>
+    <a href="">Simulador</a>
   </div>
   
   <div class="right">

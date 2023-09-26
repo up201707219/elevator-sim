@@ -28,7 +28,7 @@
     {#each quizes as quiz}
         <div class="option-container">
             <p>{quiz.type}</p>
-            <a href="/in_construction" target="_blank" class="quiz-options">
+            <a href="/quiz/{quiz.totalQuestions}+0" target="_blank" class="quiz-options">
                 <img class="quiz-image" src={quiz.image} alt="">
             </a>
         </div>      
@@ -48,7 +48,7 @@
         margin: auto;
         margin-top: 3rem;
         z-index: 2;
-        width: 90%;
+        width: 100%;
         text-align: center;
         font-size: 18pt;
         overflow: hidden;

@@ -2,7 +2,7 @@
     import Navbar from "$lib/Navbar.svelte";
     import Sidebar from "$lib/Sidebar.svelte";
 
-    let hasSidebar = false;
+    let hasSidebar = true;
     
     let toggleSidebar;
     let navbarFixed = true;
