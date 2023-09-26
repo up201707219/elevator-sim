@@ -106,7 +106,7 @@
     margin-top: 10px;
     margin-bottom: 20px;
     max-height: 30px;
-    max-width: 130px
+    max-width: 170px
 }
 
 .right{

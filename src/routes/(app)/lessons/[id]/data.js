@@ -18,12 +18,12 @@ export const lessonModules = [
         lessons: []
     },
     // {
-    //     name:"Caixa de Máquinas",
-    //     image: example2,
-    //     lessonsDone: 20,
-    //     lessonsTotal: 25
+    //     id:4,
+    //     name:"Casa de Máquinas",
+    //     lessons: []
     // },
     // {
+    //     id:5,
     //     name:"Lição 5",
     //     image: example2,
     //     lessonsDone: 28,
