@@ -25,12 +25,14 @@ export const lessonModules = [
         lessonsTotal: 15
     },
     // {
+    //     id:4,
     //     name:"Caixa de Máquinas",
     //     image: example2,
     //     lessonsDone: 20,
     //     lessonsTotal: 25
     // },
     // {
+    //     id:5,
     //     name:"Lição 5",
     //     image: example2,
     //     lessonsDone: 28,
