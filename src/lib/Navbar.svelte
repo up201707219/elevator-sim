@@ -67,7 +67,7 @@
     border-bottom: 1px solid black;
 }
 .navbar.fixed{
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
 }
