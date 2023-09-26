@@ -24,3 +24,6 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+.svelte-kit/ambient.d.ts
+
+.svelte-kit/generated/server/internal.js
