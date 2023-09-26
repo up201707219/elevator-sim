@@ -11,12 +11,20 @@
         </div>    
     </a>
     {/each}
+    {#if data.lessons.length === 0}
+        <h2>Não existem lições para este módulo</h2>
+    {/if}
 </main>
 
 <style>
     h1{
         text-align: center;
-        margin-bottom: 5rem;
+        margin-top: 3rem;
+        margin-bottom: 4rem;
+    }
+    h2{
+        text-align: center;
+        margin-top: 3rem;
     }
     .lessons{
         width: 80%;
