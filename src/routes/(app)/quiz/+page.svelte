@@ -48,7 +48,7 @@
         margin: auto;
         margin-top: 3rem;
         z-index: 2;
-        width: 100%;
+        width: 85%;
         text-align: center;
         font-size: 18pt;
         overflow: hidden;
@@ -65,7 +65,7 @@
         flex-direction: column;
         margin: auto;
         padding: 0rem;
-        width: 80%;
+        width: 100%;
         height: 20rem;
         background-color: white;
         border-radius: 10px;
