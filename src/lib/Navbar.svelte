@@ -113,7 +113,7 @@
   margin-right: 20px;
 }
 
-@media (max-width: 420px){
+@media (max-width: 900px){
   .mobile{
     display: flex;
     /* display: none; */
