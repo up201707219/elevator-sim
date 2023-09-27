@@ -25,33 +25,38 @@
 
 <main>
     <div class="mobile-nav">
-        <button class="mobile-button {(mobileDisplay === "details")? "active":""}" on:click={() => updateMobileDisplay("details")}>Detalhes</button>
         <button class="mobile-button {(mobileDisplay === "lessons")? "active":""}" on:click={() => updateMobileDisplay("lessons")}>Módulos</button>
+        <button class="mobile-button {(mobileDisplay === "details")? "active":""}" on:click={() => updateMobileDisplay("details")}>Detalhes</button>
     </div>
     <div class="mobile-content">
+        <h1>{data.name}</h1>
         <div class="course-details {(mobileDisplay === "details")? "open":""}">
-            <h1>{data.name}</h1>
             <p><b>Descrição:</b> {@html data.description}</p>
             <p><b>Duração:</b> {duration}</p>
         </div>
         <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
+            {#if data.lessons.length === 0}
+            <h2>Não existem módulos para este curso</h2>
+            {/if}
             {#each data.lessons as lesson, i}
             <a href="/in_construction">
                 <div class="lesson">
-                    <span class="lesson-content">Módulo {i+1}: {lesson}</span>
+                    <div class="lesson-content">Módulo {i+1}: {lesson}</div>
                 </div>
             </a>
             {/each}
         </div>
     </div>
-    {#if data.lessons.length === 0}
-        <h2>Não existem lições para este módulo</h2>
-    {/if}
 </main>
 
 <style>
     .mobile-nav{
         display: none;
+    }
+    h1{
+        margin-left: auto;
+        margin-right: auto;
+        width: 80%;
     }
     .course-details{
         margin-left: auto;
@@ -77,7 +82,7 @@
         background-color: rgb(146, 146, 146);
     }
     .lesson-content{
-        margin-left: 2rem;
+        margin-left: min(5%, 2rem);
     }
     a{
         text-decoration: none;
@@ -92,9 +97,10 @@
             /* background-color: aqua; */
         }
         .mobile-button{
-            margin-bottom: -20px;
-            padding: 5px 10px 20px 10px;
-            border-radius: 20px;
+            margin-bottom: -50px;
+            padding: 5px 10px 50px 10px;
+            min-width: 6rem;
+            border-radius: 30px;
             font-size: 11pt;
             position: relative;
             z-index: 1;
@@ -104,7 +110,7 @@
             z-index: 4;
         }
         .mobile-button:nth-child(n+2){
-            margin-left: -10px;
+            margin-left: -12px;
         }
         .mobile-content{
             position: relative;
