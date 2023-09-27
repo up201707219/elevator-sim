@@ -99,6 +99,7 @@
         .mobile-button{
             margin-bottom: -50px;
             padding: 5px 10px 50px 10px;
+            height: 85px;
             min-width: 6rem;
             border-radius: 30px;
             font-size: 11pt;
