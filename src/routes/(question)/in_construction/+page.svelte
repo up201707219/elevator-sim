@@ -1,1 +1,3 @@
-<h1>Page under construction 👷</h1>
+<main>
+    <h1>Page under construction 👷</h1>
+</main>

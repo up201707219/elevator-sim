@@ -8,18 +8,18 @@
     <h1> Cursos </h1>
     <div class="container-grid">
         {#each lessonModules as module}
-            <a href="/lessons/{module.id}" class="lessons">
-                <img src={module.image} alt="Not found" class="lesson-image">
-                <span style="margin-bottom: 2rem;">
-                    {module.name}
+        <a href="/lessons/{module.id}" class="lessons">
+            <img src={module.image} alt="Not found" class="lesson-image">
+            <span style="margin-bottom: 2rem;">
+                {module.name}
+            </span>
+            <div class="completion">
+                <span>
+                    {module.lessonsDone}/{module.lessonsTotal}
                 </span>
-                <div class="completion">
-                    <span>
-                        {module.lessonsDone}/{module.lessonsTotal}
-                    </span>
-                    <progress value={module.lessonsDone} max={module.lessonsTotal} class="completion-bar"></progress>
-                </div>
-            </a>
+                <progress value={module.lessonsDone} max={module.lessonsTotal} class="completion-bar"></progress>
+            </div>
+        </a>
         {/each}
     </div>
 </div>
@@ -50,6 +50,8 @@
         background-color: white;
         border-radius: 10px;
         box-shadow: 5px 3px 5px 3px rgba(87, 87, 87, 0.219);
+        border: 1px solid rgb(117, 116, 116);
+        background-color: rgb(255, 255, 255);
         display: flex;
         flex-direction: column;
         align-items: center;
