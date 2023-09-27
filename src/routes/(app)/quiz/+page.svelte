@@ -40,15 +40,14 @@
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         grid-auto-rows: 1fr;
-        padding: 1rem;
+        padding: 2rem;
         /* margin-top: 8rem; */
     }
 
     .option-container{
-        margin: auto;
-        margin-top: 3rem;
+        margin: 1rem;
         z-index: 2;
-        width: 100%;
+        width: 90%;
         text-align: center;
         font-size: 18pt;
         overflow: hidden;
@@ -65,7 +64,7 @@
         flex-direction: column;
         margin: auto;
         padding: 0rem;
-        width: 90%;
+        width: 100%;
         height: 20rem;
         background-color: white;
         border-radius: 10px;
