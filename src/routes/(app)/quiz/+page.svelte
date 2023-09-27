@@ -86,7 +86,6 @@
     @media (max-width: 1100px){
         .container{
             display: block;
-            margin: auto
             /* grid-template-columns: repeat(1, 1fr);
             grid-auto-rows: 1fr; */
         }
