@@ -117,7 +117,7 @@
             position: relative;
             margin: 0 0.5rem 0 0.5rem;
             border-radius: 10px;
-            z-index: 20;
+            z-index: 10;
             background-color: white;
             border: 1px solid black;
         }
