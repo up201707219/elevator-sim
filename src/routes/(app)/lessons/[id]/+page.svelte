@@ -3,11 +3,15 @@
 </script>
 
 <main>
-    <h1>{data.name}</h1>
+    <div class="course-details">
+        <h1>{data.name}</h1>
+        <p><b>Descrição:</b> {@html data.description}</p>
+        <p><b>Duração:</b> {data.dur_min}-{data.dur_max}</p>
+    </div>
     {#each data.lessons as lesson, i}
     <a href="/in_construction">
-        <div class="lessons">
-            <span class="lessons-content">Módulo {i+1}: {lesson}</span>
+        <div class="lesson">
+            <span class="lesson-content">Módulo {i+1}: {lesson}</span>
         </div>    
     </a>
     {/each}
@@ -17,26 +21,30 @@
 </main>
 
 <style>
-    h1{
-        text-align: center;
+    .course-details{
+        margin-left: auto;
+        margin-right: auto;
+        width: 80%;
+        text-align: start;
         margin-top: 3rem;
         margin-bottom: 4rem;
     }
+
     h2{
         text-align: center;
         margin-top: 3rem;
     }
-    .lessons{
+    .lesson{
         width: 80%;
         margin:2rem auto auto auto;
         padding: 1rem;
         background-color: rgb(173, 173, 173);
         border-radius: 10px;
     }
-    .lessons:hover{
+    .lesson:hover{
         background-color: rgb(146, 146, 146);
     }
-    .lessons-content{
+    .lesson-content{
         margin-left: 2rem;
     }
     a{
