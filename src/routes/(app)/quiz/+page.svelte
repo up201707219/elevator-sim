@@ -65,7 +65,7 @@
         margin: auto;
         padding: 0rem;
         width: 100%;
-        height: 20rem;
+        height: 18rem;
         background-color: white;
         border-radius: 10px;
         box-shadow: 3px 3px 5px 3px rgba(87, 87, 87, 0.123);
