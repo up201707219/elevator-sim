@@ -13,10 +13,11 @@
 
 </script>
 <div class="mobile">
-{#if hasSidebar}
-  <span class="position: sticky;" on:click>sidebar</span>
-{/if}
-  <img src={menuIcon} alt="nav" class="navbar-icon" on:click={toggleNav}>
+  <img class="mobile-logo" src={logo} alt="logo">
+  {#if hasSidebar}
+    <span class="position: sticky;" on:click>sidebar</span>
+  {/if}
+    <img src={menuIcon} alt="nav" class="navbar-icon" on:click={toggleNav}>
 </div>
 
 
@@ -102,25 +103,28 @@
 }
 
 .logo{
-    margin-left: 10px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    max-height: 30px;
-    max-width: 170px
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  max-height: 30px;
+  max-width: 170px;
+  height: auto;
+  width: auto;
 }
 
 .right{
   margin-right: 20px;
 }
 
-@media (max-width: 420px){
+@media (max-width: 900px){
   .mobile{
     display: flex;
     /* display: none; */
     justify-content: space-between;
     width: 92%;
     padding: 4%;
-    position: relative;
+    background-color: rgb(0, 225, 255);
+    position: sticky;
     top: 0;
     z-index: 18;
   }
@@ -129,6 +133,7 @@
     padding: 0;
     width: 100%;
     display: none;
+    z-index: 18;
   }
   .left{
     display: none;
@@ -138,6 +143,14 @@
   }
   .navbar.open{
     display: block;
+    position: sticky;
+  }
+  .mobile-logo{
+    max-height: 60px;
+    max-width: 130px;
+    height: auto;
+    width: auto;
+    margin: 0.5rem;
   }
   .navbar-menu{
     margin:0px;
@@ -146,7 +159,6 @@
     align-items: center;
   }
   .navbar-icon{
-    position: sticky;
     width: 30px;
     z-index: 18;
   }

@@ -5,4 +5,10 @@
     :root{
         font-family: 'Open Sans', sans-serif;
     }
+
+    @media (max-width: 900px){
+        :root{
+            font-size: 10pt;
+        }
+    }
 </style>
