@@ -40,14 +40,19 @@
 
 <div class="container">
     <h1>Formações</h1>
-    <div class="formation-done-accordion">
-     <button class="accordion-button" on:click={()=>toggleAccordion()}>Formações prévias</button>
+    <div class="formations-done">
+        <div class="formation-option">
+            <button on:click={()=>toggleAccordion()}>Formações prévias</button>
+        </div>
+        <ul class="panel {accordionIsOpen? "open":""}" bind:this={accNode}>    
+            {#each data.formations as formation}
+            <li>Formação de {formation.name} (realizada no dia {formation.date})</li>
+            {/each}
+        </ul>
     </div>
-    <ul class="panel {accordionIsOpen? "open":""}" bind:this={accNode}>    
-        {#each data.formations as formation}
-        <li>Formação de {formation.name} (realizada no dia {formation.date})</li>
-        {/each}
-    </ul>
+    <div class="formation-option">
+        <a href="/in_construction">Fazer formação</a>
+    </div>
 </div>
 
 <style>
@@ -59,34 +64,45 @@
         margin: auto;
         margin-top: 2rem;
         background-color: aliceblue;
-        padding-top: 0;
+        padding: 1rem;
+    }
+    .formations-done{
+        margin-bottom: 5rem;
     }
     .panel{
         height: 0;
-        margin: -0.5rem 0rem 0 0rem;
-        padding-top: 0rem;
+        margin-top: -0.5rem;
         overflow: hidden;
         background-color: bisque;
         transition: 0.2s;
+        z-index: 1;
     }
     .panel li{
         margin: 1rem;
     }
-    .accordion-button {
+    .formation-option {
         background-color:rgb(173, 173, 173);;
-        width: 100%;
+        width: 98%;
         text-align: start;
         margin: auto;
-        padding: 0.8rem;
+        padding: 0.7rem 1% 0.7rem 1%;
         border-radius: 12px;
+        position: relative;
+        z-index: 3;
+        /* margin-bottom: 2rem; */
+    }
+    .formation-option button{
         /* no style button */
+        background-color: transparent;
         border-width: 0;
         font-family: inherit;
         font-size: inherit;
         font-style: inherit;
         font-weight: inherit;
         line-height: inherit;
-        
-
+    }
+    .formation-option a{
+        text-decoration: none;
+        color: inherit;
     }
 </style>
