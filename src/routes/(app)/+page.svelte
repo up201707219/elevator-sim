@@ -11,10 +11,8 @@
     .container{
         width: 80%;
         margin: 2rem;
-        margin-left: 10%;
-        margin-right: 10%;
-        /* margin-top: 8rem; */
-        font-size: 14pt;
+        margin: auto;
+        margin-top: 2rem;
     }
     h1{
         text-align: center;

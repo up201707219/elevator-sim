@@ -71,19 +71,23 @@
     }
     .course-details{
         display: grid;
-        grid-template-columns: 70% auto;
+        grid-template-columns: auto max(400px, 30%);
         margin: 1rem auto 3rem auto;
         width: 80%;
         text-align: start;
+        overflow: hidden;
     }
     .details-context{
-        margin-right: 1rem;
+        margin-right: 2rem;
+    }
+    .details-image{
+        position: relative;
     }
     .course-image{
-        margin-left: 1rem;
-        max-width: 400px;
+        max-width: 100%;
         max-height: 20rem;
-        position: relative;
+        position: absolute;
+        right: 0;
     }
     h2{
         text-align: center;
@@ -92,7 +96,7 @@
     .lesson{
         width: 80%;
         margin:2rem auto 2rem auto;
-        padding: 1rem;
+        padding: 1rem 0rem 1rem 0rem;
         background-color: rgb(173, 173, 173);
         border-radius: 10px;
     }
@@ -159,6 +163,7 @@
             display: block;
         }
         .course-image{
+            position: relative;
             margin: 0;
             max-width: 200px;
             max-height: 200px;
@@ -172,7 +177,6 @@
             width: 200px;
             height: 200px;
             margin: auto;
-            margin-top: 2rem;
             /* overflow: hidden; */
         }
     }
