@@ -62,7 +62,6 @@
         padding-top: 0;
     }
     .panel{
-        /* display: none; */
         height: 0;
         margin: -0.5rem 0rem 0 0rem;
         padding-top: 0rem;
@@ -70,10 +69,6 @@
         background-color: bisque;
         transition: 0.2s;
     }
-    /* .panel.open{
-        display: block;
-        height: auto;
-    } */
     .panel li{
         margin: 1rem;
     }
