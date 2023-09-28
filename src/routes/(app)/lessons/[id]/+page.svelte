@@ -31,8 +31,16 @@
     <div class="mobile-content">
         <h1>{data.name}</h1>
         <div class="course-details {(mobileDisplay === "details")? "open":""}">
-            <p><b>Descrição:</b> {@html data.description}</p>
-            <p><b>Duração:</b> {duration}</p>
+            <div class="mobile-details-image">
+                <img src={data.image} alt="mc12" class="course-image">
+            </div>
+            <div class="details-context">
+                <p><b>Descrição:</b> {@html data.description}</p>
+                <p><b>Duração:</b> {duration}</p>
+            </div>
+            <div class="details-image">
+                <img src={data.image} alt="mc12" class="course-image">
+            </div>
         </div>
         <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
             {#if data.lessons.length === 0}
@@ -53,20 +61,30 @@
     .mobile-nav{
         display: none;
     }
+    .mobile-details-image{
+        display: none;
+    }
     h1{
         margin-left: auto;
         margin-right: auto;
         width: 80%;
     }
     .course-details{
-        margin-left: auto;
-        margin-right: auto;
+        display: grid;
+        grid-template-columns: 70% auto;
+        margin: 1rem auto 3rem auto;
         width: 80%;
         text-align: start;
-        margin-top: 1rem;
-        margin-bottom: 4rem;
     }
-
+    .details-context{
+        margin-right: 1rem;
+    }
+    .course-image{
+        margin-left: 1rem;
+        max-width: 400px;
+        max-height: 20rem;
+        position: relative;
+    }
     h2{
         text-align: center;
         margin-top: 3rem;
@@ -97,9 +115,10 @@
             /* background-color: aqua; */
         }
         .mobile-button{
-            margin-bottom: -50px;
+            margin-bottom: -55px;
+            margin-top: 0px;
             padding: 5px 10px 50px 10px;
-            height: 85px;
+            height: 90px;
             min-width: 6rem;
             border-radius: 30px;
             font-size: 11pt;
@@ -108,10 +127,12 @@
         }
         .mobile-button.active{
             background-color: aquamarine;
+            margin-top: -5px;
+            height: 95px;
             z-index: 4;
         }
         .mobile-button:nth-child(n+2){
-            margin-left: -12px;
+            margin-left: -8px;
         }
         .mobile-content{
             position: relative;
@@ -120,6 +141,10 @@
             z-index: 10;
             background-color: white;
             border: 1px solid black;
+        }
+        .course-details{
+            display: block;
+            margin-bottom: 2rem;
         }
         .lessons{
             display: none;
@@ -132,6 +157,23 @@
         }
         .course-details.open{
             display: block;
+        }
+        .course-image{
+            margin: 0;
+            max-width: 200px;
+            max-height: 200px;
+            
+        }
+        .details-image{
+            display: none;
+        }
+        .mobile-details-image{
+            display: block;
+            width: 200px;
+            height: 200px;
+            margin: auto;
+            margin-top: 2rem;
+            /* overflow: hidden; */
         }
     }
 </style>

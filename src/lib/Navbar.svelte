@@ -133,6 +133,7 @@
     padding: 0;
     width: 100%;
     display: none;
+    z-index: 18;
   }
   .left{
     display: none;

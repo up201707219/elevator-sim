@@ -1,3 +1,5 @@
+import example2 from "$lib/assets/img/example2.jpg";
+
 export const lessonModules = [
     {
         id: 1,
@@ -8,7 +10,8 @@ export const lessonModules = [
         lessons: [
             "Introdução",
             "Mover o ascensor de andar"
-        ]
+        ],
+        image: example2
     },    
     {
         id: 2,
@@ -16,7 +19,8 @@ export const lessonModules = [
         description: "Uma descrição",
         dur_min: 15,
         dur_max: 30,
-        lessons:[]
+        lessons:[],
+        image: example2
     },
     {
         id: 3,
@@ -24,12 +28,17 @@ export const lessonModules = [
         description: "Uma descrição",
         dur_min: 15,
         dur_max: 30,
-        lessons: []
+        lessons: [],
+        image: example2
     },
     // {
     //     id:4,
     //     name:"Casa de Máquinas",
-    //     lessons: []
+    //     description: "Uma descrição",
+    //     dur_min: 15,
+    //     dur_max: 30,
+    //     lessons: [],
+    //     image: example1
     // },
     // {
     //     id:5,
