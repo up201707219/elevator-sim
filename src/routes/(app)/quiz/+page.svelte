@@ -21,85 +21,77 @@
         }
     ];
 
-    // export let data;
+    export let data;
+
+    let accordionIsOpen = false;
+    let accNode;
+   
+
+    function toggleAccordion(){
+        accordionIsOpen = !accordionIsOpen;
+        if(accordionIsOpen){
+            accNode.style.height = accNode.scrollHeight + "px"; 
+        }
+        else{
+            accNode.style.height = 0 + "px";
+        }
+    }
 </script>
 
 <div class="container">
-    {#each quizes as quiz}
-        <div class="option-container">
-            <p>{quiz.type}</p>
-            <a href="/quiz/{quiz.totalQuestions}+0" target="_blank" class="quiz-options">
-                <img class="quiz-image" src={quiz.image} alt="">
-            </a>
-        </div>      
-    {/each}
+    <h1>Formações</h1>
+    <div class="formation-done-accordion">
+     <button class="accordion-button" on:click={()=>toggleAccordion()}>Formações prévias</button>
+    </div>
+    <ul class="panel {accordionIsOpen? "open":""}" bind:this={accNode}>    
+        {#each data.formations as formation}
+        <li>Formação de {formation.name} (realizada no dia {formation.date})</li>
+        {/each}
+    </ul>
 </div>
 
 <style>
-    .container{
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-auto-rows: 1fr;
-        padding: 1rem;
-        /* margin-top: 8rem; */
-    }
-
-    .option-container{
-        margin: auto;
-        margin-top: 3rem;
-        z-index: 2;
-        width: 100%;
+    h1{
         text-align: center;
-        font-size: 18pt;
-        overflow: hidden;
-        cursor: pointer;
-        pointer-events: none;
-        transition: 0.5s;
     }
-    .option-container:hover{
-        transform: scale(1.08);
-    }
-
-    .quiz-options{
-        display: flex;
-        flex-direction: column;
+    .container{
+        width: 80%;
         margin: auto;
-        padding: 0rem;
-        width: 90%;
-        height: 20rem;
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 3px 3px 5px 3px rgba(87, 87, 87, 0.123);
-        align-items: center;
-        justify-content: center;
+        margin-top: 2rem;
+        background-color: aliceblue;
+        padding-top: 0;
+    }
+    .panel{
+        /* display: none; */
+        height: 0;
+        margin: -0.5rem 0rem 0 0rem;
+        padding-top: 0rem;
         overflow: hidden;
-        z-index: 2;
-        pointer-events: auto;
-        transition: 0.5s;
+        background-color: bisque;
+        transition: 0.2s;
     }
-    .quiz-image{
-        min-width: 100%;
-        width: auto;
-        height: 100%;
-        z-index: 1;
+    /* .panel.open{
+        display: block;
+        height: auto;
+    } */
+    .panel li{
+        margin: 1rem;
     }
+    .accordion-button {
+        background-color:rgb(173, 173, 173);;
+        width: 100%;
+        text-align: start;
+        margin: auto;
+        padding: 0.8rem;
+        border-radius: 12px;
+        /* no style button */
+        border-width: 0;
+        font-family: inherit;
+        font-size: inherit;
+        font-style: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+        
 
-    @media (max-width: 1100px){
-        .container{
-            display: block;
-            /* grid-template-columns: repeat(1, 1fr);
-            grid-auto-rows: 1fr; */
-        }
-        .option-container{
-            width: min(400px, 90%);
-            height: auto;
-            margin-bottom: 2rem;
-        }
-    }
-
-    @media (max-width: 420px){
-        .quiz-options{
-            height: 16rem;
-        }
     }
 </style>

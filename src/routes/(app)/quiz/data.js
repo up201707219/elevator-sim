@@ -1,22 +1,10 @@
-
-// import quiz1 from "$lib/assets/img/quiz1.jpg"
-// import quiz2 from "$lib/assets/img/quiz2.jpg"
-// import quiz3 from "$lib/assets/img/quiz3.jpg"
-
-// export const quizes = [
-//     {
-//         type: "Prova Teste",
-//         totalQuestions: 10,
-//         image: quiz1
-//     },
-//     {
-//         type: "Prova Real",
-//         totalQuestions: 5,
-//         image: quiz2
-//     },
-//     {
-//         type: "Pergunta Aleatória",
-//         totalQuestions: 1,
-//         image: quiz3
-//     }
-//   ];
+export let formationsDone = [
+    {
+        name: "Comando do Ascensor",
+        date: "2023-08-07",
+    },
+    {
+        name: "Avarias Elétricas",
+        date: "2023-08-07",
+    },
+];
