@@ -1,26 +1,4 @@
 <script>
-    import quiz1 from "$lib/assets/img/quiz1.jpg"
-    import quiz2 from "$lib/assets/img/quiz2.jpg"
-    import quiz3 from "$lib/assets/img/quiz3.jpg"
-
-    const quizes = [
-        {
-            type: "Prova Teste",
-            totalQuestions: 10,
-            image: quiz1
-        },
-        {
-            type: "Prova Real",
-            totalQuestions: 5,
-            image: quiz2
-        },
-        {
-            type: "Pergunta Aleatória",
-            totalQuestions: 1,
-            image: quiz3
-        }
-    ];
-
     export let data;
 
     let accordionIsOpen = false;
@@ -46,18 +24,31 @@
         </div>
         <ul class="panel {accordionIsOpen? "open":""}" bind:this={accNode}>    
             {#each data.formations as formation}
-            <li>Formação de {formation.name} (realizada no dia {formation.date})</li>
+            <a href="/in_construction">
+                <li>Formação de {formation.name} (realizada no dia {formation.date})</li>
+                
+            </a>
             {/each}
         </ul>
     </div>
-    <div class="formation-option">
-        <a href="/in_construction">Fazer formação</a>
-    </div>
+    <a href="/in_construction">
+        <div class="formation-option">
+            <span class="option">Fazer formação</span>
+        </div>
+    </a>
 </div>
 
 <style>
     h1{
         text-align: center;
+        margin-bottom: 3rem;
+    }
+    a{
+        text-decoration: none;
+        color: black;
+    }
+    ul{
+        list-style: none;
     }
     .container{
         width: 80%;
@@ -67,32 +58,47 @@
         padding: 1rem;
     }
     .formations-done{
-        margin-bottom: 5rem;
+        margin-bottom: 3rem;
     }
     .panel{
         height: 0;
         margin-top: -0.5rem;
+        padding-top: 0rem;
+        padding-left: 0;
         overflow: hidden;
-        background-color: bisque;
+        /* background-color: aquamarine; */
         transition: 0.2s;
         z-index: 1;
     }
+    .panel.open{
+        padding-top: 0.5rem;
+    }
     .panel li{
-        margin: 1rem;
+        /* margin: 2rem; */
+        padding: 1.5rem;
+    }
+    .panel li:hover{
+        /* background-color: rgb(157, 248, 218); */
+        background-color: rgb(252, 252, 252);
     }
     .formation-option {
         background-color:rgb(173, 173, 173);;
-        width: 98%;
+        width: 100%;
+        height: 3rem;
         text-align: start;
         margin: auto;
-        padding: 0.7rem 1% 0.7rem 1%;
+
         border-radius: 12px;
         position: relative;
         z-index: 3;
-        /* margin-bottom: 2rem; */
     }
     .formation-option button{
+        cursor: pointer;
         /* no style button */
+        width: 100%;
+        height: 100%;
+        padding-left: 1rem;
+        text-align: start;
         background-color: transparent;
         border-width: 0;
         font-family: inherit;
@@ -101,8 +107,10 @@
         font-weight: inherit;
         line-height: inherit;
     }
-    .formation-option a{
-        text-decoration: none;
-        color: inherit;
+    .option{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 1rem
     }
 </style>
