@@ -1,47 +1,44 @@
 <script>
     export let data;
+    
+    $: screenWidth = 0;
+    $: console.log(screenWidth);
 
-    let accordionIsOpen = false;
-    let accNode;
-   
-
-    function toggleAccordion(){
-        accordionIsOpen = !accordionIsOpen;
-        if(accordionIsOpen){
-            accNode.style.height = accNode.scrollHeight + "px"; 
-        }
-        else{
-            accNode.style.height = 0 + "px";
-        }
+    function stringifyDate(date){
+        return date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear();
     }
 </script>
 
+<svelte:window bind:innerWidth={screenWidth}/>
+
+<h1>Formações</h1>
 <div class="container">
-    <h1>Formações</h1>
-    <div class="formations-done">
-        <div class="formation-option">
-            <button on:click={()=>toggleAccordion()}>Formações prévias</button>
-        </div>
-        <ul class="panel {accordionIsOpen? "open":""}" bind:this={accNode}>    
-            {#each data.formations as formation}
-            <a href="/in_construction">
-                <li>Formação de {formation.name} (realizada no dia {formation.date})</li>
-                
-            </a>
-            {/each}
-        </ul>
-    </div>
-    <a href="/in_construction">
-        <div class="formation-option">
-            <span class="option">Fazer formação</span>
-        </div>
+    <h2>- Formações prévias</h2>
+    <ul class="panel">    
+        {#each data.formations as formation}
+        <a href="/in_construction">
+            <li>Formação de {formation.name} (realizada no dia {stringifyDate(formation.date)})</li>           
+        </a>
+        {/each}
+    </ul>
+    {#if data.formations.length <= 0}
+    <h1>Não existem formações realizadas</h1>
+    {/if}   
+    <a href="/in_construction" class="formation-option">
+        <div class="option">{ (screenWidth > 900)? "+ Nova formação" : "+"}</div>
+        <!-- <div class="formation-option">
+        </div> -->
     </a>
 </div>
 
 <style>
     h1{
+        margin-top: 3rem;
         text-align: center;
-        margin-bottom: 3rem;
+        margin-bottom: 1rem;
+    }
+    h2{
+        padding-left: 1rem;
     }
     a{
         text-decoration: none;
@@ -53,64 +50,55 @@
     .container{
         width: 80%;
         margin: auto;
-        margin-top: 2rem;
+        margin-top: 1rem;
+        position: relative;
         background-color: aliceblue;
         padding: 1rem;
     }
-    .formations-done{
-        margin-bottom: 3rem;
-    }
+
     .panel{
-        height: 0;
-        margin-top: -0.5rem;
-        padding-top: 0rem;
-        padding-left: 0;
+        padding: 0;
         overflow: hidden;
-        /* background-color: aquamarine; */
         transition: 0.2s;
         z-index: 1;
     }
-    .panel.open{
-        padding-top: 0.5rem;
-    }
     .panel li{
-        /* margin: 2rem; */
         padding: 1.5rem;
     }
     .panel li:hover{
-        /* background-color: rgb(157, 248, 218); */
         background-color: rgb(252, 252, 252);
     }
     .formation-option {
-        background-color:rgb(173, 173, 173);;
-        width: 100%;
-        height: 3rem;
-        text-align: start;
-        margin: auto;
+        background-color:rgb(48, 209, 43);
+        color: white;
+        padding: 0.5rem;
 
         border-radius: 12px;
-        position: relative;
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
         z-index: 3;
     }
-    .formation-option button{
-        cursor: pointer;
-        /* no style button */
-        width: 100%;
-        height: 100%;
-        padding-left: 1rem;
-        text-align: start;
-        background-color: transparent;
-        border-width: 0;
-        font-family: inherit;
-        font-size: inherit;
-        font-style: inherit;
-        font-weight: inherit;
-        line-height: inherit;
-    }
-    .option{
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: 1rem
+    
+    @media (max-width: 900px){
+        .container{
+            padding: 0;
+            padding-bottom: 0.5rem;
+            border-radius: 20px;
+        }
+        .panel li{
+            border-bottom: 1px solid black;
+        }
+        .formation-option{
+            top: 1rem;
+            background-color: transparent;
+            border: 1px solid black;
+            padding: 0rem 0.7rem;
+            border-radius: 50%;
+        }
+        .option{
+            font-size: 18pt;
+            color: green;   
+        }
     }
 </style>
