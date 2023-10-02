@@ -33,7 +33,7 @@
     <a href="/">Início</a>
     <a href="/lessons">Cursos</a>
     <a href="/quiz">Formações</a>
-    <a href="/in_construction">Simulador</a>
+    <a href="/simulator">Simulador</a>
   </div>
   
   <div class="right">
@@ -49,22 +49,11 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-
     padding: 1%;
     padding-top: 2rem;
     padding-bottom: 0rem;
     z-index: 10;
     width: 98%;
-
-    /* beggining of fixed bar */
-    
-    /* position: fixed;
-    top: 0;
-    left: 0;
-     */
-    
-    /* end of fixed bar */
-    
     background-color: white;
     border-bottom: 1px solid black;
 }
