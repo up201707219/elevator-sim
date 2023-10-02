@@ -1,104 +1,104 @@
 <script>
-    import quiz1 from "$lib/assets/img/quiz1.jpg"
-    import quiz2 from "$lib/assets/img/quiz2.jpg"
-    import quiz3 from "$lib/assets/img/quiz3.jpg"
+    export let data;
+    
+    let screenWidth;
+    // $: console.log(screenWidth);
 
-    const quizes = [
-        {
-            type: "Prova Teste",
-            totalQuestions: 10,
-            image: quiz1
-        },
-        {
-            type: "Prova Real",
-            totalQuestions: 5,
-            image: quiz2
-        },
-        {
-            type: "Pergunta Aleatória",
-            totalQuestions: 1,
-            image: quiz3
-        }
-    ];
-
-    // export let data;
+    function stringifyDate(date){
+        return date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear();
+    }
 </script>
 
+<svelte:window bind:innerWidth={screenWidth}/>
+
+<h1>Formações</h1>
 <div class="container">
-    {#each quizes as quiz}
-        <div class="option-container">
-            <p>{quiz.type}</p>
-            <a href="/in_construction" target="_blank" class="quiz-options">
-                <img class="quiz-image" src={quiz.image} alt="">
-            </a>
-        </div>      
-    {/each}
+    <h2>- Formações prévias</h2>
+    <ul class="panel">    
+        {#each data.formations as formation}
+        <a href="/in_construction">
+            <li>Formação de {formation.name} (realizada no dia {stringifyDate(formation.date)})</li>           
+        </a>
+        {/each}
+    </ul>
+    {#if data.formations.length <= 0}
+    <h1>Não existem formações realizadas</h1>
+    {/if}   
+    {#if screenWidth !== undefined}
+        <a href="/in_construction" class="formation-option">
+            <div class="option">{ (screenWidth > 900)? "+ Nova formação" : "+"}</div>
+        </a>
+    {/if}
 </div>
 
 <style>
-    .container{
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-auto-rows: 1fr;
-        padding: 2rem;
-        /* margin-top: 8rem; */
-    }
-
-    .option-container{
-        margin: 1rem;
-        z-index: 2;
-        width: 90%;
+    h1{
+        margin-top: 3rem;
         text-align: center;
-        font-size: 18pt;
-        overflow: hidden;
-        cursor: pointer;
-        pointer-events: none;
-        transition: 0.5s;
+        margin-bottom: 1rem;
     }
-    .option-container:hover{
-        transform: scale(1.08);
+    h2{
+        padding-left: 1rem;
+    }
+    a{
+        text-decoration: none;
+        color: black;
+    }
+    ul{
+        list-style: none;
+    }
+    .container{
+        width: 80%;
+        margin: auto;
+        margin-top: 1rem;
+        position: relative;
+        background-color: aliceblue;
+        padding: 1rem;
     }
 
-    .quiz-options{
-        display: flex;
-        flex-direction: column;
-        margin: auto;
-        padding: 0rem;
-        width: 100%;
-        height: 18rem;
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 3px 3px 5px 3px rgba(87, 87, 87, 0.123);
-        align-items: center;
-        justify-content: center;
+    .panel{
+        padding: 0;
         overflow: hidden;
-        z-index: 2;
-        pointer-events: auto;
-        transition: 0.5s;
-    }
-    .quiz-image{
-        min-width: 100%;
-        width: auto;
-        height: 100%;
+        transition: 0.2s;
         z-index: 1;
     }
-
-    @media (max-width: 1100px){
-        .container{
-            display: block;
-            /* grid-template-columns: repeat(1, 1fr);
-            grid-auto-rows: 1fr; */
-        }
-        .option-container{
-            width: min(400px, 90%);
-            height: auto;
-            margin-bottom: 2rem;
-        }
+    .panel li{
+        padding: 1.5rem;
     }
+    .panel li:hover{
+        background-color: rgb(252, 252, 252);
+    }
+    .formation-option {
+        background-color:rgb(48, 209, 43);
+        color: white;
+        padding: 0.5rem;
 
-    @media (max-width: 420px){
-        .quiz-options{
-            height: 16rem;
+        border-radius: 12px;
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        z-index: 3;
+    }
+    
+    @media (max-width: 900px){
+        .container{
+            padding: 0;
+            padding-bottom: 0.5rem;
+            border-radius: 20px;
+        }
+        .panel li{
+            border-bottom: 1px solid black;
+        }
+        .formation-option{
+            top: 1rem;
+            background-color: transparent;
+            border: 1px solid black;
+            padding: 0rem 0.7rem;
+            border-radius: 50%;
+        }
+        .option{
+            font-size: 18pt;
+            color: green;   
         }
     }
 </style>

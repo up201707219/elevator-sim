@@ -75,19 +75,22 @@
         margin: 1rem auto 3rem auto;
         width: 80%;
         text-align: start;
-        overflow: hidden;
     }
     .details-context{
         margin-right: 2rem;
     }
     .details-image{
         position: relative;
+        min-height: 20rem;
+        overflow: hidden;
     }
     .course-image{
         max-width: 100%;
         max-height: 20rem;
         position: absolute;
         right: 0;
+        top:50%;
+        transform: translateY(-50%);
     }
     h2{
         text-align: center;
@@ -128,6 +131,11 @@
             font-size: 11pt;
             position: relative;
             z-index: 1;
+
+            /* no style button */
+
+            font-family: inherit;
+            font-size: inherit;
         }
         .mobile-button.active{
             background-color: aquamarine;
