@@ -15,7 +15,7 @@
 <div class="mobile">
   <img class="mobile-logo" src={logo} alt="logo">
   {#if hasSidebar}
-    <span class="position: sticky;" on:click>sidebar</span>
+    <span on:click>sidebar</span>
   {/if}
     <img src={menuIcon} alt="nav" class="navbar-icon" on:click={toggleNav}>
 </div>
@@ -33,7 +33,7 @@
     <a href="/">Início</a>
     <a href="/lessons">Cursos</a>
     <a href="/quiz">Formações</a>
-    <a href="/simulator">Simulador</a>
+    <a href="/in_construction">Simulador</a>
   </div>
   
   <div class="right">
