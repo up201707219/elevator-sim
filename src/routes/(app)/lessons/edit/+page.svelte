@@ -1,28 +1,36 @@
 <script>
-    
+    import { goto } from "$app/navigation"
     import { lessonModules } from "./data.js"
+    import deleteIcon from "$lib/assets/svg/trash.svg"
+    import editIcon from "$lib/assets/svg/pencil.svg"
 
     let inputTest;
+
+    function doSomething(){
+        goto("/lessons");
+    }
 
 </script>
 
 <div class="container">
     <h1> Cursos </h1>
-    <a class="admin-edit" href="/lessons/edit">Editar</a>
+    <button class="admin-edit" on:click={doSomething}>Concluir</button>
     <div class="container-grid">
         {#each lessonModules as module}
-        <a href="/lessons/{module.id}" class="lessons">
+        <div href="/lessons/{module.id}" class="lessons">
+            <div class="lessons-edit">
+                <button class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
+                <button class="edit"><img src={editIcon} alt="editIcon" class="edit-icon"></button>
+            </div>
             <img src={module.image} alt="Not found" class="lesson-image">
-            <span style="margin-bottom: 2rem;">
-                {module.name}
-            </span>
+            <input style="margin-bottom: 2rem;" type="text" value={module.name}>
             <div class="completion">
                 <span>
                     {module.lessonsDone}/{module.lessonsTotal}
                 </span>
                 <progress value={module.lessonsDone} max={module.lessonsTotal} class="completion-bar"></progress>
             </div>
-        </a>
+        </div>
         {/each}
     </div>
 </div>
@@ -44,6 +52,7 @@
         padding: 1rem;
     }
     .lessons{
+        position: relative;
         margin: auto;
         margin-bottom: 2rem;
         margin-top: 2rem;
@@ -63,13 +72,25 @@
         z-index: 2;
         transition: 0.5s;
     }
-    .lessons:hover{
-        transform: scale(1.08);
-        box-shadow: 10px 8px 7px 5px rgba(87, 87, 87, 0.144);
+    .lessons-edit{
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        top: 0;
+        right: 0;
     }
-    a{
-        text-decoration: none;
-        color: black;
+    .delete{
+        opacity: 70%;
+        cursor: pointer;
+        margin: 0;
+    }
+    .edit{
+        opacity: 70%;
+        cursor: pointer;
+        margin: 0;
+    }
+    .delete-icon:hover{
+        filter: invert(20%) sepia(67%) saturate(6629%) hue-rotate(357deg) brightness(96%) contrast(129%);
     }
     .lesson-image{
         min-width: 100%;
@@ -115,7 +136,14 @@
         background-color: rgb(48, 209, 43);
         color: white;
         border-radius: 10px;
+        border-width: 0;
+        font-family: inherit;
+        font-size: inherit;
+        font-style: inherit;
+        font-weight: inherit;
+        line-height: inherit;
         padding: 5px 10px;
+        cursor: pointer;
     }
 
     @media (max-width: 1100px) {
