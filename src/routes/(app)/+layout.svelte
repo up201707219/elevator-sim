@@ -22,7 +22,10 @@
 
     <slot/>
     <br style="margin-bottom: 3rem;">
-    <div class="footer"><h1>Placeholder</h1></div>
+    <div class="footer">
+        <h1>Placeholder</h1>
+        <span class="author">@author: Gonçalo Resende</span>
+    </div>
 </body>
 
 <style>
@@ -51,5 +54,11 @@
         justify-content: center;
         align-items: center;
         color: white;
+    }
+    .author{
+        position: absolute;
+        font-size: 10pt;
+        bottom: 10px;
+        right: 10px;
     }
 </style>

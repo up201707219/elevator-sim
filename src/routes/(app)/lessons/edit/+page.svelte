@@ -4,9 +4,12 @@
     import deleteIcon from "$lib/assets/svg/trash.svg"
     import editIcon from "$lib/assets/svg/pencil.svg"
 
-    let inputTest;
+    let inputTest = [];
+    lessonModules.forEach((elem,i) => inputTest[i] = elem.name);
+    
 
     function doSomething(){
+        console.log(inputTest);
         goto("/lessons");
     }
 
@@ -16,14 +19,14 @@
     <h1> Cursos </h1>
     <button class="admin-edit" on:click={doSomething}>Concluir</button>
     <div class="container-grid">
-        {#each lessonModules as module}
+        {#each lessonModules as module, i}
         <div href="/lessons/{module.id}" class="lessons">
             <div class="lessons-edit">
                 <button class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
                 <button class="edit"><img src={editIcon} alt="editIcon" class="edit-icon"></button>
             </div>
             <img src={module.image} alt="Not found" class="lesson-image">
-            <input style="margin-bottom: 2rem;" type="text" value={module.name}>
+            <input style="margin-bottom: 2rem;" type="text" bind:value={inputTest[i]}>
             <div class="completion">
                 <span>
                     {module.lessonsDone}/{module.lessonsTotal}
@@ -32,6 +35,9 @@
             </div>
         </div>
         {/each}
+        <a href="/in_construction" class="lessons add">
+            Adicionar
+        </a>
     </div>
 </div>
 
@@ -68,9 +74,20 @@
         flex-direction: column;
         align-items: center;
         justify-content: stretch;
-        cursor: pointer;
         z-index: 2;
+    }
+    .lessons.add{
+        opacity: 80%;
+        background-color: gray;
+        justify-content: center;
+        color: black;
+        text-decoration: none;
+        font-size: 40pt;
         transition: 0.5s;
+    }
+    .lessons.add:hover{
+        transform: scale(1.08);
+        box-shadow: 10px 8px 7px 5px rgba(87, 87, 87, 0.144);
     }
     .lessons-edit{
         position: absolute;
