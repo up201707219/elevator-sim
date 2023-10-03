@@ -26,7 +26,9 @@
                 <button class="edit"><img src={editIcon} alt="editIcon" class="edit-icon"></button>
             </div>
             <img src={module.image} alt="Not found" class="lesson-image">
-            <input style="margin-bottom: 2rem;" type="text" bind:value={inputTest[i]}>
+            <span style="margin-bottom: 2rem; border:1px solid black; padding:2px" bind:innerText={inputTest[i]} contenteditable>
+                {module.name}
+            </span>
             <div class="completion">
                 <span>
                     {module.lessonsDone}/{module.lessonsTotal}
