@@ -37,7 +37,7 @@
             </div>
         </div>
         {/each}
-        <a href="/in_construction" class="lessons add">
+        <a href= "/lessons/0" class="lessons add">
             Adicionar
         </a>
     </div>
