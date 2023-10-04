@@ -2,6 +2,7 @@
     
     import { lessonModules } from "./data.js"
 
+    export let data;
     let inputTest;
 
 </script>
@@ -10,7 +11,7 @@
     <h1> Cursos </h1>
     <a class="admin-edit" href="/lessons/edit">Editar</a>
     <div class="container-grid">
-        {#each lessonModules as module}
+        {#each data.lessonModules as module}
         <a href="/lessons/{module.id}" class="lessons">
             <img src={module.image} alt="Not found" class="lesson-image">
             <span style="margin-bottom: 2rem;">

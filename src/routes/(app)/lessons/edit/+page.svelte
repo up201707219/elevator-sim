@@ -13,6 +13,8 @@
         goto("/lessons");
     }
 
+    let editable = true;
+
 </script>
 
 <div class="container">
