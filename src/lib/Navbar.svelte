@@ -15,7 +15,7 @@
 <div class="mobile">
   <img class="mobile-logo" src={logo} alt="logo">
   {#if hasSidebar}
-    <span class="position: sticky;" on:click>sidebar</span>
+    <span on:click>sidebar</span>
   {/if}
     <img src={menuIcon} alt="nav" class="navbar-icon" on:click={toggleNav}>
 </div>
@@ -49,22 +49,11 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-
     padding: 1%;
     padding-top: 2rem;
     padding-bottom: 0rem;
     z-index: 10;
     width: 98%;
-
-    /* beggining of fixed bar */
-    
-    /* position: fixed;
-    top: 0;
-    left: 0;
-     */
-    
-    /* end of fixed bar */
-    
     background-color: white;
     border-bottom: 1px solid black;
 }
