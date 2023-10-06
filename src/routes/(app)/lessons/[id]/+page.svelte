@@ -1,5 +1,6 @@
 <script>
     export let data;
+    console.log(data.name);
     function stringify(min, max){
         let timeType = "min";
         if(min > 120){
