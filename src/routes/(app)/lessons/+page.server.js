@@ -8,7 +8,8 @@ async function getCourses(){
         'LEFT JOIN frm.Modules ' +
         'ON frm.Modules.courseID = frm.Courses.ID ' +
         'GROUP BY Courses.ID) AS LessonCount ' +
-        'WHERE lessonCount.ID = frm.Courses.ID ';
+        'WHERE lessonCount.ID = frm.Courses.ID '+
+        'ORDER BY ID';
         
         const res = await pool.query(query);
         let courses = [];
@@ -22,7 +23,7 @@ async function getCourses(){
                 lessonsTotal: element.total
             });
         });
-        console.log(courses);
+        //console.log(courses);
         return courses;
     }catch (error){
         console.error(error);
@@ -30,11 +31,12 @@ async function getCourses(){
 }
 
 
-export function load({}){
-    // let module = lessonModules.find((element) => element.id === parseInt(params.id));
-    let modules = getCourses();
+export async function load({}){
+    
+    let modules = await getCourses();
+
     return {
-        lessonModules: lessonModules.map((module)=>({
+        lessonModules: modules.map((module)=>({
             id: module.id,
             name: module.name,
             image: module.image,

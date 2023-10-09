@@ -13,7 +13,7 @@
         goto("/lessons");
     }
 
-    let editable = true;
+    let editable = false;
 
 </script>
 
@@ -22,15 +22,21 @@
     <button class="admin-edit" on:click={doSomething}>Concluir</button>
     <div class="container-grid">
         {#each lessonModules as module, i}
-        <div href="/lessons/{module.id}" class="lessons">
+        <div class="lessons">
             <div class="lessons-edit">
                 <button class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
                 <button class="edit"><img src={editIcon} alt="editIcon" class="edit-icon"></button>
             </div>
             <img src={module.image} alt="Not found" class="lesson-image">
-            <span style="margin-bottom: 2rem; border:1px solid black; padding:2px" bind:innerText={inputTest[i]} contenteditable>
-                {module.name}
-            </span>
+            {#if editable}
+                <span style="margin-bottom: 2rem; border:1px solid black; padding:2px" bind:innerText={inputTest[i]} contenteditable>
+                    {module.name}
+                </span>
+            {:else}
+                <span style="margin-bottom: 2rem; padding:2px">
+                    {module.name}
+                </span>
+            {/if}
             <div class="completion">
                 <span>
                     {module.lessonsDone}/{module.lessonsTotal}

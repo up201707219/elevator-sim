@@ -1,22 +1,66 @@
 <script>
     
     import { lessonModules } from "./data.js"
+    //import { pool } from "$lib/db";
+    import deleteIcon from "$lib/assets/svg/trash.svg"
+    import editIcon from "$lib/assets/svg/pencil.svg"
+
+    function handleAdminButton(){
+        if(editable){
+            endEdit();
+        }
+        else{
+            startEdit();
+        }
+    }
+
+    function endEdit(){
+        // try{
+        //     const query = 'UPDATE frm.Courses '+
+        //     "SET Title = " + inputTest[0] + " " +
+        //     "WHERE ID = 1";
+            
+        //     const res = await pool.query(query);
+            
+        // }catch (error){
+        //     console.error(error);
+        // }
+        editable = false;
+    }
+
+    function startEdit(){
+        editable = true;
+    }
 
     export let data;
-    let inputTest;
+    let inputTest = [];
+
+
+    let editable = true;
 
 </script>
 
 <div class="container">
     <h1> Cursos </h1>
-    <a class="admin-edit" href="/lessons/edit">Editar</a>
+    <button class="admin-edit" on:click={handleAdminButton}>{editable ? "Concluir" : "Editar"}</button>
     <div class="container-grid">
-        {#each data.lessonModules as module}
-        <a href="/lessons/{module.id}" class="lessons">
+        {#each data.lessonModules as module, i}
+        <a href="/lessons/{editable ? "":module.id}" class="lessons {editable ? "edit" : ""}">
+            
             <img src={module.image} alt="Not found" class="lesson-image">
-            <span style="margin-bottom: 2rem;">
+            {#if editable}
+            <div class="lessons-edit">
+                <button class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
+                <button class="edit-button"><img src={editIcon} alt="editIcon" class="edit-icon"></button>
+            </div>
+            <span style="margin-bottom: 2rem; border:1px solid black; padding:2px" bind:innerText={inputTest[i]} contenteditable>
                 {module.name}
             </span>
+            {:else}
+                <span style="margin-bottom: 2rem; padding:2px">
+                    {module.name}
+                </span>
+            {/if}
             <div class="completion">
                 <span>
                     {module.lessonsDone}/{module.lessonsTotal}
@@ -25,6 +69,11 @@
             </div>
         </a>
         {/each}
+        {#if editable}
+            <a href= "/lessons/0" class="lessons add">
+                Adicionar
+            </a>
+        {/if}
     </div>
 </div>
 
@@ -45,6 +94,7 @@
         padding: 1rem;
     }
     .lessons{
+        position: relative;
         margin: auto;
         margin-bottom: 2rem;
         margin-top: 2rem;
@@ -64,9 +114,41 @@
         z-index: 2;
         transition: 0.5s;
     }
+    .lessons.edit{
+        cursor: default;
+        transition: none;
+    }
     .lessons:hover{
         transform: scale(1.08);
         box-shadow: 10px 8px 7px 5px rgba(87, 87, 87, 0.144);
+    }
+    .lessons.edit:hover{
+        transform: none;
+        box-shadow: 5px 3px 5px 3px rgba(87, 87, 87, 0.219);
+    }
+    .lessons.add{
+        opacity: 80%;
+        background-color: gray;
+        justify-content: center;
+        font-size: 40pt;
+    }
+    .lessons-edit{
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        top: 0;
+        right: 0;
+    }
+    .delete{
+        opacity: 70%;
+        cursor: pointer;
+    }
+    .delete-icon:hover{
+        filter: invert(20%) sepia(67%) saturate(6629%) hue-rotate(357deg) brightness(96%) contrast(129%);
+    }
+    .edit-button{
+        opacity: 70%;
+        cursor: pointer;
     }
     a{
         text-decoration: none;
@@ -116,7 +198,14 @@
         background-color: rgb(48, 209, 43);
         color: white;
         border-radius: 10px;
+        border-width: 0;
+        font-family: inherit;
+        font-size: inherit;
+        font-style: inherit;
+        font-weight: inherit;
+        line-height: inherit;
         padding: 5px 10px;
+        cursor: pointer;
     }
 
     @media (max-width: 1100px) {

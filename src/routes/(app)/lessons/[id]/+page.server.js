@@ -10,13 +10,15 @@ let addNew = {
     lessons: [],
     image: null
 };
+
 async function getCourseByID(id){
     try{
         const query = 'SELECT * FROM' + 
-            '(SELECT frm.Courses.*, frm.Modules.Title AS module FROM frm.Courses '+
+            '(SELECT frm.Courses.*, frm.Modules.Title AS module, frm.Modules.ID AS module_id FROM frm.Courses '+
             'LEFT JOIN frm.Modules '+
             'ON frm.Courses.ID = frm.Modules.CourseID) AS course '+
-            'WHERE course.ID = ' + id;
+            'WHERE course.ID = ' + id + ' '+
+            'ORDER BY course.module_id;';
         const res = await pool.query(query);
         let course = {
             id: res.rows[0].id,
@@ -39,11 +41,11 @@ async function getCourseByID(id){
     }
 }
 
-export function load({params}){
+export async function load({params}){
     if(parseInt(params.id) === 0){
         return addNew;
     }
-    let module = lessonModules.find((element) => element.id === parseInt(params.id));
-    // let module = getCourseByID(params.id);
+    //let module = lessonModules.find((element) => element.id === parseInt(params.id));
+    let module = await getCourseByID(params.id);
     return module;
 }
