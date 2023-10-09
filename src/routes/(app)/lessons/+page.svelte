@@ -36,7 +36,7 @@
     let inputTest = [];
 
 
-    let editable = true;
+    let editable = false;
 
 </script>
 
@@ -45,10 +45,10 @@
     <button class="admin-edit" on:click={handleAdminButton}>{editable ? "Concluir" : "Editar"}</button>
     <div class="container-grid">
         {#each data.lessonModules as module, i}
-        <a href="/lessons/{editable ? "":module.id}" class="lessons {editable ? "edit" : ""}">
+        {#if editable}
+        <div class="lessons edit">
             
             <img src={module.image} alt="Not found" class="lesson-image">
-            {#if editable}
             <div class="lessons-edit">
                 <button class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
                 <button class="edit-button"><img src={editIcon} alt="editIcon" class="edit-icon"></button>
@@ -56,11 +56,24 @@
             <span style="margin-bottom: 2rem; border:1px solid black; padding:2px" bind:innerText={inputTest[i]} contenteditable>
                 {module.name}
             </span>
-            {:else}
-                <span style="margin-bottom: 2rem; padding:2px">
-                    {module.name}
+            <div class="completion">
+                <span>
+                    {module.lessonsDone}/{module.lessonsTotal}
                 </span>
-            {/if}
+                <progress value={module.lessonsDone} max={module.lessonsTotal} class="completion-bar"></progress>
+            </div>
+        </div>
+        {:else}
+        <a href="/lessons/{module.id}" class="lessons">
+            
+            <img src={module.image} alt="Not found" class="lesson-image">
+            <div class="lessons-edit">
+                <button class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
+                <button class="edit-button"><img src={editIcon} alt="editIcon" class="edit-icon"></button>
+            </div>
+            <span style="margin-bottom: 2rem; padding:2px">
+                {module.name}
+            </span>
             <div class="completion">
                 <span>
                     {module.lessonsDone}/{module.lessonsTotal}
@@ -68,6 +81,8 @@
                 <progress value={module.lessonsDone} max={module.lessonsTotal} class="completion-bar"></progress>
             </div>
         </a>
+        {/if}
+
         {/each}
         {#if editable}
             <a href= "/lessons/0" class="lessons add">
@@ -143,9 +158,7 @@
         opacity: 70%;
         cursor: pointer;
     }
-    .delete-icon:hover{
-        filter: invert(20%) sepia(67%) saturate(6629%) hue-rotate(357deg) brightness(96%) contrast(129%);
-    }
+    
     .edit-button{
         opacity: 70%;
         cursor: pointer;

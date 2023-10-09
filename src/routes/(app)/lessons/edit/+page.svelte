@@ -13,7 +13,7 @@
         goto("/lessons");
     }
 
-    let editable = false;
+    let editable = true;
 
 </script>
 
