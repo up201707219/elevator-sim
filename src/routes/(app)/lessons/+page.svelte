@@ -67,10 +67,7 @@
         <a href="/lessons/{module.id}" class="lessons">
             
             <img src={module.image} alt="Not found" class="lesson-image">
-            <div class="lessons-edit">
-                <button class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
-                <button class="edit-button"><img src={editIcon} alt="editIcon" class="edit-icon"></button>
-            </div>
+
             <span style="margin-bottom: 2rem; padding:2px">
                 {module.name}
             </span>
