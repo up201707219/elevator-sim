@@ -1,13 +1,14 @@
 <script>
     
     import { lessonModules } from "./data.js"
+    export let data;
 
 </script>
 
 <div class="container">
     <h1> Cursos </h1>
     <div class="container-grid">
-        {#each lessonModules as module}
+        {#each data.lessonModules as module}
         <a href="/lessons/{module.id}" class="lessons">
             <img src={module.image} alt="Not found" class="lesson-image">
             <span style="margin-bottom: 2rem;">
