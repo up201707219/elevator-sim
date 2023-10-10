@@ -5,35 +5,25 @@
     import deleteIcon from "$lib/assets/svg/trash.svg"
     import editIcon from "$lib/assets/svg/pencil.svg"
 
-    function handleAdminButton(){
-        if(editable){
-            endEdit();
+    
+    function toggleEdit(){
+        editable = !editable;
+        if(!editable){
+            for(let i = 0; i<message.length; i++){
+                message[i] = "";
+            }
         }
-        else{
-            startEdit();
-        }
     }
-
-    function endEdit(){
-        // try{
-        //     const query = 'UPDATE frm.Courses '+
-        //     "SET Title = " + inputTest[0] + " " +
-        //     "WHERE ID = 1";
-            
-        //     const res = await pool.query(query);
-            
-        // }catch (error){
-        //     console.error(error);
-        // }
-        editable = false;
-    }
-
-    function startEdit(){
-        editable = true;
-    }
-
+    
     export let data;
+    let message = [];
     let inputTest = [];
+
+    for(let i = 0; i<data.lessonModules.length; i++){
+        message[i] = "";
+        inputTest[i] = data.lessonModules[i].name;
+    }
+
 
 
     let editable = false;
@@ -42,7 +32,7 @@
 
 <div class="container">
     <h1> Cursos </h1>
-    <button class="admin-edit" on:click={handleAdminButton}>{editable ? "Concluir" : "Editar"}</button>
+    <button class="admin-edit" on:click={toggleEdit}>{editable ? "Concluir" : "Editar"}</button>
     <div class="container-grid">
         {#each data.lessonModules as module, i}
         {#if editable}
@@ -53,9 +43,12 @@
                 <button class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
                 <button class="edit-button"><img src={editIcon} alt="editIcon" class="edit-icon"></button>
             </div>
-            <span style="margin-bottom: 2rem; border:1px solid black; padding:2px" bind:innerText={inputTest[i]} contenteditable>
-                {module.name}
-            </span>
+            <form method="POST" action="?/changeTitle">
+                <input type="hidden" name="id" value={module.id}>
+                <input type="text" name="lesson-name" value={module.name} autocomplete="off">
+                <button type="submit" class="confirm-title-button">✔️</button>
+            </form>               
+            {message[i]}
             <div class="completion">
                 <span>
                     {module.lessonsDone}/{module.lessonsTotal}
@@ -155,7 +148,9 @@
         opacity: 70%;
         cursor: pointer;
     }
-    
+    .delete-icon:hover{
+        filter: invert(20%) sepia(67%) saturate(6629%) hue-rotate(357deg) brightness(96%) contrast(129%);
+    }
     .edit-button{
         opacity: 70%;
         cursor: pointer;
@@ -216,6 +211,12 @@
         line-height: inherit;
         padding: 5px 10px;
         cursor: pointer;
+    }
+    .confirm-title-button{
+        background-color: rgb(48, 209, 43);
+        color: white;
+        border-radius: 8px;
+        padding: 0.3rem;
     }
 
     @media (max-width: 1100px) {

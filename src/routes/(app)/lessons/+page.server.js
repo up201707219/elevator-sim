@@ -1,5 +1,6 @@
 import { lessonModules } from "./data";
 import { pool } from "$lib/db";
+import { request } from "http";
 
 async function getCourses(){
     try{
@@ -44,4 +45,25 @@ export async function load({}){
             lessonsTotal: module.lessonsTotal
         }))
     };
+}
+
+export const actions = {
+    changeTitle: async ({request}) => {
+        const data = await request.formData();
+        const val = {
+            id: data.get('id'),
+            name: data.get('lesson-name')
+        };
+        try{
+            const query = "UPDATE frm.Courses " +
+            "SET Title = '" + val.name + "' " +
+            "WHERE ID = " + val.id + ";";
+            
+            await pool.query(query);
+        }
+        catch(err){
+            console.error(err);
+            
+        }
+    }
 }
