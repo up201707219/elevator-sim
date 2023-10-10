@@ -10,6 +10,7 @@ let addNew = {
     description: "Uma descrição sobre o curso",
     dur_min: 1,
     dur_max: 1,
+    timeType: "min",
     lessons: [],
     image: null,
     newCourse: true
@@ -30,6 +31,7 @@ async function getCourseByID(id){
             description: res.rows[0].descript,
             dur_min: res.rows[0].durmin,
             dur_max: res.rows[0].durmax,
+            timeType: res.rows[0].timetype,
             lessons: [],
             //image: res.rows[0].imageid,
             image: lessonModules[0].image,

@@ -1,22 +1,17 @@
 <script>
     export let data;
-    let duration = stringify(data.dur_min, data.dur_max);
+    let duration = stringify(data.dur_min, data.dur_max)+data.timeType;
     let mobileDisplay = "lessons";
     let editMode = false;
 
     // Duration into string
-    function stringify(min, max){
-        let timeType = "min";
-        if(min > 120){
-            [min, max] = [(min/60), (max/60)];
-            timeType = "h";
-        }
+    function stringify(min, max){;
         let str;
         if(min === max){
-            str = min+timeType;
+            str = min;
         }
         else{
-            str = min + "-" + max+timeType;
+            str = min + "-" + max;
         }
         return str;
     }
