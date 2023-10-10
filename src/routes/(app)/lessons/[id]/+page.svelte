@@ -1,6 +1,10 @@
 <script>
     export let data;
-    console.log(data.name);
+    let duration = stringify(data.dur_min, data.dur_max);
+    let mobileDisplay = "lessons";
+    let editMode = false;
+
+    // Duration into string
     function stringify(min, max){
         let timeType = "min";
         if(min > 120){
@@ -16,8 +20,6 @@
         }
         return str;
     }
-    let duration = stringify(data.dur_min, data.dur_max);
-    let mobileDisplay = "lessons";
 
     function updateMobileDisplay(display){
         mobileDisplay = display;
@@ -25,21 +27,27 @@
 </script>
 
 <main>
+    {#if !editMode && !data.newCourse}
+    <!-- mobile subsections -->
     <div class="mobile-nav">
         <button class="mobile-button {(mobileDisplay === "lessons")? "active":""}" on:click={() => updateMobileDisplay("lessons")}>Módulos</button>
         <button class="mobile-button {(mobileDisplay === "details")? "active":""}" on:click={() => updateMobileDisplay("details")}>Detalhes</button>
     </div>
+
     <div class="mobile-content">
         <h1>{data.name}</h1>
         <div class="course-details {(mobileDisplay === "details")? "open":""}">
+            
+            <!-- Mobile Image -->
             <div class="mobile-details-image">
                 <img src={data.image} alt="mc12" class="course-image">
             </div>
+            
             <div class="details-context">
-                <p><b>Descrição:</b> {@html data.description}</p>
-                <p><b>Duração:</b> {duration}</p>
-            </div>
-            <div class="details-image">
+                    <p><b>Descrição:</b> {@html data.description}</p>
+                    <p><b>Duração:</b> {duration}</p>
+                </div>
+                <div class="details-image">
                 <img src={data.image} alt="mc12" class="course-image">
             </div>
         </div>
@@ -56,6 +64,59 @@
             {/each}
         </div>
     </div>
+    
+    {:else}
+    
+    <!-- mobile subsections -->
+    <div class="mobile-nav">
+        <button class="mobile-button {(mobileDisplay === "lessons")? "active":""}" on:click={() => updateMobileDisplay("lessons")}>Módulos</button>
+        <button class="mobile-button {(mobileDisplay === "details")? "active":""}" on:click={() => updateMobileDisplay("details")}>Detalhes</button>
+    </div>
+
+    <div class="mobile-content">
+        <form action="">
+            <h1>{data.name}</h1>
+            <button type="submit" class="add-course"> submit </button>
+            <div class="course-details {(mobileDisplay === "details")? "open":""}">
+                
+                <!-- Mobile Image -->
+                <div class="mobile-details-image">
+                    <img src={data.image} alt="mc12" class="course-image">
+                </div>
+            
+                <div class="details-context">
+                    <label for="description">Descrição: </label>
+                    <input class="details-input" type="text" name="description" value = {data.description}> <br><br>
+                    <label for="duration-min">Duração: </label>
+                    <input class="details-input number" type="number" name="duration-min" value = {data.dur_min}>
+                    <label for="duration-max">-</label>
+                    <input class="details-input number" type="number" name="duration-max" value = {data.dur_min}>
+                    <select name="time-type">
+                        <option value="min">minutos</option>
+                        <option value="h">horas</option>
+                        <option value="d">dias</option>
+                        
+                    </select>        
+                </div>
+                <div class="details-image">
+                    <img src={data.image} alt="mc12" class="course-image">
+                </div>
+            </div>
+        </form>
+        <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
+            {#if data.lessons.length === 0}
+            <h2>Não existem módulos para este curso</h2>
+            {/if}
+            {#each data.lessons as lesson, i}
+            <a href="/in_construction">
+                <div class="lesson">
+                    <div class="lesson-content">Módulo {i+1}: {lesson}</div>
+                </div>
+            </a>
+            {/each}
+        </div>
+    </div>    
+    {/if}
 </main>
 
 <style>
@@ -64,6 +125,9 @@
     }
     .mobile-details-image{
         display: none;
+    }
+    .mobile-content{
+        position: relative;
     }
     h1{
         margin-left: auto;
@@ -80,6 +144,12 @@
     .details-context{
         margin-right: 2rem;
     }
+    .details-input{
+        font-size: inherit;
+    }
+    .details-input.number{
+        width: 50px;
+    }
     .details-image{
         position: relative;
         min-height: 20rem;
@@ -91,6 +161,7 @@
         position: absolute;
         right: 0;
         top:50%;
+        border: 1px solid black;
         transform: translateY(-50%);
     }
     h2{
@@ -113,6 +184,12 @@
     a{
         text-decoration: none;
         color: black;
+    }
+
+    .add-course{
+        position: absolute;
+        top: 1rem;
+        right: 3rem;
     }
 
     @media (max-width: 900px){
@@ -176,7 +253,7 @@
             margin: 0;
             max-width: 200px;
             max-height: 200px;
-            
+            text-align: center;
         }
         .details-image{
             display: none;

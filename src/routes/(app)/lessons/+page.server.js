@@ -1,6 +1,6 @@
 import { lessonModules } from "./data";
 import { pool } from "$lib/db";
-import { request } from "http";
+import { fail } from "@sveltejs/kit";
 
 async function getCourses(){
     try{
@@ -19,7 +19,7 @@ async function getCourses(){
             courses.push({
                 id: element.id,
                 name: element.title,
-                image: null,
+                image: lessonModules[0].image,
                 lessonsDone: 0,
                 lessonsTotal: element.total
             });
@@ -30,7 +30,6 @@ async function getCourses(){
         console.error(error);
     }
 }
-
 
 export async function load({}){
     
@@ -57,13 +56,28 @@ export const actions = {
         try{
             const query = "UPDATE frm.Courses " +
             "SET Title = '" + val.name + "' " +
-            "WHERE ID = " + val.id + ";";
+            "WHERE ID = '" + val.id + "';";
             
             await pool.query(query);
         }
         catch(err){
             console.error(err);
-            
+            return fail(422, {
+                error: err.message
+            });           
+        }
+    },
+    delete: async ({request}) => {
+        const data = await request.formData();
+        const lessonId = data.get('id');
+        try{
+            let query = "DELETE FROM frm.Courses " +
+            "WHERE ID = '" + lessonId + "';";
+            await pool.query(query);
+            console.log("deleted " + lessonId + " lesson");
+        }
+        catch(err){
+            console.error(err);
         }
     }
 }

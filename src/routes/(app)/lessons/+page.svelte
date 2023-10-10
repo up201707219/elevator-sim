@@ -4,7 +4,9 @@
     //import { pool } from "$lib/db";
     import deleteIcon from "$lib/assets/svg/trash.svg"
     import editIcon from "$lib/assets/svg/pencil.svg"
-
+    
+    export let data;
+    export let form;
     
     function toggleEdit(){
         editable = !editable;
@@ -15,7 +17,6 @@
         }
     }
     
-    export let data;
     let message = [];
     let inputTest = [];
 
@@ -40,14 +41,17 @@
             
             <img src={module.image} alt="Not found" class="lesson-image">
             <div class="lessons-edit">
-                <button class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
+                <form method="POST" action="?/delete">
+                    <input type="hidden" name="id" value={module.id}>
+                    <button type="submit" class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
+                </form>
                 <button class="edit-button"><img src={editIcon} alt="editIcon" class="edit-icon"></button>
             </div>
             <form method="POST" action="?/changeTitle">
                 <input type="hidden" name="id" value={module.id}>
                 <input type="text" name="lesson-name" value={module.name} autocomplete="off">
                 <button type="submit" class="confirm-title-button">✔️</button>
-            </form>               
+            </form>
             {message[i]}
             <div class="completion">
                 <span>
@@ -72,14 +76,17 @@
             </div>
         </a>
         {/if}
-
+        
         {/each}
         {#if editable}
-            <a href= "/lessons/0" class="lessons add">
-                Adicionar
-            </a>
+        <a href= "/lessons/0" class="lessons add">
+            Adicionar
+        </a>
         {/if}
     </div>
+    {#if form?.error}
+        <p>{form.error}</p>
+    {/if}
 </div>
 
 <style>
