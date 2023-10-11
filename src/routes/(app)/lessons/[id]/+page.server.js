@@ -78,7 +78,6 @@ function stringToHtml(str){
     let res = str.replace(/\r\n([ \t]*\r\n)+/, '<p>');
     res = res.replaceAll(/\r\n([ \t]*\r\n)+/g, '</p><p>').replaceAll('\r\n', '<br />');
     
-    console.log(str.indexOf(/\n([ \t]*\n)+/)>-1);
     if(str.indexOf('\r\n\r\n')>-1){
         res += '</p>';
     }
@@ -100,7 +99,7 @@ export const actions = {
             timeType: data.get('time-type')
         };
         val.description = stringToHtml(val.description);
-        console.log(val);
+        // console.log(val);
         try{
             let query = "UPDATE frm.Courses "+
             "SET Title = '" + val.name + "', " +
