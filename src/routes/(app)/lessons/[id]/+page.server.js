@@ -1,19 +1,19 @@
 import { lessonModules } from "./data";
 import { pool } from "$lib/db";
 import {v4 as uuidv4} from "uuid";
+import { error, redirect } from "@sveltejs/kit";
 
 //const reload;
 
 let addNew = {
     id: 0,
     name:"Título do curso",
-    description: "Uma descrição sobre o curso",
+    description: "<p>Uma descrição sobre o curso\r<br /> olá</p>",
     dur_min: 1,
     dur_max: 1,
     timeType: "min",
     lessons: [],
     image: null,
-    newCourse: true
 };
 
 async function getCourseByID(id){
@@ -35,7 +35,6 @@ async function getCourseByID(id){
             lessons: [],
             //image: res.rows[0].imageid,
             image: lessonModules[0].image,
-            newCourse: false
         }
         res.rows.forEach(element => {
             if(element.module !== null){
@@ -54,7 +53,7 @@ async function insertDefualtCourse(){
     try{
 
         const query = "INSERT INTO frm.Courses (ID, Title, Descript, DurMin, DurMax) "+
-        "VALUES ('" + addNew.id + "', 'Título do curso', 'Uma descrição sobre o curso', 1, 1);"
+        "VALUES ('" + addNew.id + "', '" +addNew.name + "', '" + addNew.description + "', " + addNew.dur_min +", " + addNew.dur_max +");"
         
         await pool.query(query);
     }
@@ -64,13 +63,57 @@ async function insertDefualtCourse(){
 }
 
 export async function load({params}){
-    addNew.id = uuidv4();
-    console.log(addNew.id);
     if(parseInt(params.id) === 0){
+        addNew.id = uuidv4();
+        console.log(addNew.id);
         await insertDefualtCourse();
-        return addNew;
+        throw redirect(302, "/lessons/"+addNew.id);
     }
     //let module = lessonModules.find((element) => element.id === parseInt(params.id));
     let module = await getCourseByID(params.id);
     return module;
+}
+
+function stringToHtml(str){
+    let res = str.replace(/\r\n([ \t]*\r\n)+/, '<p>');
+    res = res.replaceAll(/\r\n([ \t]*\r\n)+/g, '</p><p>').replaceAll('\r\n', '<br />');
+    
+    console.log(str.indexOf(/\n([ \t]*\n)+/)>-1);
+    if(str.indexOf('\r\n\r\n')>-1){
+        res += '</p>';
+    }
+    
+    return res;
+}
+
+//console.log(stringToHtml("fui \r\n às\r\n\r\n\r\n compras"));
+
+export const actions = {
+    updateCourse: async ({request}) => {
+        const data = await request.formData();
+        const val = {
+            id: data.get('id'),
+            name: data.get('title'),
+            description: data.get('description'),
+            dur_min: data.get('duration-min'),
+            dur_max: data.get('duration-max'),
+            timeType: data.get('time-type')
+        };
+        val.description = stringToHtml(val.description);
+        console.log(val);
+        try{
+            let query = "UPDATE frm.Courses "+
+            "SET Title = '" + val.name + "', " +
+            "Descript = '" + val.description + "', " +
+            "DurMin = " + val.dur_min + ", " +
+            "DurMax = " + val.dur_max + ", " +
+            "TimeType = '" +val.timeType + "' " +
+            "WHERE ID = '" + val.id + "';";
+
+            await pool.query(query);
+        }
+        catch(err){
+            console.error(err);
+        }
+    },
 }

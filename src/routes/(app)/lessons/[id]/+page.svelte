@@ -16,19 +16,31 @@
         return str;
     }
 
+    function htmlToString(html){
+        let res = html.replaceAll('<p>', '\r\n\r\n').replaceAll('<br />', '\r\n').replaceAll('</p>', '');
+        return res;
+    }
+
+    function toggleEdit(){
+        editMode = !editMode;
+    }
+
     function updateMobileDisplay(display){
         mobileDisplay = display;
     }
 </script>
 
 <main>
-    {#if !editMode && !data.newCourse}
+    <button class="edit-button" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
+    
     <!-- mobile subsections -->
     <div class="mobile-nav">
         <button class="mobile-button {(mobileDisplay === "lessons")? "active":""}" on:click={() => updateMobileDisplay("lessons")}>Módulos</button>
         <button class="mobile-button {(mobileDisplay === "details")? "active":""}" on:click={() => updateMobileDisplay("details")}>Detalhes</button>
     </div>
 
+    
+    {#if !editMode}
     <div class="mobile-content">
         <h1>{data.name}</h1>
         <div class="course-details {(mobileDisplay === "details")? "open":""}">
@@ -61,37 +73,33 @@
     </div>
     
     {:else}
-    
-    <!-- mobile subsections -->
-    <div class="mobile-nav">
-        <button class="mobile-button {(mobileDisplay === "lessons")? "active":""}" on:click={() => updateMobileDisplay("lessons")}>Módulos</button>
-        <button class="mobile-button {(mobileDisplay === "details")? "active":""}" on:click={() => updateMobileDisplay("details")}>Detalhes</button>
-    </div>
-
     <div class="mobile-content">
-        <form action="">
-            <h1>{data.name}</h1>
-            <button type="submit" class="add-course"> submit </button>
+        <form method="POST" action="?/updateCourse">
+            <label class="input-label title" for="title">Titulo:</label>
+            <input class="details-input title" type="text" name="title" value={data.name}>
             <div class="course-details {(mobileDisplay === "details")? "open":""}">
                 
                 <!-- Mobile Image -->
                 <div class="mobile-details-image">
                     <img src={data.image} alt="mc12" class="course-image">
                 </div>
-            
+                
                 <div class="details-context">
+                    <input type="hidden" name="id" value={data.id}>
+                    <!-- <input type="hidden" name="title" value={data.name}> -->
                     <label for="description">Descrição: </label>
-                    <input class="details-input" type="text" name="description" value = {data.description}> <br><br>
+                    <textarea class="details-input" type="text" name="description" value = {htmlToString(data.description)}></textarea> <br><br>
                     <label for="duration-min">Duração: </label>
                     <input class="details-input number" type="number" name="duration-min" value = {data.dur_min}>
                     <label for="duration-max">-</label>
-                    <input class="details-input number" type="number" name="duration-max" value = {data.dur_min}>
+                    <input class="details-input number" type="number" name="duration-max" value = {data.dur_max}>
                     <select name="time-type">
                         <option value="min">minutos</option>
                         <option value="h">horas</option>
                         <option value="d">dias</option>
                         
-                    </select>        
+                    </select> <br> <br>        
+                    <button type="submit" class="add-course"> Guardar </button>
                 </div>
                 <div class="details-image">
                     <img src={data.image} alt="mc12" class="course-image">
@@ -99,9 +107,6 @@
             </div>
         </form>
         <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
-            {#if data.lessons.length === 0}
-            <h2>Não existem módulos para este curso</h2>
-            {/if}
             {#each data.lessons as lesson, i}
             <a href="/in_construction">
                 <div class="lesson">
@@ -109,6 +114,9 @@
                 </div>
             </a>
             {/each}
+            <div class="lesson">
+                <div class="lesson-content">Adicionar Módulo</div>
+            </div>
         </div>
     </div>    
     {/if}
@@ -124,6 +132,22 @@
     .mobile-content{
         position: relative;
     }
+
+    .edit-button{
+        background-color: rgb(48, 209, 43);
+        color: white;
+        border-radius: 10px;
+        border-width: 0;
+        font-family: inherit;
+        font-size: inherit;
+        font-style: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+        padding: 5px 10px;
+        cursor: pointer;
+        margin:3rem 50% 0rem 50%;
+    }
+
     h1{
         margin-left: auto;
         margin-right: auto;
@@ -139,11 +163,28 @@
     .details-context{
         margin-right: 2rem;
     }
+    .input-label.title{
+        font-size: inherit;
+        font-family: inherit;
+        margin-left: 10%;
+        font-size: 20pt;
+    }
     .details-input{
         font-size: inherit;
+        font-family: inherit;
+        width: 100%;
+        height: 10rem;
+        resize: none;
+    }
+    .details-input.title{
+        width: auto;
+        height: auto;
+        font-size: 20pt;
+        margin-top: 2rem;
     }
     .details-input.number{
         width: 50px;
+        height: auto;
     }
     .details-image{
         position: relative;
@@ -182,9 +223,17 @@
     }
 
     .add-course{
-        position: absolute;
-        top: 1rem;
-        right: 3rem;
+        background-color: rgb(48, 209, 43);
+        color: white;
+        border-radius: 10px;
+        border-width: 0;
+        font-family: inherit;
+        font-size: inherit;
+        font-style: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+        padding: 5px 10px;
+        cursor: pointer;
     }
 
     @media (max-width: 900px){
