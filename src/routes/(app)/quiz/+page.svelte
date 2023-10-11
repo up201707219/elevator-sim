@@ -24,7 +24,7 @@
     {#if data.formations.length <= 0}
     <h1>Não existem formações realizadas</h1>
     {/if}   
-    <a href="/in_construction" class="formation-option">
+    <a href="/quiz/{6}+{0}" class="formation-option">
         <div class="option">{ (screenWidth > 900)? "+ Nova formação" : "+"}</div>
         <!-- <div class="formation-option">
         </div> -->

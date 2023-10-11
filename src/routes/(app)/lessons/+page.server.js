@@ -18,7 +18,8 @@ async function getCourses(){
             courses.push({
                 id: element.id,
                 name: element.title,
-                image: null,
+                //image: null,
+                image: lessonModules[0].image,
                 lessonsDone: 0,
                 lessonsTotal: element.total
             });

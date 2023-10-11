@@ -44,7 +44,7 @@
             {#each data.lessons as lesson, i}
             <a href="/in_construction">
                 <div class="lesson">
-                    <div class="lesson-content">Módulo {i+1}: {lesson}</div>
+                    <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
                 </div>
             </a>
             {/each}
