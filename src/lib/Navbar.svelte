@@ -15,16 +15,18 @@
 <div class="mobile">
   <img class="mobile-logo" src={logo} alt="logo">
   {#if hasSidebar}
-    <span class="position: sticky;" on:click>sidebar</span>
+    <button on:click>sidebar</button>
   {/if}
-    <img src={menuIcon} alt="nav" class="navbar-icon" on:click={toggleNav}>
+    <button on:click={toggleNav}>
+      <img src={menuIcon} alt="nav" class="navbar-icon">
+    </button>
 </div>
 
 
 <nav class="navbar {navbarFixed ? "fixed" : ""} {mobileNavOpen ? "open" : ""}">
   <div class="left">
     {#if hasSidebar}
-        <a id="nav-button" on:click><img src={menuIcon} alt="menu" class="sidebar-icon"></a>
+        <button id="nav-button" on:click><img src={menuIcon} alt="menu" class="sidebar-icon"></button>
     {/if}
     <img class="logo" src={logo} alt="logo">
   </div>
@@ -33,15 +35,25 @@
     <a href="/">Início</a>
     <a href="/lessons">Cursos</a>
     <a href="/quiz">Formações</a>
-    <a href="/simulator">Simulador</a>
+    <a href="/in_construction">Simulador</a>
   </div>
   
   <div class="right">
-      <a href=""><img src={searchIcon} alt="search" class="sidebar-icon" ></a>
+      <button><img src={searchIcon} alt="search" class="sidebar-icon" ></button>
   </div>
 </nav>
 
 <style>
+  button{
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+  }
+
   .mobile{
     display: none;
   }
@@ -70,7 +82,7 @@
 
 .navbar a{
     margin: 20px;
-    font-size: 16pt;
+    font-size: 18pt;
     color: rgb(149, 149, 149);
     text-decoration: none;
     transition: 0.5s;
@@ -81,7 +93,7 @@
 }
 
 #nav-button{
-    margin-top: 6px;
+    margin: 13px 10px 13px 30px;
     position: relative;
     transition: 1s;
     cursor: pointer;
