@@ -45,7 +45,7 @@
                     <input type="hidden" name="id" value={module.id}>
                     <button type="submit" class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
                 </form>
-                <button class="edit-button"><img src={editIcon} alt="editIcon" class="edit-icon"></button>
+                <!-- <button class="edit-button"><img src={editIcon} alt="editIcon" class="edit-icon"></button> -->
             </div>
             <form method="POST" action="?/changeTitle">
                 <input type="hidden" name="id" value={module.id}>

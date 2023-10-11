@@ -89,9 +89,9 @@
                     <!-- <input type="hidden" name="title" value={data.name}> -->
                     <label for="description">Descrição: </label>
                     <textarea class="details-input" type="text" name="description" value = {htmlToString(data.description)}></textarea> <br><br>
-                    <label for="duration-min">Duração: </label>
+                    <label for="duration-min">Duração: de</label>
                     <input class="details-input number" type="number" name="duration-min" value = {data.dur_min}>
-                    <label for="duration-max">-</label>
+                    <label for="duration-max">a</label>
                     <input class="details-input number" type="number" name="duration-max" value = {data.dur_max}>
                     <select name="time-type">
                         <option value="min">minutos</option>
