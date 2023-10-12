@@ -20,7 +20,6 @@ async function getModuleByID(id){
             };
             val.content.push(content);
         });
-        console.log(val);
         return val;
     }catch (error){
         console.error(error);

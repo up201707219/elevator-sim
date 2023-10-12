@@ -1,4 +1,5 @@
 <script>
+    import {page} from "$app/stores";
     export let data;
     function stringify(min, max){
         let str;
@@ -42,7 +43,7 @@
             <h2>Não existem módulos para este curso</h2>
             {/if}
             {#each data.lessons as lesson, i}
-            <a href="/in_construction">
+            <a href="/lessons/{$page.params.id}/{lesson.id}+0">
                 <div class="lesson">
                     <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
                 </div>
