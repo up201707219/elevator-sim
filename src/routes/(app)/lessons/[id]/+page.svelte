@@ -111,13 +111,15 @@
             {#each data.lessons as lesson, i}
             <a href="/in_construction">
                 <div class="lesson">
-                    <div class="lesson-content">Módulo {i+1}: {lesson}</div>
+                    <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
                 </div>
             </a>
             {/each}
-            <div class="lesson">
-                <div class="lesson-content">Adicionar Módulo</div>
-            </div>
+            <a href="/lessons/{data.id}/0+0">
+                <div class="lesson">
+                    <div class="lesson-content">Adicionar Módulo</div>
+                </div>
+            </a>
         </div>
     </div>    
     {/if}

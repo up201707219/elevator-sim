@@ -53,9 +53,8 @@ async function getCourseByID(id){
     }
 }
 
-async function insertDefualtCourse(){
+async function insertDefaultCourse(){
     try{
-
         const query = "INSERT INTO frm.Courses (ID, Title, Descript, DurMin, DurMax) "+
         "VALUES ('" + addNew.id + "', '" +addNew.name + "', '" + addNew.description + "', " + addNew.dur_min +", " + addNew.dur_max +");"
         
@@ -70,7 +69,7 @@ export async function load({params}){
     if(parseInt(params.id) === 0){
         addNew.id = uuidv4();
         console.log(addNew.id);
-        await insertDefualtCourse();
+        await insertDefaultCourse();
         throw redirect(302, "/lessons/"+addNew.id);
     }
     //let module = lessonModules.find((element) => element.id === parseInt(params.id));
