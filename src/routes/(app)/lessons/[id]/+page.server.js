@@ -38,7 +38,11 @@ async function getCourseByID(id){
         }
         res.rows.forEach(element => {
             if(element.module !== null){
-                course.lessons.push(element.module);
+                let aux = {
+                    title: element.module,
+                    id: element.module_id
+                }
+                course.lessons.push(aux);
             }
         });
 
