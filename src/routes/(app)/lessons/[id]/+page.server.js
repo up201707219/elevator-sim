@@ -21,9 +21,9 @@ async function getCourseByID(id){
         const query = 'SELECT * FROM' + 
             "(SELECT frm.Courses.*, frm.Modules.Title AS module, frm.Modules.ID AS module_id FROM frm.Courses "+
             "LEFT JOIN frm.Modules "+
-            "ON frm.Courses.ID = frm.Modules.CourseID) AS course "+
-            "WHERE course.ID = '" + id + "' "+
-            "ORDER BY course.module_id;";
+            "ON frm.Courses.ID = frm.Modules.CourseID " +
+            "ORDER BY frm.Modules.position ASC) AS course "+
+            "WHERE course.ID = '" + id + "' ;";
         const res = await pool.query(query);
         let course = {
             id: res.rows[0].id,
@@ -116,6 +116,23 @@ export const actions = {
         }
         catch(err){
             console.error(err);
+        }        
+    },
+    updateModule: async ({request}) => {
+        const data = await request.formData();
+        const val = {
+            id: data.get('module-id'),
+            name: data.get('module-title'),
+        };
+        try{
+            let query = "UPDATE frm.Modules "+
+            "SET Title = '" + val.name + "' " +
+            "WHERE ID = '" + val.id + "';";
+
+            await pool.query(query);
         }
+        catch(err){
+            console.error(err);
+        }        
     },
 }

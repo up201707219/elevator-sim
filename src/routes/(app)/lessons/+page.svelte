@@ -79,7 +79,7 @@
         
         {/each}
         {#if editable}
-        <a href= "/lessons/0" class="lessons add">
+        <a data-sveltekit-reload href= "/lessons/0" class="lessons add">
             Adicionar
         </a>
         {/if}
@@ -157,10 +157,6 @@
     }
     .delete-icon:hover{
         filter: invert(20%) sepia(67%) saturate(6629%) hue-rotate(357deg) brightness(96%) contrast(129%);
-    }
-    .edit-button{
-        opacity: 70%;
-        cursor: pointer;
     }
     a{
         text-decoration: none;

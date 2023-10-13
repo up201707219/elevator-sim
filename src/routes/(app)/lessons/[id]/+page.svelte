@@ -32,7 +32,7 @@
 </script>
 
 <main>
-    <button class="edit-button" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
+    <button class="edit-button toggle" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
     
     <!-- mobile subsections -->
     <div class="mobile-nav">
@@ -77,7 +77,7 @@
     <div class="mobile-content">
         <form method="POST" action="?/updateCourse">
             <label class="input-label title" for="title">Titulo:</label>
-            <input class="details-input title" type="text" name="title" value={data.name}>
+            <input class="details-input title" type="text" name="title" value={data.name} autocomplete="off">
             <div class="course-details {(mobileDisplay === "details")? "open":""}">
                 
                 <!-- Mobile Image -->
@@ -100,7 +100,7 @@
                         <option value="d">dias</option>
                         
                     </select> <br> <br>        
-                    <button type="submit" class="add-course"> Guardar </button>
+                    <button type="submit" class="edit-button"> Guardar </button>
                 </div>
                 <div class="details-image">
                     <img src={data.image} alt="mc12" class="course-image">
@@ -109,13 +109,23 @@
         </form>
         <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
             {#each data.lessons as lesson, i}
-            <a href="/in_construction">
-                <div class="lesson">
-                    <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
-                </div>
-            </a>
+                <form method="POST" action="?/updateModule">
+                    <div class="lesson">
+                        <input type="hidden" name="module-id" value={lesson.id}>
+                        <label for="module-title" class="lesson-content">Módulo {i+1}: </label>
+                        <input class="module-input" type="text" name="module-title" value={lesson.title} autocomplete="off">
+                        
+                        <div class="module-edit-buttons">
+                            <button class="edit-button" type="submit">ok</button>
+                            <!-- <form method="POST" action="deleteModule">
+                                <input type="hidden" name="module-id" value={lesson.id}>
+                                <button class="edit-button" style="background-color: red; margin-left:0.2rem;" type="submit">del</button>
+                            </form> -->
+                        </div>
+                    </div>
+                </form>
             {/each}
-            <a href="/lessons/{data.id}/0+0">
+            <a data-sveltekit-reload href="/lessons/{data.id}/0+0">
                 <div class="lesson">
                     <div class="lesson-content">Adicionar Módulo</div>
                 </div>
@@ -136,21 +146,7 @@
         position: relative;
     }
 
-    .edit-button{
-        background-color: rgb(48, 209, 43);
-        color: white;
-        border-radius: 10px;
-        border-width: 0;
-        font-family: inherit;
-        font-size: inherit;
-        font-style: inherit;
-        font-weight: inherit;
-        line-height: inherit;
-        padding: 5px 10px;
-        cursor: pointer;
-        margin:3rem 50% 0rem 50%;
-    }
-
+    
     h1{
         margin-left: auto;
         margin-right: auto;
@@ -208,6 +204,7 @@
         margin-top: 3rem;
     }
     .lesson{
+        position: relative;
         width: 80%;
         margin:2rem auto 2rem auto;
         padding: 1rem 0rem 1rem 0rem;
@@ -224,8 +221,8 @@
         text-decoration: none;
         color: black;
     }
-
-    .add-course{
+    
+    .edit-button{
         background-color: rgb(48, 209, 43);
         color: white;
         border-radius: 10px;
@@ -237,6 +234,22 @@
         line-height: inherit;
         padding: 5px 10px;
         cursor: pointer;
+    }
+
+    .edit-button.toggle{
+        margin:3rem 50% 0rem 50%;
+    }
+    .module-edit-buttons{
+        display: flex;
+        position: absolute;
+        top: 50%;
+        right: 2rem;
+        transform: translateY(-50%);
+    }
+    .module-input{
+        font:inherit;
+        min-width: max-content;
+        max-width: 60%;
     }
 
     @media (max-width: 900px){
