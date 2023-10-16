@@ -2,6 +2,7 @@
    import {page} from "$app/stores";
    import leftArrow from "$lib/assets/svg/left-arrow.svg";
    import rightArrow from "$lib/assets/svg/right-arrow.svg";
+   import * as converter from "$lib/stringHtmlConverter";
 
     export let data;
 
@@ -50,26 +51,24 @@
             </span>
             {/if}
         </div>
-    {:else}
+        {:else}
         <div class="container">
             <h1>{data.moduleTitle ?? ""}</h1>
             <form method="POST" action="?/updateContent">
+                <input type="hidden" name="module-id" value={data.moduleId}>
                 <input type="hidden" name="content-id" value={displayedContent.id}>
                 <label for="module-content">Conteúdo da página: </label>
-                <textarea class="content-input" name="module-content" value={displayedContent.context ?? ""}></textarea><br>
-                <button class="module-submit" type="submit">Guardar</button>
+                <textarea class="content-input" name="module-content" value={converter.htmlToString(displayedContent.context)}></textarea><br>
+                <button class="module-submit content" type="submit">Guardar</button>
             </form>
-
-            {#if parseInt($page.params.page) >= data.content.length-1}
-                <form method="POST" action="?/insertContent">
-                    <input type="hidden" name="next-page" value={"/lessons/"+$page.params.id+"/"+data.moduleId+"+"+ data.content.length}>
-                    <input type="hidden" name="module-id" value={data.moduleId}>
-                    <button class="module-submit add-page" type="submit">nova página</button>
-                </form>
-            {/if}
+            <form method="POST" action="?/insertContent">
+                <input type="hidden" name="next-page" value={"/lessons/"+$page.params.id+"/"+data.moduleId+"+"+ data.content.length}>
+                <input type="hidden" name="module-id" value={data.moduleId}>
+                <button class="module-submit add-page" type="submit">nova página</button>
+            </form>
         </div>
+        <!-- <form action="?/deleteContent"></form> -->
     {/if}
-
     
 </main>
 
@@ -145,6 +144,9 @@
         padding: 5px 10px;
         cursor: pointer;
     }
+    .module-submit.content{
+        margin-bottom: 1rem;
+    }
     .module-submit.add-page{
         position: absolute;
         bottom: 1rem;
@@ -159,6 +161,7 @@
     .content-input{
         width: 90%;
         min-height: 16rem;
+        margin-bottom: 2rem;
         font: inherit;
         resize: none;
     }

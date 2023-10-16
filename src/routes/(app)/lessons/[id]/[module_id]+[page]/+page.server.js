@@ -1,6 +1,7 @@
 import { pool } from "$lib/db";
 import {v4 as uuidv4} from "uuid";
 import { error, redirect } from "@sveltejs/kit";
+import * as converter from "$lib/stringHtmlConverter";
 
 let addNew = {
     moduleId: 0,
@@ -55,10 +56,11 @@ async function getCourseTitle(id){
 async function getContentByModuleID(id){
     try{
         const query = "SELECT frm.Module_Content.id, frm.Module_Content.content, frm.Module_Content.page_ind, frm.Modules.ID as moduleid, frm.Modules.title FROM frm.Modules "+
-        "LEFT JOIN frm.Module_Content ON frm.Modules.ID = frm.Module_Content.ModuleID " +
+        "LEFT JOIN frm.Module_Content ON frm.Modules.ID = frm.Module_Content.ModuleID  AND frm.Module_Content.isDeleted IS NOT TRUE " +
         "WHERE frm.Modules.ID = '" + id + "' "+
         "ORDER BY frm.Module_Content.Page_ind ASC;";
         const res = await pool.query(query);
+
         let val = {
             courseTitle: "",
             moduleId: res.rows[0].moduleid,
@@ -96,20 +98,37 @@ export async function load({params}){
 export const actions = {
     updateContent: async ({request}) => {
         const data = await request.formData();
-        const val = {
+        let val = {
+            moduleId: data.get('module-id'),
             id: data.get('content-id'),
             content: data.get('module-content')
         };
-        try{
-            let query = "UPDATE frm.Module_content "+
-            "SET content = '" + val.content + "' " +
-            "WHERE ID = '" + val.id + "';";
+        
+        val.content = converter.stringToHtml(val.content);
+
+        if(val.id === ""){
+            try{
+                let query = "INSERT INTO frm.Module_Content (ID, Content, ModuleID) "+
+            "Values( '" + uuidv4() + "', '" + val.content + "', '" + val.moduleId + "');" 
 
             await pool.query(query);
+            }
+            catch(err){
+                console.error(err);
+            }
         }
-        catch(err){
-            console.error(err);
-        }        
+        else{
+            try{
+                let query = "UPDATE frm.Module_content "+
+                "SET content = '" + val.content + "' " +
+                "WHERE ID = '" + val.id + "';";
+    
+                await pool.query(query);
+            }
+            catch(err){
+                console.error(err);
+            }        
+        }
     },
     insertContent: async ({request}) => {
         const data = await request.formData();

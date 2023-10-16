@@ -2,6 +2,7 @@ import { lessonModules } from "./data";
 import { pool } from "$lib/db";
 import {v4 as uuidv4} from "uuid";
 import { error, redirect } from "@sveltejs/kit";
+import * as converter from "$lib/stringHtmlConverter";
 
 //const reload;
 
@@ -18,13 +19,16 @@ let addNew = {
 
 async function getCourseByID(id){
     try{
-        const query = 'SELECT * FROM' + 
-            "(SELECT frm.Courses.*, frm.Modules.Title AS module, frm.Modules.ID AS module_id FROM frm.Courses "+
-            "LEFT JOIN frm.Modules "+
-            "ON frm.Courses.ID = frm.Modules.CourseID " +
-            "ORDER BY frm.Modules.position ASC) AS course "+
-            "WHERE course.ID = '" + id + "' ;";
-        const res = await pool.query(query);
+        // const query = 'SELECT * FROM' + 
+        //     "(SELECT frm.Courses.*, frm.Modules.Title AS module, frm.Modules.ID AS module_id FROM frm.Courses "+
+        //     "LEFT JOIN frm.Modules "+
+        //     "ON frm.Courses.ID = frm.Modules.CourseID " +
+        //     "WHERE frm.Modules.isDeleted is NOT TRUE " +
+        //     "ORDER BY frm.Modules.position ASC) AS course "+
+        //     "WHERE course.ID = '" + id + "' ;";
+        let query = "SELECT * FROM frm.Courses " +
+        "WHERE ID = '" + id +"';";
+        let res = await pool.query(query);
         let course = {
             id: res.rows[0].id,
             name: res.rows[0].title,
@@ -36,11 +40,15 @@ async function getCourseByID(id){
             //image: res.rows[0].imageid,
             image: lessonModules[0].image,
         }
+        query = "SELECT * FROM frm.Modules " +
+        "WHERE courseId = '" + id + "' AND isDeleted is NOT TRUE " +
+        "ORDER BY position ASC;";
+        res = await pool.query(query);
         res.rows.forEach(element => {
             if(element.module !== null){
                 let aux = {
-                    title: element.module,
-                    id: element.module_id
+                    title: element.title,
+                    id: element.id
                 }
                 course.lessons.push(aux);
             }
@@ -77,17 +85,6 @@ export async function load({params}){
     return module;
 }
 
-function stringToHtml(str){
-    let res = str.replace(/\r\n([ \t]*\r\n)+/, '<p>');
-    res = res.replaceAll(/\r\n([ \t]*\r\n)+/g, '</p><p>').replaceAll('\r\n', '<br />');
-    
-    if(str.indexOf('\r\n\r\n')>-1){
-        res += '</p>';
-    }
-    
-    return res;
-}
-
 //console.log(stringToHtml("fui \r\n às\r\n\r\n\r\n compras"));
 
 export const actions = {
@@ -101,7 +98,7 @@ export const actions = {
             dur_max: data.get('duration-max'),
             timeType: data.get('time-type')
         };
-        val.description = stringToHtml(val.description);
+        val.description = converter.stringToHtml(val.description);
         // console.log(val);
         try{
             let query = "UPDATE frm.Courses "+
@@ -135,4 +132,18 @@ export const actions = {
             console.error(err);
         }        
     },
+    deleteModule: async ({request}) => {
+        const data = await request.formData();
+        const moduleId = data.get('module-id-delete');
+        try{
+            let query = "UPDATE frm.Modules " +
+            "SET isDeleted = TRUE " +
+            "WHERE ID = '" + moduleId + "';";
+            await pool.query(query);
+            console.log("deleted lesson " + moduleId);
+        }
+        catch(err){
+            console.error(err);
+        }
+    }
 }

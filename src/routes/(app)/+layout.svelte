@@ -20,6 +20,7 @@
     <Navbar navbarFixed={navbarFixed}/>    
 {/if}
 
+
     <slot/>
     <br style="margin-bottom: 3rem;">
     <div class="footer">

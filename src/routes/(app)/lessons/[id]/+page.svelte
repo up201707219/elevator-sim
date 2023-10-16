@@ -1,5 +1,7 @@
 <script>
     import {page} from "$app/stores";
+    import * as converter from "$lib/stringHtmlConverter";
+
     export let data;
     let duration = stringify(data.dur_min, data.dur_max)+data.timeType;
     let mobileDisplay = "lessons";
@@ -15,11 +17,6 @@
             str = min + "-" + max;
         }
         return str;
-    }
-
-    function htmlToString(html){
-        let res = html.replaceAll('<p>', '\r\n\r\n').replaceAll('<br />', '\r\n').replaceAll('</p>', '');
-        return res;
     }
 
     function toggleEdit(){
@@ -89,7 +86,7 @@
                     <input type="hidden" name="id" value={data.id}>
                     <!-- <input type="hidden" name="title" value={data.name}> -->
                     <label for="description">Descrição: </label>
-                    <textarea class="details-input" type="text" name="description" value = {htmlToString(data.description)}></textarea> <br><br>
+                    <textarea class="details-input" type="text" name="description" value = {converter.htmlToString(data.description)}></textarea> <br><br>
                     <label for="duration-min">Duração: de</label>
                     <input class="details-input number" type="number" name="duration-min" value = {data.dur_min}>
                     <label for="duration-max">a</label>
@@ -117,10 +114,10 @@
                         
                         <div class="module-edit-buttons">
                             <button class="edit-button" type="submit">ok</button>
-                            <!-- <form method="POST" action="deleteModule">
-                                <input type="hidden" name="module-id" value={lesson.id}>
+                            <form method="POST" action="?/deleteModule">
+                                <input type="hidden" name="module-id-delete" value={lesson.id}>
                                 <button class="edit-button" style="background-color: red; margin-left:0.2rem;" type="submit">del</button>
-                            </form> -->
+                            </form>
                         </div>
                     </div>
                 </form>
