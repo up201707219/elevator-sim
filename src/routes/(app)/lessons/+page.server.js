@@ -9,7 +9,7 @@ async function getCourses(){
         'LEFT JOIN frm.Modules ' +
         'ON frm.Modules.courseID = frm.Courses.ID AND frm.Modules.isDeleted is NOT TRUE ' +
         'GROUP BY Courses.ID) AS LessonCount ' +
-        'WHERE lessonCount.ID = frm.Courses.ID '+
+        'WHERE lessonCount.ID = frm.Courses.ID AND frm.Courses.isDeleted IS NOT TRUE '+
         'ORDER BY ID';
         
         const res = await pool.query(query);
@@ -72,7 +72,7 @@ export const actions = {
         const lessonId = data.get('id');
         try{
             let query = "UPDATE frm.Courses " +
-            "SET isDeleted = TRUE"
+            "SET isDeleted = TRUE " +
             "WHERE ID = '" + lessonId + "';";
             await pool.query(query);
             console.log("deleted " + lessonId + " lesson");
