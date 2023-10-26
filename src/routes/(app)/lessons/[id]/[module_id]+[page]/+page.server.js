@@ -147,7 +147,6 @@ export const actions = {
         catch(err){
             console.error(err);
         }
-        console.log(nextPage);
         throw redirect(302, nextPage);   
     },
 

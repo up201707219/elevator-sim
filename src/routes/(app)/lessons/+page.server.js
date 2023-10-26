@@ -24,7 +24,6 @@ async function getCourses(){
                 lessonsTotal: element.total
             });
         });
-        //console.log(courses);
         return courses;
     }catch (error){
         console.error(error);

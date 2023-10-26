@@ -2,7 +2,6 @@
     export let data;
     
     let screenWidth;
-    // $: console.log(screenWidth);
 
     function stringifyDate(date){
         return date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear();

@@ -76,7 +76,6 @@ async function insertDefaultCourse(){
 export async function load({params}){
     if(parseInt(params.id) === 0){
         addNew.id = uuidv4();
-        console.log(addNew.id);
         await insertDefaultCourse();
         throw redirect(302, "/lessons/"+addNew.id);
     }
@@ -84,8 +83,6 @@ export async function load({params}){
     let module = await getCourseByID(params.id);
     return module;
 }
-
-//console.log(stringToHtml("fui \r\n às\r\n\r\n\r\n compras"));
 
 export const actions = {
     updateCourse: async ({request}) => {
@@ -99,7 +96,6 @@ export const actions = {
             timeType: data.get('time-type')
         };
         val.description = converter.stringToHtml(val.description);
-        // console.log(val);
         try{
             let query = "UPDATE frm.Courses "+
             "SET Title = '" + val.name + "', " +
