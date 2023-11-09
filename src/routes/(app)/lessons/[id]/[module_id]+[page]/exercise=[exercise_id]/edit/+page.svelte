@@ -1,0 +1,235 @@
+<script>
+    import {data} from "./data"
+
+    let hasEnded = false;
+    //export let data;
+    
+    //--------------TIMER CODE------------------------
+    let timer = data.time; // TYPE NUMBER OF SECONDS HERE
+
+    
+
+    $: hours = Math.floor(timer / (60*60))
+    $: minutes = Math.floor((timer - hours *(60*60)) / 60);
+    $: minname = minutes > 1 ? "mins" : "min";
+    $: seconds = Math.floor(timer - hours * (60*60) - minutes * 60)
+
+    // MENU DISPLAY OPTIONS VARS
+
+    let defaultOpt = data.option.filter((opt) => opt.parent === null);
+    let displayedOptions = defaultOpt;
+    let prevDesc = [];
+    let prevOptions = [];
+    let defaultDesc = {
+        description: "Escolha uma opção",
+        image: null
+    };
+    let displayedDesc = defaultDesc;
+
+    // OPTIONS NAVIGATION
+    function handleOption(index){
+        if(displayedOptions[index].response === "menu"){
+            prevOptions.push(displayedOptions);
+            prevOptions = prevOptions;
+
+            prevDesc.push(displayedDesc);
+            prevDesc = prevDesc;
+
+            displayedDesc = displayedOptions[index];
+            displayedOptions = data.option.filter((opt) => opt.parent === displayedOptions[index].id);
+        }
+        else if(displayedOptions[index].response === "answer"){
+            console.log("score setup")
+        }
+    }
+    
+    function optionGoBack(){
+        displayedOptions = prevOptions.pop();
+        displayedDesc = prevDesc.pop();
+
+        prevOptions = prevOptions;
+        prevDesc = prevDesc;
+    }
+
+    function goDefault(){
+        displayedDesc = defaultDesc;
+        displayedOptions = defaultOpt;
+        prevOptions = [];
+        prevDesc =[];
+    }
+
+</script>
+
+
+<!-- svelte-ignore a11y-autofocus -->
+<main>
+    <h1>AVARIA</h1>
+    
+    <div class="container">
+            <div class="exercise-details">
+                {data.title}
+                <br>
+                <br>
+                <span style="border: 1px solid black;">Aqui fica a imagem do exercicio</span>
+            </div>
+
+            <div class="image-component-container">
+            {#if !hasEnded}
+                {#if displayedDesc.image}
+                    
+                <img class="image-component" src={displayedDesc.image} alt="não encontrado">   
+                {:else}
+                    <span style="border: 1px solid black;">Aqui fica a imagem da componente</span>
+                {/if}
+            {/if}
+            </div>
+            <div class="nav-options">
+                <div class="timer">
+                    {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}    
+                </div>
+                <div class="centered">
+                        {displayedDesc.description}
+                    </div>
+                    {#each displayedOptions as opt, i}
+                        <div class="option">
+                            <button class="button-option {(opt.response === "menu") ? "":"single"} {opt.submission ?? ""}" on:click={() => handleOption(i)}> {opt.title} </button>
+                        </div>
+                    {/each}
+                    
+                    {#if prevOptions.length !== 0}
+                    <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
+                    {/if}
+            </div>
+        </div>
+</main>
+
+<style>
+    h1{
+        text-align: center;
+    }
+    
+    .container{
+        position: relative;
+        display: grid;
+        grid-template-columns: 65% auto;
+        width: 90%;
+        margin: auto;
+    }
+
+    .nav-options{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .image-component-container{
+        max-width: 600px;
+        max-height: 600px;
+        overflow: hidden;
+        position: absolute;
+        top: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .image-component{
+        max-width: 300px;
+        max-height: 250px;
+        transition: 0.5s;
+        cursor: pointer;
+    }
+    .image-component:hover{
+        max-width: 500px;
+        max-height: 500px;
+    }
+
+    .modal{
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding-top: 20rem;
+        z-index: 200;
+        background-color: black;
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content{
+        background-color: white;
+        width: 80%;
+        margin: auto;
+        padding: 20px;
+        opacity: 100%;
+    }
+
+    .button-confirmation:focus{
+        border-color: orange;
+    }
+
+    .button-option{
+        min-width: 20rem;
+        margin: 0.5rem;
+        padding: 5px;
+        border-radius: 10px;
+        background-color: blue;
+        color: white;
+        cursor: pointer;
+        font: inherit;
+    }
+
+    .button-option.single{
+        background-color: darkblue;
+    }
+    .button-option.return{
+        background-color: black;
+    }
+    .button-option.end{
+        margin-top: 2rem;
+        background-color: black;
+    }
+    .button-option.correct{
+        background-color: rgb(61, 207, 42);
+    }
+    .button-option.wrong{
+        background-color: red;
+    }
+    .button-option.neutral{
+        background-color: rgb(201, 164, 1);
+    }
+
+    .displayed-message{
+        text-align: center;
+    }
+
+    .timer-container{
+        position: relative;
+        background-color: aqua;
+    }
+    .timer{
+        position: relative;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        justify-self: center;
+        margin-left: 15rem;
+        margin-bottom: 1rem;
+        font-size: 18pt;
+    }
+
+    .submission{
+        margin: 0.5rem;
+        padding: 0.3rem;
+        min-width: 20rem;
+        border-radius: 10px;
+        background-color: rgb(48, 48, 48);
+        color: white;
+    }
+
+    .submission.correct{
+        background-color: green;
+    }
+    .submission.wrong{
+        background-color: rgb(255, 48, 48);
+    }
+
+</style>

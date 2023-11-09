@@ -13,18 +13,17 @@
 </script>
 
 <body>
-{#if hasSidebar}
-    <Navbar navbarFixed={navbarFixed} hasSidebar on:click={onMenuClick}/>
-    <Sidebar bind:toggleSidebar={toggleSidebar}/>
-{:else}
-    <Navbar navbarFixed={navbarFixed}/>    
-{/if}
+    {#if hasSidebar}
+        <Navbar navbarFixed={navbarFixed} hasSidebar on:click={onMenuClick}/>
+        <Sidebar bind:toggleSidebar={toggleSidebar}/>
+    {:else}
+        <Navbar navbarFixed={navbarFixed}/>    
+    {/if}
 
-
+    <br style="margin-bottom: 2rem;">
     <slot/>
     <br style="margin-bottom: 3rem;">
     <div class="footer">
-        <h1>Placeholder</h1>
         <span class="author">@author: Gonçalo Resende</span>
     </div>
 </body>
@@ -48,7 +47,7 @@
         padding-bottom:0px;
         bottom: 0px;
         width: 100%;
-        height: 16rem;
+        height: 2rem;
         background-color: black;
         opacity: 80%;
         display: flex;
