@@ -1,9 +1,9 @@
 <script>
-    import {data} from "./data"
+    //import {data} from "./data"
     import { tweened } from 'svelte/motion';
 
     let hasEnded = false;
-    //export let data;
+    export let data;
     
     //--------------TIMER CODE------------------------
     let original = data.time; // TYPE NUMBER OF SECONDS HERE

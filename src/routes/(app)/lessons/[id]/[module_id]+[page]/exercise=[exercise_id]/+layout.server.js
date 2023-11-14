@@ -20,7 +20,8 @@ async function getQuestionById(id){
 async function getQuestionMenu(id){
     try{
         const query = "SELECT * FROM Question_Menu " +
-        "WHERE Question_id = '" + id + "';";
+        "WHERE Question_id = '" + id + "' " +
+        "ORDER BY ID;";
         const res = await pool.query(query);
         let val = [];
         res.rows.forEach(element => {

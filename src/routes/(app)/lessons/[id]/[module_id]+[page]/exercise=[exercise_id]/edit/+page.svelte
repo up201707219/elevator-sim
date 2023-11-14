@@ -1,8 +1,9 @@
 <script>
-    import {data} from "./data"
+    //import {data} from "./data"
 
     let hasEnded = false;
-    //export let data;
+    let previewImage;
+    export let data;
     
     //--------------TIMER CODE------------------------
     let timer = data.time; // TYPE NUMBER OF SECONDS HERE
@@ -41,6 +42,7 @@
         else if(displayedOptions[index].response === "answer"){
             console.log("score setup")
         }
+        previewImage = null;
     }
     
     function optionGoBack(){
@@ -56,6 +58,34 @@
         displayedOptions = defaultOpt;
         prevOptions = [];
         prevDesc =[];
+    }
+
+
+    //ADMIN OPTIONS
+    function handleImageUpload(e){
+        let image = e.target.files[0];
+        if(!image) return;
+        previewImage = URL.createObjectURL(image);
+    }
+
+    let newButtonMenu = false;
+    let newButton = {
+        description: "Aqui vai a descrição da ação do menu",
+        title: "Nome do botão"       
+    };
+    
+    function addNewButton(){
+        newButtonMenu = true;
+        newButton.parent = displayedDesc.id;
+    }
+
+    function editButton(i){
+        newButtonMenu = true;
+        newButton = displayedOptions[i];
+    }
+
+    function buttonType(){
+        newButton.description = (newButton.response === "menu" ? "Aqui vai a descrição da ação do menu" : "Aqui vai a descrição quando resposta submetida");
     }
 
 </script>
@@ -74,33 +104,64 @@
             </div>
 
             <div class="image-component-container">
-            {#if !hasEnded}
-                {#if displayedDesc.image}
-                    
-                <img class="image-component" src={displayedDesc.image} alt="não encontrado">   
-                {:else}
+            {#if prevOptions.length > 0}
+                    {#if displayedDesc.image}                  
+                    <img class="image-component" src={displayedDesc.image} alt="não encontrado"> 
+                    {:else}
                     <span style="border: 1px solid black;">Aqui fica a imagem da componente</span>
-                {/if}
+                    {/if}
             {/if}
             </div>
             <div class="nav-options">
-                <div class="timer">
-                    {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}    
-                </div>
-                <div class="centered">
+                {#if !newButtonMenu}
+                    <div class="timer">
+                        {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}    
+                    </div>
+                    <div class="centered">
                         {displayedDesc.description}
                     </div>
                     {#each displayedOptions as opt, i}
                         <div class="option">
                             <button class="button-option {(opt.response === "menu") ? "":"single"} {opt.submission ?? ""}" on:click={() => handleOption(i)}> {opt.title} </button>
+                            <button on:click={()=> {editButton(i)}}>editar</button>
                         </div>
                     {/each}
-                    
+                    <div class="option">
+                        <button class="button-option add" on:click={addNewButton}>Adicionar opção</button>
+                    </div>
                     {#if prevOptions.length !== 0}
-                    <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
+                        <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
                     {/if}
+                {:else}
+                    <form method="post" action="?/insertNewButton" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value={newButton.id ?? "0"}>
+                        <input type="hidden" name="parent-id" value={newButton.parent}>
+                        <label for="title">Opção</label>
+                        <input type="text" name="title" value={newButton.title}>
+                        <label for="response">Tipo</label>
+                        <select name="response" bind:value={newButton.response} on:change={buttonType}>
+                            <option value="menu">menu</option>
+                            <option value="answer">resposta</option>
+                        </select>
+                        <br>
+                        <label for="description">Descrição: </label>
+                        <input class="input text" type="text" name="description" value={newButton.description}>
+                        {#if newButton.response === "menu"}
+                            <br>
+                            <img class="input image-component" src={previewImage} alt="imagem da opção"> 
+                            <br>
+                            <input type="file" name="image" accept="image/*" on:change={handleImageUpload}>
+                        {:else}
+                            <br>
+                            <input type="number" name="points">
+                        {/if}
+                        <br>
+                        <button type="submit">submeter</button>
+                        <button on:click={() => {newButtonMenu = false;}}>sair</button>
+
+                    </form>
+                {/if}
             </div>
-        </div>
 </main>
 
 <style>
@@ -197,7 +258,9 @@
     .button-option.neutral{
         background-color: rgb(201, 164, 1);
     }
-
+    .button-option.add{
+        background-color: green;
+    }
     .displayed-message{
         text-align: center;
     }
@@ -230,6 +293,13 @@
     }
     .submission.wrong{
         background-color: rgb(255, 48, 48);
+    }
+
+    .input{
+        margin: 0.5rem;
+    }
+    .input.text{
+        width:20rem;
     }
 
 </style>
