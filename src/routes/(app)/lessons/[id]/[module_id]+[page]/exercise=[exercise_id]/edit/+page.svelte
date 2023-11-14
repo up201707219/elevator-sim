@@ -4,6 +4,8 @@
     let hasEnded = false;
     let previewImage;
     export let data;
+
+    //console.log(data.option[0]);
     
     //--------------TIMER CODE------------------------
     let timer = data.time; // TYPE NUMBER OF SECONDS HERE
@@ -76,6 +78,10 @@
     
     function addNewButton(){
         newButtonMenu = true;
+        newButton = {
+            description: "Aqui vai a descrição da ação do menu",
+            title: "Nome do botão"       
+        };
         newButton.parent = displayedDesc.id;
     }
 
@@ -122,8 +128,12 @@
                     </div>
                     {#each displayedOptions as opt, i}
                         <div class="option">
-                            <button class="button-option {(opt.response === "menu") ? "":"single"} {opt.submission ?? ""}" on:click={() => handleOption(i)}> {opt.title} </button>
-                            <button on:click={()=> {editButton(i)}}>editar</button>
+                            <form method="post" action="?/deleteButton">
+                            <button type="button" class="button-option {(opt.response === "menu") ? "":"single"} {opt.submission ?? ""}" on:click|preventDefault={() => handleOption(i)}> {opt.title} </button>
+                            <button type="button" on:click={()=> {editButton(i)}}>editar</button>
+                                <input type="hidden" name="id" value={opt.id}>
+                                <button type="submit">del</button>
+                            </form>
                         </div>
                     {/each}
                     <div class="option">
@@ -229,7 +239,8 @@
     }
 
     .button-option{
-        min-width: 20rem;
+        width: 20rem;
+        /* max-width: 100%; */
         margin: 0.5rem;
         padding: 5px;
         border-radius: 10px;

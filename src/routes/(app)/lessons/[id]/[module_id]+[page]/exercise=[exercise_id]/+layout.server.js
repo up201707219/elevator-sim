@@ -24,6 +24,7 @@ async function getQuestionMenu(id){
         "ORDER BY ID;";
         const res = await pool.query(query);
         let val = [];
+        let image = [];
         res.rows.forEach(element => {
             let option = {
                 id: element.id,
@@ -31,8 +32,9 @@ async function getQuestionMenu(id){
                 description: element.descript,
                 response: element.response,
                 parent: element.parent_id,
-                points: element.points
+                points: element.points,
             };
+            image.push(element.image_arr);
             val.push(option);
         });
         return val;
