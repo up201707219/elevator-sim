@@ -1,6 +1,9 @@
 <script>
     //import {data} from "./data"
     import { tweened } from 'svelte/motion';
+    import {page} from "$app/stores";
+
+    console.log($page.url.pathname)
 
     let hasEnded = false;
     export let data;
@@ -196,7 +199,7 @@
             {#if !hasEnded}
                 {#if displayedDesc.image}
                     
-                <img class="image-component" src={displayedDesc.image} alt="não encontrado">   
+                    <img class="image-component" src='/api/exercise/{displayedDesc.id}/image/{displayedDesc.image}' alt="não encontrado">   
                 {:else}
                     <span style="border: 1px solid black;">Aqui fica a imagem da componente</span>
                 {/if}

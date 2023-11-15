@@ -1,5 +1,6 @@
 <script>
     //import {data} from "./data"
+    import {page} from "$app/stores";
 
     let hasEnded = false;
     let previewImage;
@@ -112,7 +113,7 @@
             <div class="image-component-container">
             {#if prevOptions.length > 0}
                     {#if displayedDesc.image}                  
-                    <img class="image-component" src='api/exercise/{displayedDesc.id}/image/{displayedDesc.image}' alt="não encontrado"> 
+                    <img class="image-component" src='/api/exercise/{displayedDesc.id}/image/{displayedDesc.image}' alt="não encontrado"> 
                     <p>{displayedDesc.image}</p>
                     {:else}
                     <span style="border: 1px solid black;">Aqui fica a imagem da componente</span>

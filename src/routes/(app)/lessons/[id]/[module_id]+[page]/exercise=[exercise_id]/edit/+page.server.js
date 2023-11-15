@@ -5,7 +5,12 @@ async function insertImage(menuId, image){
     const buffer = Buffer.from(arrayBuffer);
     try {
         const query = 'INSERT INTO Menu_Images (Menu_ID, IMAGE_NAME, IMAGE_TYPE, IMAGE_SIZE, IMAGE_DATA)' +
-        'VALUES ($1, $2, $3, $4, $5)'
+        'VALUES ($1, $2, $3, $4, $5) '+
+        'ON CONFLICT (Menu_ID) DO UPDATE '+
+        'SET IMAGE_NAME = $2, '+
+        'IMAGE_TYPE = $3, ' +
+        'IMAGE_SIZE = $4, ' +
+        'IMAGE_DATA = $5;';
 
         const values = [menuId, image.name, image.type, image.size, buffer];
 
