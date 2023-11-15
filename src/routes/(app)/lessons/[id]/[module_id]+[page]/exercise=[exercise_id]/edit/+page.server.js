@@ -1,5 +1,20 @@
 import { pool } from "$lib/db";
 
+async function insertImage(menuId, image){
+    const arrayBuffer = await image.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    try {
+        const query = 'INSERT INTO Menu_Images (Menu_ID, IMAGE_NAME, IMAGE_TYPE, IMAGE_SIZE, IMAGE_DATA)' +
+        'VALUES ($1, $2, $3, $4, $5)'
+
+        const values = [menuId, image.name, image.type, image.size, buffer];
+
+        await pool.query(query, values);
+    } catch(err) {
+        console.error(err);
+    }
+}
+
 export const actions = {
     insertNewButton: async ({request}) => {
         const data = await request.formData();
@@ -13,10 +28,10 @@ export const actions = {
             points: parseInt(data.get('points')?.valueOf())
         };
 
-        //console.log(val.image.type)
- 
-        const arrayBuffer = await val.image.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
+        //console.log(val.image);
+        if(val.image.size !== 0){
+            insertImage(val.id, val.image);
+        }
         
         //console.log(buffer);
 
@@ -29,17 +44,15 @@ export const actions = {
                 'SET descript = $1, '+
                 'response = $2, '+
                 'points = $3, '+
-                'title = $4, '+
-                'Image_Arr = $5, '+
-                'Image_type = $6 '+
-                'WHERE ID = $7';
+                'title = $4 '+
+                'WHERE ID = $5';
 
-                values = [val.description, val.response, (isNaN(val.points) ? null : val.points), val.title, buffer, val.image.type, val.id];
+                values = [val.description, val.response, (isNaN(val.points) ? null : val.points), val.title, val.id];
             }
             else{
-                query = 'INSERT INTO Question_Menu (Title, Question_Id, Descript, Response, Parent_ID, Points, Image_Arr, image_type)' +
-                'Values($1, $2, $3, $4, $5, $6, $7, $8);';
-                values = [val.title, '0', val.description, val.response, val.parent, (isNaN(val.points) ? null : val.points), buffer, val.image.type];
+                query = 'INSERT INTO Question_Menu (Title, Question_Id, Descript, Response, Parent_ID, Points)' +
+                'Values($1, $2, $3, $4, $5, $6);';
+                values = [val.title, '0', val.description, val.response, val.parent, (isNaN(val.points) ? null : val.points)];
             }
             //console.log(query);
 

@@ -19,12 +19,12 @@ async function getQuestionById(id){
 
 async function getQuestionMenu(id){
     try{
-        const query = "SELECT * FROM Question_Menu " +
-        "WHERE Question_id = '" + id + "' " +
-        "ORDER BY ID;";
+        const query = "SELECT qm.*, mi.IMAGE_NAME FROM Question_Menu qm " +
+        "left join menu_images mi on qm.id = mi.menu_id"
+        "WHERE qm.Question_id = '" + id + "' " +
+        "ORDER BY qm.ID ASC;";
         const res = await pool.query(query);
         let val = [];
-        let image = [];
         res.rows.forEach(element => {
             let option = {
                 id: element.id,
@@ -33,10 +33,12 @@ async function getQuestionMenu(id){
                 response: element.response,
                 parent: element.parent_id,
                 points: element.points,
+                image: element.image_name
             };
-            image.push(element.image_arr);
             val.push(option);
         });
+        // let decImage = new Blob([image[0].arr], {type: image[0].type});
+        // console.log(decImage);
         return val;
     }catch (error){
         console.error(error);
