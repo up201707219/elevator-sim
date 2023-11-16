@@ -3,14 +3,17 @@ import { pool } from "$lib/db";
 
 async function getQuestionById(id){
     try{
-        const query = "SELECT * FROM Question_Dev " +
+        const query = "SELECT qd.*, qi.IMAGE_NAME FROM Question_Dev qd " +
+        "left join question_images qi on qd.id = qi.question_id " +
         "WHERE ID = '" + id + "';";
         const res = await pool.query(query);
 
         let val = {
             title: res.rows[0].content,
             time: res.rows[0].completion_time,
+            image: res.rows[0].image_name
         };
+        
         return val;
     }catch (error){
         console.error(error);
@@ -20,7 +23,7 @@ async function getQuestionById(id){
 async function getQuestionMenu(id){
     try{
         const query = "SELECT qm.*, mi.IMAGE_NAME FROM Question_Menu qm " +
-        "left join menu_images mi on qm.id = mi.menu_id"
+        "left join menu_images mi on qm.id = mi.menu_id " +
         "WHERE qm.Question_id = '" + id + "' " +
         "ORDER BY qm.ID ASC;";
         const res = await pool.query(query);
@@ -50,6 +53,7 @@ export async function load({params}){
     let exercise = {
         title: aux.title,
         time: aux.time,
+        image: aux.image,
         option: await getQuestionMenu(params.exercise_id)
     };
 

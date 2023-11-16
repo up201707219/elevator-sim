@@ -2,9 +2,7 @@
     //import {data} from "./data"
     import { tweened } from 'svelte/motion';
     import {page} from "$app/stores";
-
-    console.log($page.url.pathname)
-
+    
     let hasEnded = false;
     export let data;
     
@@ -184,6 +182,9 @@
         </div>
     </div>
     {/if}
+    <div>
+        <a href="{$page.url.pathname}/edit">Editar</a>
+    </div>
     <h1>AVARIA {hasEnded ?": FINALIZADO":""}</h1>
     
     <div class="container">
@@ -192,7 +193,11 @@
                 {data.title}
                 <br>
                 <br>
-                <span style="border: 1px solid black;">Aqui fica a imagem do exercicio</span>
+                {#if data.image}
+                    <img class="image-exercise" src="/api/exercise/{$page.params.exercise_id}" alt="não encontrado">
+                    <!-- {:else}
+                    <span style="border: 1px solid black;">Aqui fica a imagem do exercicio</span> -->
+                {/if}
             </div>
 
             <div class="image-component-container">
@@ -269,6 +274,10 @@
         margin: auto;
     }
 
+    .exercise-details{
+        width: 55%;
+    }
+
     .nav-options{
         display: flex;
         flex-direction: column;
@@ -283,6 +292,14 @@
         top: 2rem;
         left: 50%;
         transform: translateX(-50%);
+    }
+
+    .image-exercise{
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 500px;
+        max-height: 500px;
     }
 
     .image-component{

@@ -20,6 +20,27 @@ async function insertImage(menuId, image){
     }
 }
 
+async function insertImageExercise(QuestionId, image){
+    const arrayBuffer = await image.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    console.log(buffer);
+    try {
+        const query = 'INSERT INTO Question_Images (Question_ID, IMAGE_NAME, IMAGE_TYPE, IMAGE_SIZE, IMAGE_DATA)' +
+        'VALUES ($1, $2, $3, $4, $5) '+
+        'ON CONFLICT (Question_ID) DO UPDATE '+
+        'SET IMAGE_NAME = $2, '+
+        'IMAGE_TYPE = $3, ' +
+        'IMAGE_SIZE = $4, ' +
+        'IMAGE_DATA = $5;';
+
+        const values = [QuestionId, image.name, image.type, image.size, buffer];
+
+        await pool.query(query, values);
+    } catch(err) {
+        console.error(err);
+    }
+}
+
 export const actions = {
     insertNewButton: async ({request}) => {
         const data = await request.formData();
@@ -32,10 +53,11 @@ export const actions = {
             image: data.get('image')?.valueOf(),
             points: parseInt(data.get('points')?.valueOf())
         };
-
-        //console.log(val.image);
-        if(val.image.size !== 0){
-            insertImage(val.id, val.image);
+    
+        if(val.image){
+            if(val.image?.size !== 0){
+                insertImage(val.id, val.image);
+            }
         }
         
         //console.log(buffer);
@@ -85,5 +107,31 @@ export const actions = {
             console.error(err);
         }  
 
+    },
+    updateExercise: async ({request}) => {
+        const data = await request.formData();
+        let val = {
+            id: parseInt(data.get('id').valueOf()),
+            title: data.get('title').valueOf(),
+            image: data.get('image')?.valueOf(),
+        };
+        console.log(val.image);
+        if(val.image.size !== 0){
+            insertImageExercise(val.id, val.image);
+        }
+        //console.log(buffer);
+        try{
+            const query = 'UPDATE Question_Dev '+
+            'SET content = $1 '+
+            'WHERE ID = $2;';
+
+            const values = [val.title, val.id];
+            //console.log(query);
+
+            await pool.query(query, values);
+        }
+        catch(err){
+            console.error(err);
+        }  
     }
 }

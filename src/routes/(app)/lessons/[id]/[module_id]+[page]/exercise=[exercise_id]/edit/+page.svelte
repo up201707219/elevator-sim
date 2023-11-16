@@ -3,7 +3,8 @@
     import {page} from "$app/stores";
 
     let hasEnded = false;
-    let previewImage;
+    let previewImageMenu;
+    let previewImageExercise;
     export let data;
 
     //console.log(data.option[0]);
@@ -45,7 +46,7 @@
         else if(displayedOptions[index].response === "answer"){
             console.log("score setup")
         }
-        previewImage = null;
+        previewImageMenu = null;
     }
     
     function optionGoBack(){
@@ -65,10 +66,16 @@
 
 
     //ADMIN OPTIONS
-    function handleImageUpload(e){
+    function handleImageUpload(e, section){
         let image = e.target.files[0];
         if(!image) return;
-        previewImage = URL.createObjectURL(image);
+        if(section === "menu"){
+            previewImageMenu = URL.createObjectURL(image);
+        }
+        else{
+            previewImageExercise = URL.createObjectURL(image);
+            console.log(previewImageExercise);
+        }
     }
 
     let newButtonMenu = false;
@@ -100,14 +107,24 @@
 
 <!-- svelte-ignore a11y-autofocus -->
 <main>
+    <div>
+        <a href="{$page.url.pathname}/..">Voltar</a>
+    </div>
     <h1>AVARIA</h1>
     
     <div class="container">
             <div class="exercise-details">
-                {data.title}
-                <br>
-                <br>
-                <span style="border: 1px solid black;">Aqui fica a imagem do exercicio</span>
+                <form method="POST" action="?/updateExercise" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value={$page.params.exercise_id}>
+                    <textarea class="details-input" name="title" value={data.title}></textarea>
+                    <br>
+                    <img class="input image-exercise" src={previewImageExercise} alt="imagem da opção"> 
+                    <br>
+                    <input type="file" name="image" accept="image/*" on:change={(e) => {handleImageUpload(e, "exercise")}}>
+                    <div>
+                        <button type="submit">submeter</button>
+                    </div>
+                </form>
             </div>
 
             <div class="image-component-container">
@@ -160,9 +177,9 @@
                         <input class="input text" type="text" name="description" value={newButton.description}>
                         {#if newButton.response === "menu"}
                             <br>
-                            <img class="input image-component" src={previewImage} alt="imagem da opção"> 
+                            <img class="input image-component" src={previewImageMenu} alt="imagem da opção"> 
                             <br>
-                            <input type="file" name="image" accept="image/*" on:change={handleImageUpload}>
+                            <input type="file" name="image" accept="image/*" on:change={(e) => {handleImageUpload(e, "menu")}}>
                         {:else}
                             <br>
                             <input type="number" name="points">
@@ -189,6 +206,18 @@
         margin: auto;
     }
 
+    .exercise-details{
+        width: 55%;
+    }
+
+    .details-input{
+        font-size: inherit;
+        font-family: inherit;
+        width: 100%;
+        height: 4rem;
+        resize: none;
+    }
+
     .nav-options{
         display: flex;
         flex-direction: column;
@@ -203,6 +232,14 @@
         top: 2rem;
         left: 50%;
         transform: translateX(-50%);
+    }
+
+    .image-exercise{
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 500px;
+        max-height: 500px;
     }
 
     .image-component{
