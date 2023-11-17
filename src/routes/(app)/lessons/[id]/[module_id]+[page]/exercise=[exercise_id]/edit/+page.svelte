@@ -131,7 +131,6 @@
             {#if prevOptions.length > 0}
                     {#if displayedDesc.image}                  
                     <img class="image-component" src='/api/exercise/{displayedDesc.id}/image/{displayedDesc.image}' alt="não encontrado"> 
-                    <p>{displayedDesc.image}</p>
                     {:else}
                     <span style="border: 1px solid black;">Aqui fica a imagem da componente</span>
                     {/if}
@@ -148,7 +147,7 @@
                     {#each displayedOptions as opt, i}
                         <div class="option">
                             <form method="post" action="?/deleteButton">
-                            <button type="button" class="button-option {(opt.response === "menu") ? "":"single"} {opt.submission ?? ""}" on:click|preventDefault={() => handleOption(i)}> {opt.title} </button>
+                            <button type="button" class="button-option {(opt.response === "menu") ? "":"single"}" on:click|preventDefault={() => handleOption(i)}> {opt.title} </button>
                             <button type="button" on:click={()=> {editButton(i)}}>editar</button>
                                 <input type="hidden" name="id" value={opt.id}>
                                 <button type="submit">del</button>
@@ -253,30 +252,6 @@
         max-height: 500px;
     }
 
-    .modal{
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        padding-top: 20rem;
-        z-index: 200;
-        background-color: black;
-        background-color: rgba(0,0,0,0.4);
-    }
-    .modal-content{
-        background-color: white;
-        width: 80%;
-        margin: auto;
-        padding: 20px;
-        opacity: 100%;
-    }
-
-    .button-confirmation:focus{
-        border-color: orange;
-    }
-
     .button-option{
         width: 20rem;
         /* max-width: 100%; */
@@ -295,30 +270,10 @@
     .button-option.return{
         background-color: black;
     }
-    .button-option.end{
-        margin-top: 2rem;
-        background-color: black;
-    }
-    .button-option.correct{
-        background-color: rgb(61, 207, 42);
-    }
-    .button-option.wrong{
-        background-color: red;
-    }
-    .button-option.neutral{
-        background-color: rgb(201, 164, 1);
-    }
     .button-option.add{
         background-color: green;
     }
-    .displayed-message{
-        text-align: center;
-    }
 
-    .timer-container{
-        position: relative;
-        background-color: aqua;
-    }
     .timer{
         position: relative;
         grid-column-start: 2;
@@ -327,22 +282,6 @@
         margin-left: 15rem;
         margin-bottom: 1rem;
         font-size: 18pt;
-    }
-
-    .submission{
-        margin: 0.5rem;
-        padding: 0.3rem;
-        min-width: 20rem;
-        border-radius: 10px;
-        background-color: rgb(48, 48, 48);
-        color: white;
-    }
-
-    .submission.correct{
-        background-color: green;
-    }
-    .submission.wrong{
-        background-color: rgb(255, 48, 48);
     }
 
     .input{
