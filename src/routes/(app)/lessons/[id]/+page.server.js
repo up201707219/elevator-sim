@@ -20,13 +20,13 @@ let addNew = {
 async function getCourseByID(id){
     try{
         // const query = 'SELECT * FROM' + 
-        //     "(SELECT frm.Courses.*, frm.Modules.Title AS module, frm.Modules.ID AS module_id FROM frm.Courses "+
-        //     "LEFT JOIN frm.Modules "+
-        //     "ON frm.Courses.ID = frm.Modules.CourseID " +
-        //     "WHERE frm.Modules.isDeleted is NOT TRUE " +
-        //     "ORDER BY frm.Modules.position ASC) AS course "+
+        //     "(SELECT Courses.*, Modules.Title AS module, Modules.ID AS module_id FROM Courses "+
+        //     "LEFT JOIN Modules "+
+        //     "ON Courses.ID = Modules.CourseID " +
+        //     "WHERE Modules.isDeleted is NOT TRUE " +
+        //     "ORDER BY Modules.position ASC) AS course "+
         //     "WHERE course.ID = '" + id + "' ;";
-        let query = "SELECT * FROM frm.Courses " +
+        let query = "SELECT * FROM Courses " +
         "WHERE ID = '" + id +"';";
         let res = await pool.query(query);
         let course = {
@@ -40,7 +40,7 @@ async function getCourseByID(id){
             //image: res.rows[0].imageid,
             image: lessonModules[0].image,
         }
-        query = "SELECT * FROM frm.Modules " +
+        query = "SELECT * FROM Modules " +
         "WHERE courseId = '" + id + "' AND isDeleted is NOT TRUE " +
         "ORDER BY position ASC;";
         res = await pool.query(query);
@@ -63,7 +63,7 @@ async function getCourseByID(id){
 
 async function insertDefaultCourse(){
     try{
-        const query = "INSERT INTO frm.Courses (ID, Title, Descript, DurMin, DurMax) "+
+        const query = "INSERT INTO Courses (ID, Title, Descript, DurMin, DurMax) "+
         "VALUES ('" + addNew.id + "', '" +addNew.name + "', '" + addNew.description + "', " + addNew.dur_min +", " + addNew.dur_max +");"
         
         await pool.query(query);
@@ -73,7 +73,16 @@ async function insertDefaultCourse(){
     }
 }
 
-export async function load({params}){
+export async function load({cookies, params}){
+    const user = {
+        id: cookies.get('userId'),
+        username: cookies.get('user'),
+        isAdmin: cookies.get('userIsAdmin')
+    };
+    if(!user.id){
+        throw redirect(307, '/')
+    }
+
     if(parseInt(params.id) === 0){
         addNew.id = uuidv4();
         await insertDefaultCourse();
@@ -97,7 +106,7 @@ export const actions = {
         };
         val.description = converter.stringToHtml(val.description);
         try{
-            let query = "UPDATE frm.Courses "+
+            let query = "UPDATE Courses "+
             "SET Title = '" + val.name + "', " +
             "Descript = '" + val.description + "', " +
             "DurMin = " + val.dur_min + ", " +
@@ -118,7 +127,7 @@ export const actions = {
             name: data.get('module-title'),
         };
         try{
-            let query = "UPDATE frm.Modules "+
+            let query = "UPDATE Modules "+
             "SET Title = '" + val.name + "' " +
             "WHERE ID = '" + val.id + "';";
 
@@ -132,7 +141,7 @@ export const actions = {
         const data = await request.formData();
         const moduleId = data.get('module-id-delete');
         try{
-            let query = "UPDATE frm.Modules " +
+            let query = "UPDATE Modules " +
             "SET isDeleted = TRUE " +
             "WHERE ID = '" + moduleId + "';";
             await pool.query(query);

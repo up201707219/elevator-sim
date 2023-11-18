@@ -7,7 +7,7 @@
     
     export let data;
     export let form;
-    
+
     function toggleEdit(){
         editable = !editable;
         if(!editable){
@@ -33,7 +33,9 @@
 
 <div class="container">
     <h1> Cursos </h1>
-    <button class="admin-edit" on:click={toggleEdit}>{editable ? "Concluir" : "Editar"}</button>
+    {#if data.user.isAdmin === "true"}
+        <button class="admin-edit" on:click={toggleEdit}>{editable ? "Concluir" : "Editar"}</button>
+    {/if}
     <div class="container-grid">
         {#each data.lessonModules as module, i}
         {#if editable}
@@ -55,13 +57,13 @@
             {message[i]}
             <div class="completion">
                 <span>
-                    {module.lessonsDone}/{module.lessonsTotal}
+                    {module.lessonsDone??0}/{module.lessonsTotal}
                 </span>
-                <progress value={module.lessonsDone} max={module.lessonsTotal} class="completion-bar"></progress>
+                <progress value={module.lessonsDone??0} max={module.lessonsTotal} class="completion-bar"></progress>
             </div>
         </div>
         {:else}
-        <a href="/lessons/{module.id}" class="lessons">
+        <a href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
             
             <img src={module.image} alt="Not found" class="lesson-image">
 
@@ -70,9 +72,9 @@
             </span>
             <div class="completion">
                 <span>
-                    {module.lessonsDone}/{module.lessonsTotal}
+                    {module.lessonsDone??0}/{module.lessonsTotal}
                 </span>
-                <progress value={module.lessonsDone} max={module.lessonsTotal} class="completion-bar"></progress>
+                <progress value={module.lessonsDone??0} max={module.lessonsTotal} class="completion-bar"></progress>
             </div>
         </a>
         {/if}
@@ -125,6 +127,10 @@
         cursor: pointer;
         z-index: 2;
         transition: 0.5s;
+    }
+
+    .lessons.unvisited{
+        opacity: 40%;
     }
     .lessons.edit{
         cursor: default;

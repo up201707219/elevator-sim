@@ -1,5 +1,12 @@
 --------------------------- CREATE QUERIES ----------------------
 
+CREATE TABLE Users (
+   id SERIAL PRIMARY KEY,
+   username varchar(64),
+   pass varchar(64),
+   isAdmin boolean
+);
+
 CREATE TABLE Courses (
     ID varchar(128) PRIMARY KEY,
     Title varchar(100) NOT NULL,
@@ -11,6 +18,13 @@ CREATE TABLE Courses (
     isDeleted boolean DEFAULT FALSE,
     CONSTRAINT duration_positive CHECK (DurMin > 0 AND DurMax > 0),
     CONSTRAINT course_title_notEmpty CHECK ( (Title = '') IS NOT TRUE)
+);
+
+CREATE TABLE User_Courses (
+   User_ID Integer REFERENCES Users(id) ON DELETE CASCADE,
+   Course_ID varchar(128) REFERENCES Courses(id) ON DELETE CASCADE,
+   Completion Integer,
+   PRIMARY KEY (User_ID, Course_ID)
 );
 
 CREATE TABLE Modules (
@@ -70,8 +84,37 @@ CREATE TABLE Question_Images (
 );
 
 ------------------------ INSERT QUERIES ----------------------
+--USERS
+INSERT INTO Users (Username, Pass, isAdmin)
+VALUES (
+    'NoAdmin', 
+    'pass123',
+    FALSE
+ );
+
+INSERT INTO Users (Username, Pass, isAdmin)
+VALUES (
+    'Admin', 
+    'pass123',
+    True
+ );
+
+INSERT INTO User_Courses (User_ID, Course_id, completion)
+VALUES (
+    1, 
+    '1',
+    0
+ );
+
+INSERT INTO User_Courses (User_ID, Course_id, completion)
+VALUES (
+    2, 
+    '2',
+    0
+ );
+
 -- COURSES
-INSERT INTO frm.Courses (ID, Title, Descript, DurMin, DurMax)
+INSERT INTO Courses (ID, Title, Descript, DurMin, DurMax)
 VALUES (
     '1', 
     'Comando do Ascensor',
@@ -80,7 +123,7 @@ VALUES (
     180
  );
 
-INSERT INTO frm.Courses (ID, Title, Descript, DurMin, DurMax)
+INSERT INTO Courses (ID, Title, Descript, DurMin, DurMax)
 VALUES (
     '2', 
     'Cabina',
@@ -90,14 +133,14 @@ VALUES (
  );
 
 -- MODULES
-INSERT INTO frm.Modules (ID, Title, CourseID)
+INSERT INTO Modules (ID, Title, CourseID)
 VALUES (
     '1',
     'Introdução',
     '1'
  );
 
-INSERT INTO frm.Modules (ID, Title, CourseID)
+INSERT INTO Modules (ID, Title, CourseID)
 VALUES (
     '2',
     'Mover o ascensor de andar',
@@ -105,14 +148,14 @@ VALUES (
  );
 
 -- MODULE CONTENT
-INSERT INTO frm.Module_Content (ID, Content, ModuleID)
+INSERT INTO Module_Content (ID, Content, ModuleID)
 VALUES (
     '1',
     'Este comando é o MC12',
     '1'
  );
 
-INSERT INTO frm.Module_Content (ID, Content, ModuleID)
+INSERT INTO Module_Content (ID, Content, ModuleID)
 VALUES (
     '2',
     'Este continua a ser o MC12',
@@ -293,34 +336,59 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
 
 -- GET COURSE DETAILS + MODULES
 SELECT * FROM 
-(SELECT frm.Courses.*, frm.Modules.Title AS module, frm.Modules.ID AS module_id FROM frm.Courses
-LEFT JOIN frm.Modules
-ON frm.Courses.ID = frm.Modules.CourseID
-ORDER BY frm.Modules.position) AS course
+(SELECT Courses.*, Modules.Title AS module, Modules.ID AS module_id FROM Courses
+LEFT JOIN Modules
+ON Courses.ID = Modules.CourseID
+ORDER BY Modules.position) AS course
 WHERE course.ID = '1';
 
 
 -- GET COURSES OVERALL DETAILS
-SELECT frm.Courses.ID, frm.Courses.Title, lessonCount.Total FROM frm.Courses, 
-(SELECT COUNT(frm.Modules.Title) AS Total, frm.Courses.ID FROM frm.Courses
-LEFT JOIN frm.Modules
-ON frm.Modules.courseID = frm.Courses.ID
+SELECT Courses.ID, Courses.Title, lessonCount.Total FROM Courses, 
+(SELECT COUNT(Modules.Title) AS Total, Courses.ID FROM Courses
+LEFT JOIN Modules
+ON Modules.courseID = Courses.ID
 GROUP BY Courses.ID) AS LessonCount
-WHERE lessonCount.ID = frm.Courses.ID
+WHERE lessonCount.ID = Courses.ID  AND Courses.isDeleted IS NOT TRUE 
 
 
 -- GET MODULE CONTENT
-SELECT frm.Module_Content.id, frm.Module_Content.content, frm.Module_Content.page_ind, frm.Modules.ID as moduleid, frm.Modules.title FROM frm.Modules
-LEFT JOIN frm.Module_Content ON frm.Modules.ID = frm.Module_Content.ModuleID
-WHERE frm.Modules.ID = '2';
+SELECT Module_Content.id, Module_Content.content, Module_Content.page_ind, Modules.ID as moduleid, Modules.title FROM Modules
+LEFT JOIN Module_Content ON Modules.ID = Module_Content.ModuleID
+WHERE Modules.ID = '2';
+
+
+-- GET COURSES FINISHED AND UNFINISHED
+SELECT courses.id, courses.title, ac.completion, ac.user_id FROM Courses
+LEFT JOIN (SELECT co.id, co.title, uc.completion, uc.user_id FROM Courses co
+left JOIN User_Courses uc
+ON co.ID = uc.course_id
+Where uc.user_id = 1) as ac
+ON ac.id=courses.id;
+
+-- OVERALL COURSE STATS
+
+SELECT fc.*, cnt.total FROM
+(SELECT courses.id, courses.title, ac.completion, ac.user_id FROM Courses 
+LEFT JOIN (SELECT co.id, co.title, uc.completion, uc.user_id FROM Courses co
+left JOIN User_Courses uc
+ON co.ID = uc.course_id
+Where uc.user_id = 1) as ac
+ON ac.id=courses.id
+WHERE courses.isDeleted is false) as fc
+left join (SELECT COUNT(Modules.Title) AS Total, Courses.ID FROM Courses
+LEFT JOIN Modules
+ON Modules.courseID = Courses.ID
+GROUP BY Courses.ID) as cnt
+ON cnt.id = fc.id;
 
 ------------------------ IMPORTANT UPDATES ----------------------------
 
-UPDATE frm.Courses
+UPDATE Courses
 SET Title = 'Comando do Ascensor'
 WHERE ID = '1';
 
-UPDATE frm.Courses
+UPDATE Courses
 SET Title = 'Cabine 1',
     Descript = 'Uma descrição diferente',
     DurMin = 16,
@@ -328,14 +396,14 @@ SET Title = 'Cabine 1',
     TimeType = 'h'
 WHERE ID = '2';
 
-UPDATE frm.Module_content
+UPDATE Module_content
 SET content = 'algo',
     page_ind = 1,
 WHERE ID = '1';
 
 ------------------------ IMPORTANT DELETES ----------------------------
 
-DELETE FROM frm.Courses
+DELETE FROM Courses
 WHERE ID = 1;
 
  ----------------------- DROP TABLES ------------------------

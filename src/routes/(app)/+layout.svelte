@@ -3,6 +3,8 @@
     import Sidebar from "$lib/Sidebar.svelte";
 
     let hasSidebar = false;
+
+    export let data;
     
     let toggleSidebar;
     let navbarFixed = true;
@@ -17,7 +19,7 @@
         <Navbar navbarFixed={navbarFixed} hasSidebar on:click={onMenuClick}/>
         <Sidebar bind:toggleSidebar={toggleSidebar}/>
     {:else}
-        <Navbar navbarFixed={navbarFixed}/>    
+        <Navbar navbarFixed={navbarFixed} user={data.user}/>    
     {/if}
 
     <br style="margin-bottom: 2rem;">

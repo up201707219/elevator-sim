@@ -18,7 +18,7 @@ let addNew = {
 
 async function insertDefaultModule(){
     try{
-        const query = "INSERT INTO frm.Modules (ID, Title, CourseID)"+
+        const query = "INSERT INTO Modules (ID, Title, CourseID)"+
         "VALUES ('" + addNew.moduleId + "', '" +addNew.moduleTitle + "', '" + addNew.courseId +"');";
         
         await pool.query(query);
@@ -31,7 +31,7 @@ async function insertDefaultModule(){
 async function insertDefaultContent(){
     
         try{
-            const query = "INSERT INTO frm.Module_Content (ID, Content, ModuleID)"+
+            const query = "INSERT INTO Module_Content (ID, Content, ModuleID)"+
             "VALUES ('" + addNew.content[0].id + "', '" +addNew.content[0].context + "', '" + addNew.moduleId +"');";
             
             await pool.query(query);
@@ -43,8 +43,8 @@ async function insertDefaultContent(){
 
 async function getCourseTitle(id){
     try{
-        const query = "SELECT frm.Courses.title FROM frm.Courses "+
-        "WHERE frm.Courses.ID = '" + id + "' ;";
+        const query = "SELECT Courses.title FROM Courses "+
+        "WHERE Courses.ID = '" + id + "' ;";
         const res = await pool.query(query);
         let title = res.rows[0].title;
         return title;
@@ -55,10 +55,10 @@ async function getCourseTitle(id){
 
 async function getContentByModuleID(id){
     try{
-        const query = "SELECT frm.Module_Content.id, frm.Module_Content.content, frm.Module_Content.page_ind, frm.Modules.ID as moduleid, frm.Modules.title FROM frm.Modules "+
-        "LEFT JOIN frm.Module_Content ON frm.Modules.ID = frm.Module_Content.ModuleID  AND frm.Module_Content.isDeleted IS NOT TRUE " +
-        "WHERE frm.Modules.ID = '" + id + "' "+
-        "ORDER BY frm.Module_Content.Page_ind ASC;";
+        const query = "SELECT Module_Content.id, Module_Content.content, Module_Content.page_ind, Modules.ID as moduleid, Modules.title FROM Modules "+
+        "LEFT JOIN Module_Content ON Modules.ID = Module_Content.ModuleID  AND Module_Content.isDeleted IS NOT TRUE " +
+        "WHERE Modules.ID = '" + id + "' "+
+        "ORDER BY Module_Content.Page_ind ASC;";
         const res = await pool.query(query);
 
         let val = {
@@ -108,7 +108,7 @@ export const actions = {
 
         if(val.id === ""){
             try{
-                let query = "INSERT INTO frm.Module_Content (ID, Content, ModuleID) "+
+                let query = "INSERT INTO Module_Content (ID, Content, ModuleID) "+
             "Values( '" + uuidv4() + "', '" + val.content + "', '" + val.moduleId + "');" 
 
             await pool.query(query);
@@ -119,7 +119,7 @@ export const actions = {
         }
         else{
             try{
-                let query = "UPDATE frm.Module_content "+
+                let query = "UPDATE Module_content "+
                 "SET content = '" + val.content + "' " +
                 "WHERE ID = '" + val.id + "';";
     
@@ -139,7 +139,7 @@ export const actions = {
         };
         const nextPage = data.get('next-page');
         try{
-            let query = "INSERT INTO frm.Module_Content (ID, Content, ModuleID) "+
+            let query = "INSERT INTO Module_Content (ID, Content, ModuleID) "+
             "Values( '" + val.id + "', '" + val.content + "', '" + val.moduleId + "');" 
 
             await pool.query(query);

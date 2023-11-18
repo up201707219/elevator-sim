@@ -2,9 +2,12 @@
   import menuIcon from "./assets/svg/menu.svg"
   import logo from "./assets/img/S+_logo.png"
   import searchIcon from "./assets/svg/search.svg"
+  import defaultPfp from "./assets/img/default_pfp.jpg"
 
   export let hasSidebar = false;
   export let navbarFixed = true;
+
+  export let user;
 
   let mobileNavOpen = false;
   function toggleNav(){
@@ -32,19 +35,26 @@
   </div>
   
   <div class="navbar-menu">
-    <a href="/">Início</a>
+    <a href="/home">Início</a>
     <a href="/lessons">Cursos</a>
     <a href="/quiz">Formações</a>
     <a href="/in_construction">Simulador</a>
   </div>
   
   <div class="right">
-      <button><img src={searchIcon} alt="search" class="sidebar-icon" ></button>
+      <!-- <button><img src={searchIcon} alt="search" class="sidebar-icon" ></button> -->
+      <button>{user.username}</button>
+      {#if !user.image}
+        <img class="pfp" src={defaultPfp} alt="">
+      {/if}
   </div>
 </nav>
 
 <style>
   button{
+    position: relative;
+    top:-15px;
+    margin-right: 1rem;
     background: none;
     color: inherit;
     border: none;
@@ -115,6 +125,12 @@
 
 .right{
   margin-right: 20px;
+}
+
+.pfp{
+  max-width: 40px;
+  max-height: 40px;
+  border-radius: 20px;
 }
 
 @media (max-width: 900px){

@@ -6,6 +6,15 @@
     let duration = stringify(data.dur_min, data.dur_max)+data.timeType;
     let mobileDisplay = "lessons";
     let editMode = false;
+    let foo = true;
+    let aux = [{
+        completed: 1,
+        total: 3,
+    },
+    {
+        completed: 0,
+        total: 1,
+    }];
 
     // Duration into string
     function stringify(min, max){;
@@ -29,7 +38,9 @@
 </script>
 
 <main>
-    <button class="edit-button toggle" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
+    {#if data.user.isAdmin === "true"}
+        <button class="edit-button toggle" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
+    {/if}
     
     <!-- mobile subsections -->
     <div class="mobile-nav">
@@ -48,21 +59,27 @@
                 <img src={data.image} alt="mc12" class="course-image">
             </div>
             
+
             <div class="details-context">
+                <h2>Vista geral do curso</h2>
+                <div class="details-content">
                     <p><b>Descrição:</b> {@html data.description}</p>
                     <p><b>Duração:</b> {duration}</p>
                 </div>
-                <div class="details-image">
+                <p>Formador: Gonçalo Resende</p>
+            </div>
+            <div class="details-image">
                 <img src={data.image} alt="mc12" class="course-image">
             </div>
         </div>
         <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
+            <h2>Módulos</h2>
             {#if data.lessons.length === 0}
-            <h2>Não existem módulos para este curso</h2>
+            <h2 class="center">Não existem módulos para este curso</h2>
             {/if}
             {#each data.lessons as lesson, i}
-            <a href="/lessons/{$page.params.id}/{lesson.id}+0">
-                <div class="lesson">
+            <a href={i <= 0 ? ('/lessons/'+ $page.params.id +'/' + lesson.id +'+0') : parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? '' : ('/lessons/'+ $page.params.id +'/' + lesson.id +'+0')}>
+                <div class="lesson {i<=0 ? "":parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? "disabled":""}">
                     <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
                 </div>
             </a>
@@ -83,6 +100,7 @@
                 </div>
                 
                 <div class="details-context">
+                    <h2>Vista geral do curso</h2>
                     <input type="hidden" name="id" value={data.id}>
                     <!-- <input type="hidden" name="title" value={data.name}> -->
                     <label for="description">Descrição: </label>
@@ -105,6 +123,7 @@
             </div>
         </form>
         <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
+            <h2>Módulos</h2>
             {#each data.lessons as lesson, i}
                 <form method="POST" action="?/updateModule">
                     <div class="lesson">
@@ -155,9 +174,14 @@
         margin: 1rem auto 3rem auto;
         width: 80%;
         text-align: start;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid black;
     }
     .details-context{
         margin-right: 2rem;
+    }
+    .details-content{
+        margin-left: 2rem;
     }
     .input-label.title{
         font-size: inherit;
@@ -196,20 +220,32 @@
         border: 1px solid black;
         transform: translateY(-50%);
     }
-    h2{
+    .lessons{
+        width: 80%;
+        margin: auto;
+        border-bottom: 1px solid black;
+    }
+    h2.center{
         text-align: center;
         margin-top: 3rem;
     }
     .lesson{
         position: relative;
-        width: 80%;
+        width: 100%;
         margin:2rem auto 2rem auto;
         padding: 1rem 0rem 1rem 0rem;
-        background-color: rgb(173, 173, 173);
+        background-color: rgb(156, 156, 156);
         border-radius: 10px;
+    }
+    .lesson.disabled{
+        background-color: rgb(190, 190, 190);
+        cursor: default;
     }
     .lesson:hover{
         background-color: rgb(146, 146, 146);
+    }
+    .lesson.disabled:hover{
+        background-color: rgb(190, 190, 190);
     }
     .lesson-content{
         margin-left: min(5%, 2rem);
@@ -218,7 +254,6 @@
         text-decoration: none;
         color: black;
     }
-    
     .edit-button{
         background-color: rgb(48, 209, 43);
         color: white;

@@ -1,18 +1,27 @@
 import { lessonModules } from "./data";
 import { pool } from "$lib/db";
-import { fail } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 
-async function getCourses(){
+async function getCourses(userId){
     try{
-        const query = 'SELECT frm.Courses.ID, frm.Courses.Title, lessonCount.Total FROM frm.Courses, ' + 
-        '(SELECT COUNT(frm.Modules.Title) AS Total, frm.Courses.ID FROM frm.Courses ' +
-        'LEFT JOIN frm.Modules ' +
-        'ON frm.Modules.courseID = frm.Courses.ID AND frm.Modules.isDeleted is NOT TRUE ' +
-        'GROUP BY Courses.ID) AS LessonCount ' +
-        'WHERE lessonCount.ID = frm.Courses.ID AND frm.Courses.isDeleted IS NOT TRUE '+
-        'ORDER BY ID';
+
+        const query = 'SELECT fc.*, cnt.total FROM \n' +
+        '(SELECT courses.id, courses.title, ac.completion, ac.user_id FROM Courses \n' +
+        'LEFT JOIN (SELECT co.id, co.title, uc.completion, uc.user_id FROM Courses co \n' +
+        'left JOIN User_Courses uc \n' +
+        'ON co.ID = uc.course_id \n' +
+        'Where uc.user_id = $1) as ac \n' +
+        'ON ac.id=courses.id \n'+
+        'WHERE courses.isDeleted is false) as fc \n' +
+        'LEFT JOIN (SELECT COUNT(Modules.Title) AS Total, Courses.ID FROM Courses \n'+
+        'LEFT JOIN Modules '+
+        'ON Modules.courseID = Courses.ID \n' +
+        'GROUP BY Courses.ID) as cnt \n' +
+        'ON cnt.id = fc.id '+
+        'ORDER BY fc.completion;';
         
-        const res = await pool.query(query);
+        const values = [userId];
+        const res = await pool.query(query, values);
         let courses = [];
         res.rows.forEach(element => {
             
@@ -20,7 +29,7 @@ async function getCourses(){
                 id: element.id,
                 name: element.title,
                 image: lessonModules[0].image,
-                lessonsDone: 0,
+                lessonsDone: element.completion,
                 lessonsTotal: element.total
             });
         });
@@ -30,9 +39,17 @@ async function getCourses(){
     }
 }
 
-export async function load({}){
-    
-    let modules = await getCourses();
+export async function load({cookies}){
+    const user = {
+        id: cookies.get('userId'),
+        username: cookies.get('user'),
+        isAdmin: cookies.get('userIsAdmin')
+    };
+    if(!user.id){
+        throw redirect(307, '/')
+    }
+
+    let modules = await getCourses(user.id);
 
     return {
         lessonModules: modules.map((module)=>({
@@ -40,7 +57,8 @@ export async function load({}){
             name: module.name,
             image: module.image,
             lessonsDone: module.lessonsDone,
-            lessonsTotal: module.lessonsTotal
+            lessonsTotal: module.lessonsTotal,
+            user: user
         }))
     };
 }
@@ -53,7 +71,7 @@ export const actions = {
             name: data.get('lesson-name')
         };
         try{
-            const query = "UPDATE frm.Courses " +
+            const query = "UPDATE Courses " +
             "SET Title = '" + val.name + "' " +
             "WHERE ID = '" + val.id + "';";
             
@@ -70,7 +88,7 @@ export const actions = {
         const data = await request.formData();
         const lessonId = data.get('id');
         try{
-            let query = "UPDATE frm.Courses " +
+            let query = "UPDATE Courses " +
             "SET isDeleted = TRUE " +
             "WHERE ID = '" + lessonId + "';";
             await pool.query(query);
