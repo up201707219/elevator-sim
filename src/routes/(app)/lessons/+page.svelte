@@ -67,12 +67,17 @@
             
             <img src={module.image} alt="Not found" class="lesson-image">
 
-            <span style="margin-bottom: 2rem; padding:2px">
+            <span style="margin: 0rem 0rem 2rem 3rem; padding:2px">
                 {module.name}
             </span>
             <div class="completion">
-                <span>
-                    {module.lessonsDone??0}/{module.lessonsTotal}
+                <span style="margin: 0rem 0rem 0rem 3rem; padding:2px; font-size: 10pt">
+                    {#if !module.lessonsDone}
+                        1%
+                    {:else}
+                        {parseInt(module.lessonsDone*100/module.lessonsTotal)}%
+                    {/if}
+                    Concluido
                 </span>
                 <progress value={module.lessonsDone??0} max={module.lessonsTotal} class="completion-bar"></progress>
             </div>
@@ -112,7 +117,7 @@
         margin: auto;
         margin-bottom: 2rem;
         margin-top: 2rem;
-        width: 82%;
+        width: 86%;
         max-height: 26rem;
         overflow: hidden;
         background-color: white;
@@ -122,7 +127,7 @@
         background-color: rgb(255, 255, 255);
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: start;
         justify-content: stretch;
         cursor: pointer;
         z-index: 2;
@@ -177,7 +182,7 @@
     }
     .completion{
         width: 100%;
-        text-align: center;
+        text-align: start;
         margin-bottom: 1.5rem;
         margin-top: auto;
         display: flex;

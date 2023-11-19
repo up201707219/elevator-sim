@@ -21,8 +21,6 @@
     {:else}
         <Navbar navbarFixed={navbarFixed} user={data.user}/>    
     {/if}
-
-    <br style="margin-bottom: 2rem;">
     <slot/>
     <br style="margin-bottom: 3rem;">
     <div class="footer">
@@ -36,6 +34,7 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        overflow-x: hidden;
         margin: 0;
         padding: 0;
     }

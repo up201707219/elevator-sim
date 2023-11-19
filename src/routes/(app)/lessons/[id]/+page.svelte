@@ -1,20 +1,30 @@
 <script>
     import {page} from "$app/stores";
     import * as converter from "$lib/stringHtmlConverter";
+    import quizImg from "$lib/assets/img/quiz.png";
+    import certificateImg from "$lib/assets/img/certificate.png";
 
     export let data;
     let duration = stringify(data.dur_min, data.dur_max)+data.timeType;
     let mobileDisplay = "lessons";
     let editMode = false;
-    let foo = true;
     let aux = [{
-        completed: 1,
+        completed: 3,
         total: 3,
+    },
+    {
+        completed: 1,
+        total: 2,
     },
     {
         completed: 0,
         total: 1,
-    }];
+    },
+    {
+        completed: 0,
+        total: 1,
+    },
+    ];
 
     // Duration into string
     function stringify(min, max){;
@@ -79,11 +89,29 @@
             {/if}
             {#each data.lessons as lesson, i}
             <a href={i <= 0 ? ('/lessons/'+ $page.params.id +'/' + lesson.id +'+0') : parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? '' : ('/lessons/'+ $page.params.id +'/' + lesson.id +'+0')}>
-                <div class="lesson {i<=0 ? "":parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? "disabled":""}">
+                <div class="lesson {aux[i].completed===0?"" : parseFloat(aux[i].completed/aux[i].total)<1?"orange":"green"} {i===0 ? "":parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? "disabled":""}">
                     <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
                 </div>
             </a>
             {/each}
+        </div>
+        <div class="lessons">
+            <h2>Teste</h2>
+            <div class="quiz-content">
+                <a href="{$page.url.pathname}/exercise=0">
+                    <img class="quiz-content-image" src={quizImg} alt="">
+                    <span class="quiz-content-text">Sem nota atribuida</span>
+                </a>
+            </div>
+        </div>
+        <div class="lessons">
+            <h2>Certificado</h2>
+            <div class="quiz-content">
+                <a href={$page.url}>
+                    <img class="quiz-content-image" src={certificateImg} alt="">
+                    <span class="quiz-content-text"></span>
+                </a>
+            </div>
         </div>
     </div>
     
@@ -175,6 +203,7 @@
         width: 80%;
         text-align: start;
         padding-bottom: 2rem;
+        border-top: 1px solid black;
         border-bottom: 1px solid black;
     }
     .details-context{
@@ -223,6 +252,7 @@
     .lessons{
         width: 80%;
         margin: auto;
+        padding-bottom: 1rem;
         border-bottom: 1px solid black;
     }
     h2.center{
@@ -241,11 +271,23 @@
         background-color: rgb(190, 190, 190);
         cursor: default;
     }
+    .lesson.green{
+        background-color: green;
+    }
+    .lesson.orange{
+        background-color: orange;
+    }
     .lesson:hover{
         background-color: rgb(146, 146, 146);
     }
     .lesson.disabled:hover{
         background-color: rgb(190, 190, 190);
+    }
+    .lesson.green:hover{
+        background-color: rgb(0, 224, 0);
+    }
+    .lesson.orange:hover{
+        background-color: rgb(253, 187, 64);
     }
     .lesson-content{
         margin-left: min(5%, 2rem);
@@ -253,6 +295,20 @@
     a{
         text-decoration: none;
         color: black;
+    }
+    .quiz-content{
+        width: fit-content;
+        margin-left: 2rem;
+        position: relative;
+    }
+    .quiz-content-image{
+        max-width: 60px;
+        max-height: 60px;
+    }
+    .quiz-content-text{
+        position: relative;
+        top: -20px;
+        margin-left: 1rem;
     }
     .edit-button{
         background-color: rgb(48, 209, 43);
@@ -269,7 +325,7 @@
     }
 
     .edit-button.toggle{
-        margin:3rem 50% 0rem 50%;
+        margin:1rem 50% 0rem 50%;
     }
     .module-edit-buttons{
         display: flex;

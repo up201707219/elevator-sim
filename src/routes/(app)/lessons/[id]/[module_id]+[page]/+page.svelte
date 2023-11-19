@@ -18,7 +18,9 @@
 </script>
 
 <main>
-    <button class="edit-button" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
+    {#if data.user.isAdmin === "true"}
+        <button class="edit-button" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
+    {/if}
     {#if !editMode}
     <div class="index-nav">
         <a href="/lessons">Cursos</a> / <a href="/lessons/{$page.params.id}">{data.courseTitle}</a>
@@ -92,7 +94,8 @@
     }
 
     .index-nav{
-        margin-left: 7rem ;
+        margin-left: 7rem;
+        margin-top: 2rem;
     }
 
     .module-content{

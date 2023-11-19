@@ -1,21 +1,50 @@
 <script>
-    export let data
+
 </script>
 
 <main>
     <div class="container">
-        <h1>Sobre o Software</h1>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam eveniet voluptate perspiciatis reiciendis dolorum cum accusantium laudantium porro, ea aliquam voluptatum, minima voluptatibus quod maxime consequuntur numquam totam maiores laborum?
+        <div class="introduction">
+            <h1>Bem-Vindo à plataforma de formação da Schmitt-Elevadores</h1>
+        </div>
+        <div class="description">
+            <p>
+                Esta plataforma destina-se ao desenvolvimento de competências dos técnicos de manutenção da Schmitt-Elevadores,
+                 aqui vai poder encontrar vários cursos para desenvolver as suas competências na manutenção de elevadores.
+                  Tem acesso também ao simulador de avarias onde pode praticar a resolução de avarias simuladas pelo formador, de modo a replicar situações reais.
+            </p>
+        </div>
     </div>
-    <h1>{data.user.username}: isAdmin = {data.user.isAdmin}</h1>
 </main>
 
 <style>
+    main{
+        padding: 0;
+        margin: 0;
+    }
     .container{
+        width: 100%;
+        margin: -1.5rem auto 0 auto;
+        padding: 0;
+    }
+
+    .introduction{
+        background-color: black;
+        color: white;
+        height: 10rem;
+        width: 100%;
+    }
+    .introduction h1{
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 23pt;
+    }
+    .description{
         width: 80%;
-        margin: 2rem;
         margin: auto;
-        margin-top: 2rem;
+        font-size: 16pt;
+        text-align: end;
     }
     h1{
         text-align: center;

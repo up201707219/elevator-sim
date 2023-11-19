@@ -81,7 +81,15 @@ async function getContentByModuleID(id){
     }
 }
 
-export async function load({params}){
+export async function load({cookies, params}){
+    const user = {
+        id: cookies.get('userId'),
+        username: cookies.get('user'),
+        isAdmin: cookies.get('userIsAdmin')
+    };
+    if(!user.id){
+        throw redirect(307, '/')
+    }
     if(parseInt(params.module_id) === 0){
         addNew.courseId = params.id;
         addNew.moduleId = uuidv4();
@@ -92,6 +100,7 @@ export async function load({params}){
     }
     let module = await getContentByModuleID(params.module_id);
     module.courseTitle = await getCourseTitle(params.id);
+    module.user = user;
     return module;
 }
 
