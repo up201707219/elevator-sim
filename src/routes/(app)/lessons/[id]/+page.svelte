@@ -90,7 +90,7 @@
             <h2 class="center">Não existem módulos para este curso</h2>
             {/if}
             {#each data.lessons as lesson, i}
-            <a href={i <= 0 ? ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+0') : parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? '' : ('/lessons/'+ i + ':' + $page.params.id +'/' + lesson.id +'+0')}>
+            <a href={i <= 0 ? ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+0') : parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? '' : ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+0')}>
                 <div class="lesson {aux[i].completed===0?"" : parseFloat(aux[i].completed/aux[i].total)<1?"orange":"green"} {i===0 ? "":parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? "disabled":""}">
                     <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
                 </div>
