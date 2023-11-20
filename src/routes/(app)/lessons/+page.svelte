@@ -63,19 +63,19 @@
             </div>
         </div>
         {:else}
-        <a href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
+        <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
             
             <img src={module.image} alt="Not found" class="lesson-image">
 
-            <span style="margin: 0rem 0rem 2rem 3rem; padding:2px">
+            <span style="margin: 0rem 0rem 1rem 3rem; padding:2px">
                 {module.name}
             </span>
             <div class="completion">
                 <span style="margin: 0rem 0rem 0rem 3rem; padding:2px; font-size: 10pt">
-                    {#if !module.lessonsDone}
+                    {#if module.lessonsDone === null}
                         1%
                     {:else}
-                        {parseInt(module.lessonsDone*100/module.lessonsTotal)}%
+                        {parseInt(module.lessonsTotal) === 0 ? "0" : parseInt(module.lessonsDone*100/module.lessonsTotal)}%
                     {/if}
                     Concluido
                 </span>
@@ -176,9 +176,9 @@
     .lesson-image{
         min-width: 100%;
         width: auto;
-        height: 12rem;
+        max-height: 10rem;
         text-align: center;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
     }
     .completion{
         width: 100%;

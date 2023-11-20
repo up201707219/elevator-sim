@@ -48,9 +48,6 @@
 </script>
 
 <main>
-    {#if data.user.isAdmin === "true"}
-        <button class="edit-button toggle" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
-    {/if}
     
     <!-- mobile subsections -->
     <div class="mobile-nav">
@@ -58,6 +55,11 @@
         <button class="mobile-button {(mobileDisplay === "details")? "active":""}" on:click={() => updateMobileDisplay("details")}>Detalhes</button>
     </div>
 
+    {#if data.user.isAdmin === "true"}
+        <div class="admin-button">
+            <button class="edit-button toggle" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
+        </div>
+    {/if}
     
     {#if !editMode}
     <div class="mobile-content">
@@ -88,7 +90,7 @@
             <h2 class="center">Não existem módulos para este curso</h2>
             {/if}
             {#each data.lessons as lesson, i}
-            <a href={i <= 0 ? ('/lessons/'+ $page.params.id +'/' + lesson.id +'+0') : parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? '' : ('/lessons/'+ $page.params.id +'/' + lesson.id +'+0')}>
+            <a href={i <= 0 ? ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+0') : parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? '' : ('/lessons/'+ i + ':' + $page.params.id +'/' + lesson.id +'+0')}>
                 <div class="lesson {aux[i].completed===0?"" : parseFloat(aux[i].completed/aux[i].total)<1?"orange":"green"} {i===0 ? "":parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? "disabled":""}">
                     <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
                 </div>
@@ -169,7 +171,7 @@
                     </div>
                 </form>
             {/each}
-            <a data-sveltekit-reload href="/lessons/{data.id}/0+0">
+            <a data-sveltekit-reload href="/lessons/{data.id}/{data.lesson.length}:0+0">
                 <div class="lesson">
                     <div class="lesson-content">Adicionar Módulo</div>
                 </div>
@@ -310,6 +312,9 @@
         top: -20px;
         margin-left: 1rem;
     }
+    .admin-button{
+        text-align: center;
+    }
     .edit-button{
         background-color: rgb(48, 209, 43);
         color: white;
@@ -323,9 +328,8 @@
         padding: 5px 10px;
         cursor: pointer;
     }
-
     .edit-button.toggle{
-        margin:1rem 50% 0rem 50%;
+        margin:1rem auto 0rem auto;
     }
     .module-edit-buttons{
         display: flex;

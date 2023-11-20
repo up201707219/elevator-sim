@@ -27,6 +27,7 @@ CREATE TABLE User_Courses (
    PRIMARY KEY (User_ID, Course_ID)
 );
 
+
 CREATE TABLE Modules (
     ID varchar(128) PRIMARY KEY,
     Title varchar(100) NOT NULL,
@@ -40,8 +41,16 @@ CREATE TABLE Modules (
     CONSTRAINT module_title_notEmpty CHECK ( (Title = '') IS NOT TRUE)
 );
 
+CREATE TABLE User_Modules (
+   User_ID Integer REFERENCES Users(id) ON DELETE CASCADE,
+   Module_ID varchar(128) REFERENCES Modules(id) ON DELETE CASCADE,
+   Completion Integer,
+   PRIMARY KEY (User_ID, Module_ID)
+);
+
 CREATE TABLE Module_Content (
     ID varchar(128) PRIMARY KEY,
+    title varchar(128),
     Content varchar(65535),
     Page_ind SERIAL,
     isDeleted boolean DEFAULT FALSE,
@@ -99,20 +108,6 @@ VALUES (
     True
  );
 
-INSERT INTO User_Courses (User_ID, Course_id, completion)
-VALUES (
-    1, 
-    '1',
-    0
- );
-
-INSERT INTO User_Courses (User_ID, Course_id, completion)
-VALUES (
-    2, 
-    '2',
-    0
- );
-
 -- COURSES
 INSERT INTO Courses (ID, Title, Descript, DurMin, DurMax)
 VALUES (
@@ -130,6 +125,22 @@ VALUES (
     'Uma descrição',
     15,
     30
+ );
+
+ --USER COURSE PROGRESSION
+
+ INSERT INTO User_Courses (User_ID, Course_id, completion)
+VALUES (
+    1, 
+    '1',
+    1
+ );
+
+INSERT INTO User_Courses (User_ID, Course_id, completion)
+VALUES (
+    2, 
+    '2',
+    0
  );
 
 -- MODULES
@@ -407,4 +418,4 @@ DELETE FROM Courses
 WHERE ID = 1;
 
  ----------------------- DROP TABLES ------------------------
- DROP TABLE IF EXISTS Courses, Modules, Module_Content, Question_Dev, Question_Menu, Menu_Images, Question_Images; 
+ DROP TABLE IF EXISTS Courses, Modules, Users, User_Courses, User_Modules, Module_Content, Question_Dev, Question_Menu, Menu_Images, Question_Images; 

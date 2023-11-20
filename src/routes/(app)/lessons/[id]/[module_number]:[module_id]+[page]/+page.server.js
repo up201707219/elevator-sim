@@ -10,6 +10,7 @@ let addNew = {
     content:[
         {
             id: 0,
+            title: "Título",
             context: "Aqui fica o conteúdo do módulo da 1ª página é possivel adicionar mais páginas",
             page_ind: 1
         }
@@ -31,8 +32,8 @@ async function insertDefaultModule(){
 async function insertDefaultContent(){
     
         try{
-            const query = "INSERT INTO Module_Content (ID, Content, ModuleID)"+
-            "VALUES ('" + addNew.content[0].id + "', '" +addNew.content[0].context + "', '" + addNew.moduleId +"');";
+            const query = "INSERT INTO Module_Content (ID, Title, Content, ModuleID)"+
+            "VALUES ('" + addNew.content[0].id + "', '"+ addNew.content[0].title+"', '" +addNew.content[0].context + "', '" + addNew.moduleId +"');";
             
             await pool.query(query);
         }
@@ -148,9 +149,10 @@ export const actions = {
         };
         const nextPage = data.get('next-page');
         try{
-            let query = "INSERT INTO Module_Content (ID, Content, ModuleID) "+
-            "Values( '" + val.id + "', '" + val.content + "', '" + val.moduleId + "');" 
+            let query = "INSERT INTO Module_Content (ID, title, Content, ModuleID) "+
+            "Values( '" + val.id + "', 'Titulo Exemplo', '" + val.content + "', '" + val.moduleId + "');" 
 
+            console.log(query);
             await pool.query(query);
         }
         catch(err){

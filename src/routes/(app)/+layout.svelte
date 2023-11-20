@@ -22,7 +22,6 @@
         <Navbar navbarFixed={navbarFixed} user={data.user}/>    
     {/if}
     <slot/>
-    <br style="margin-bottom: 3rem;">
     <div class="footer">
         <span class="author">@author: Gonçalo Resende</span>
     </div>
@@ -34,7 +33,7 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
-        overflow-x: hidden;
+        /* overflow-x: hidden; */
         margin: 0;
         padding: 0;
     }

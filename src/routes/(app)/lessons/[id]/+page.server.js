@@ -73,6 +73,20 @@ async function insertDefaultCourse(){
     }
 }
 
+async function updateVisited(userId, courseId){
+    try{
+        const query = 'INSERT INTO User_Courses (User_ID, Course_ID, Completion) '+
+        'VALUES ($1, $2, 0) '+
+        'ON CONFLICT DO NOTHING;';
+        
+        const values = [userId, courseId]
+        await pool.query(query, values);
+    }
+    catch (error){
+        console.error(error);
+    }
+}
+
 export async function load({cookies, params}){
     const user = {
         id: cookies.get('userId'),
@@ -88,6 +102,8 @@ export async function load({cookies, params}){
         await insertDefaultCourse();
         throw redirect(302, "/lessons/"+addNew.id);
     }
+
+    await updateVisited(user.id, params.id);
     //let module = lessonModules.find((element) => element.id === parseInt(params.id));
     let module = await getCourseByID(params.id);
     return module;
