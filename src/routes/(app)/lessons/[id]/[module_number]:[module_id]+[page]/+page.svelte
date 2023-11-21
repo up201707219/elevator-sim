@@ -1,7 +1,5 @@
 <script>
    import {page} from "$app/stores";
-   import leftArrow from "$lib/assets/svg/left-arrow.svg";
-   import rightArrow from "$lib/assets/svg/right-arrow.svg";
    import closeIcon from "$lib/assets/svg/close_icon.svg";
    import * as converter from "$lib/stringHtmlConverter";
 
@@ -21,7 +19,7 @@
 <main>
     <div class="top-close-bar">
         <a href="./" style="margin-right: 1rem;"><img class="close-lesson" src={closeIcon} alt="x"></a>
-        <span>Módulo {parseInt($page.params.module_number +1)}: {data.moduleTitle}</span>
+        <span>Módulo {parseInt($page.params.module_number) +1}: {data.moduleTitle}</span>
     </div>
     {#if data.user.isAdmin === "true"}
         <div class="admin-button">
@@ -32,7 +30,7 @@
     
         <div class="nav-pages">
             {#each data.content as content, i}
-                <a href= {i<=$page.params.page? "/lessons/"+$page.params.id+"/"+$page.params.module_number+":"+data.moduleId+"+"+i:"/lessons/"+$page.params.id+"/"+$page.params.module_number+":"+data.moduleId+"+"+i}>
+                <a data-sveltekit-reload href= {i<=$page.params.page? "/lessons/"+$page.params.id+"/"+$page.params.module_number+":"+data.moduleId+"+"+i:"/lessons/"+$page.params.id+"/"+$page.params.module_number+":"+data.moduleId+"+"+i}>
                     <div class="page-opt">
                         <div class="subchapter {$page.params.page <= i ? "active":""}">
                             
@@ -42,7 +40,7 @@
                                 </span> 
                             </div>
                             <div class="subchapter-title">
-                                - Titulo Exemplo {content.page_ind}
+                                {content.title}
                             </div>
                             
                         </div>
@@ -51,7 +49,7 @@
             {/each}
         </div>
         <div class="container">
-            <h1>Módulo {parseInt($page.params.module_number +1)}: {data.moduleTitle ?? ""}</h1>
+            <h1>Módulo {parseInt($page.params.module_number) +1}: {data.moduleTitle ?? ""}</h1>
             {#if parseInt($page.params.page) > 0}
             <a href="/lessons/{$page.params.id}/{$page.params.module_number}:{data.moduleId}+{parseInt($page.params.page)-1}">
                 <div class="next-page back">
@@ -60,7 +58,7 @@
             </a>
             {/if}
             <div class="module-content">
-                <h2>{parseInt($page.params.page)+1} - Titulo Exemplo {displayedContent.page_ind}</h2>
+                <h2>{parseInt($page.params.page)+1} - {displayedContent.title}</h2>
                 <div class="module-text">
                     {@html displayedContent.context ?? ""}
                 </div>

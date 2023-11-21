@@ -16,6 +16,7 @@ async function getCourses(userId){
         'LEFT JOIN (SELECT COUNT(Modules.Title) AS Total, Courses.ID FROM Courses \n'+
         'LEFT JOIN Modules '+
         'ON Modules.courseID = Courses.ID \n' +
+        'WHERE Modules.isDeleted is false \n' +
         'GROUP BY Courses.ID) as cnt \n' +
         'ON cnt.id = fc.id '+
         'ORDER BY fc.completion;';
@@ -30,7 +31,7 @@ async function getCourses(userId){
                 name: element.title,
                 image: lessonModules[0].image,
                 lessonsDone: element.completion,
-                lessonsTotal: element.total
+                lessonsTotal: element.total??0
             });
         });
         return courses;

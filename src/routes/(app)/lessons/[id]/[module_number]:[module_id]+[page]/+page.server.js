@@ -42,6 +42,32 @@ async function insertDefaultContent(){
         }
 }
 
+async function insertCompletion(userId, moduleId){
+    try {
+        const query = 'INSERT INTO User_Modules (user_ID, module_ID, completion) '+
+        'VALUES($1, $2, 1)'
+
+        const values = [userId, moduleId];
+        await pool.query(query, values);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function updateCompletion(userId, moduleId, completion){
+    try {
+        const query = 'UPDATE User_Modules '+
+        'SET completion = $1 '+
+        'WHERE user_id = $2 AND module_id = $3;';
+
+        const values = [completion, userId, moduleId];
+
+        await pool.query(query, values);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 async function getCourseTitle(id){
     try{
         const query = "SELECT Courses.title FROM Courses "+
@@ -56,7 +82,7 @@ async function getCourseTitle(id){
 
 async function getContentByModuleID(id){
     try{
-        const query = "SELECT Module_Content.id, Module_Content.content, Module_Content.page_ind, Modules.ID as moduleid, Modules.title FROM Modules "+
+        const query = "SELECT Module_Content.id, Module_Content.content, Module_Content.title as content_title, Module_Content.page_ind, Modules.ID as moduleid, Modules.title FROM Modules "+
         "LEFT JOIN Module_Content ON Modules.ID = Module_Content.ModuleID  AND Module_Content.isDeleted IS NOT TRUE " +
         "WHERE Modules.ID = '" + id + "' "+
         "ORDER BY Module_Content.Page_ind ASC;";
@@ -71,6 +97,7 @@ async function getContentByModuleID(id){
         res.rows.forEach(element => {
             let content = {
                 id: element.id,
+                title: element.content_title??"",
                 context: element.content,
                 page_ind: element.page_ind
             };
@@ -78,6 +105,22 @@ async function getContentByModuleID(id){
         });
         return val;
     }catch (error){
+        console.error(error);
+    }
+}
+
+async function getCompletion(userId, moduleId){
+    try {
+        const query = 'SELECT * FROM User_Modules '+
+        'WHERE User_ID = $1 AND Module_ID = $2;';
+
+        const values = [userId, moduleId];
+
+        const res = await pool.query(query, values);
+        
+        return res.rows[0].completion??0;
+        
+    } catch (error) {
         console.error(error);
     }
 }
@@ -91,15 +134,29 @@ export async function load({cookies, params}){
     if(!user.id){
         throw redirect(307, '/')
     }
+    if(params.page < 0){
+        await insertCompletion(user.id, params.module_id);
+        throw redirect(302, params.module_number+':'+params.module_id+"+0")
+    }
     if(parseInt(params.module_id) === 0){
         addNew.courseId = params.id;
         addNew.moduleId = uuidv4();
         addNew.content[0].id = uuidv4();
         await insertDefaultModule();
         await insertDefaultContent();
-        throw redirect(302, "/lessons/"+params.id+"/"+addNew.moduleId+"+"+"0");
+        throw redirect(302, "/lessons/"+params.id+"/"+params.module_number+":"+addNew.moduleId+"+"+"0");
     }
+
     let module = await getContentByModuleID(params.module_id);
+    module.completion = await getCompletion(user.id, params.module_id);
+    if(module.completion > module.content.length || parseInt(params.page)>(module.content.length-1)){
+        module.completion = module.content.length;
+        await updateCompletion(user.id, params.module_id, module.completion);
+        throw redirect(302, params.module_number+':'+params.module_id+"+"+(module.content.length-1))
+    }
+    if(parseInt(params.page) > (module.completion-1)){
+        await updateCompletion(user.id, params.module_id, parseInt(params.page)+1);
+    }
     module.courseTitle = await getCourseTitle(params.id);
     module.user = user;
     return module;

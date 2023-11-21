@@ -1,7 +1,6 @@
 <script>
     
     import { lessonModules } from "./data.js"
-    //import { pool } from "$lib/db";
     import deleteIcon from "$lib/assets/svg/trash.svg"
     import editIcon from "$lib/assets/svg/pencil.svg"
     
@@ -27,7 +26,7 @@
 
 
 
-    let editable = false;
+    let editable = data.user.isAdmin === 'true';
 
 </script>
 

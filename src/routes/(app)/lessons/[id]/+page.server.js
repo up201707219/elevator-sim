@@ -17,15 +17,9 @@ let addNew = {
     image: null,
 };
 
-async function getCourseByID(id){
+async function getCourseByID(userId, id){
     try{
-        // const query = 'SELECT * FROM' + 
-        //     "(SELECT Courses.*, Modules.Title AS module, Modules.ID AS module_id FROM Courses "+
-        //     "LEFT JOIN Modules "+
-        //     "ON Courses.ID = Modules.CourseID " +
-        //     "WHERE Modules.isDeleted is NOT TRUE " +
-        //     "ORDER BY Modules.position ASC) AS course "+
-        //     "WHERE course.ID = '" + id + "' ;";
+        
         let query = "SELECT * FROM Courses " +
         "WHERE ID = '" + id +"';";
         let res = await pool.query(query);
@@ -40,15 +34,34 @@ async function getCourseByID(id){
             //image: res.rows[0].imageid,
             image: lessonModules[0].image,
         }
-        query = "SELECT * FROM Modules " +
-        "WHERE courseId = '" + id + "' AND isDeleted is NOT TRUE " +
-        "ORDER BY position ASC;";
-        res = await pool.query(query);
+        // query = "SELECT * FROM Modules " +
+        // "WHERE courseId = '" + id + "' AND isDeleted is NOT TRUE " +
+        // "ORDER BY position ASC;";
+
+        query = 'SELECT fc.*, cnt.total FROM \n' +
+        '(SELECT modules.id, modules.title, ac.completion, ac.user_id FROM Modules \n' +
+        'LEFT JOIN (SELECT co.id, co.title, uc.completion, uc.user_id FROM Modules co \n' +
+        'left JOIN User_Modules uc \n' +
+        'ON co.ID = uc.module_id \n' +
+        'Where uc.user_id = $1) as ac \n' +
+        'ON ac.id=modules.id \n'+
+        'WHERE modules.isDeleted is false and modules.courseID = $2) as fc \n' +
+        'LEFT JOIN (SELECT COUNT(Module_Content.Title) AS Total, Modules.ID FROM Modules \n'+
+        'LEFT JOIN Module_Content '+
+        'ON Module_content.ModuleID = Modules.ID \n' +
+        'GROUP BY Modules.ID) as cnt \n' +
+        'ON cnt.id = fc.id '+
+        'ORDER BY fc.id;';
+        
+        const values = [userId, id]
+        res = await pool.query(query, values);
         res.rows.forEach(element => {
             if(element.module !== null){
                 let aux = {
                     title: element.title,
-                    id: element.id
+                    id: element.id,
+                    completion: (element.completion??0),
+                    total: parseInt(element.total)
                 }
                 course.lessons.push(aux);
             }
@@ -105,7 +118,7 @@ export async function load({cookies, params}){
 
     await updateVisited(user.id, params.id);
     //let module = lessonModules.find((element) => element.id === parseInt(params.id));
-    let module = await getCourseByID(params.id);
+    let module = await getCourseByID(user.id, params.id);
     return module;
 }
 

@@ -18,6 +18,10 @@
         <hr>
 
         <h2>Cursos Disponíveis</h2>
+        {#if !data.lessonModules.length}
+            <br style="margin: 1rem;">
+            <h1>Não existem cursos por se inscrever</h1>
+        {/if}
         <div class="container-grid">
             {#each data.lessonModules as module, i}
                 <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">

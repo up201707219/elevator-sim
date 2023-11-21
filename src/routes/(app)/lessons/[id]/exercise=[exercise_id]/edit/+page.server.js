@@ -59,8 +59,6 @@ export const actions = {
                 insertImage(val.id, val.image);
             }
         }
-        
-        //console.log(buffer);
 
         try{
             let query;

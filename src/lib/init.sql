@@ -59,6 +59,7 @@ CREATE TABLE Module_Content (
 
 CREATE TABLE Question_Dev (
     ID varchar(128) PRIMARY KEY,
+    Course_ID varchar(128) REFERENCES Courses(ID) ON DELETE CASCADE,
     Content varchar(100),
     Completion_Time Integer,
     isDeleted boolean DEFAULT FALSE
@@ -157,20 +158,38 @@ VALUES (
     'Mover o ascensor de andar',
     '1'
  );
+ 
+-- USER MODULE PROGRESSION
+ INSERT INTO User_Modules (User_ID, Module_id, completion)
+VALUES (
+    1, 
+    '1',
+    2
+ );
 
 -- MODULE CONTENT
-INSERT INTO Module_Content (ID, Content, ModuleID)
+INSERT INTO Module_Content (ID, title, Content, ModuleID)
 VALUES (
     '1',
+    'Para Começar',
     'Este comando é o MC12',
     '1'
  );
 
-INSERT INTO Module_Content (ID, Content, ModuleID)
+INSERT INTO Module_Content (ID, Title, Content, ModuleID)
 VALUES (
     '2',
+    'Setup inicial',
     'Este continua a ser o MC12',
     '1'
+ );
+
+ INSERT INTO Module_Content (ID, Title, Content, ModuleID)
+VALUES (
+    '3',
+    'Botão de ascender',
+    'Este continua a ser o MC12',
+    '2'
  );
 
 INSERT INTO Question_Dev (ID, Content, Completion_Time)
@@ -390,9 +409,25 @@ WHERE courses.isDeleted is false) as fc
 left join (SELECT COUNT(Modules.Title) AS Total, Courses.ID FROM Courses
 LEFT JOIN Modules
 ON Modules.courseID = Courses.ID
+WHERE Modules.isDeleted is false
 GROUP BY Courses.ID) as cnt
 ON cnt.id = fc.id;
 
+-- OVERALL MODULES STATS
+
+SELECT fc.*, cnt.total FROM
+(SELECT modules.id, modules.title, ac.completion, ac.user_id FROM Modules 
+LEFT JOIN (SELECT co.id, co.title, uc.completion, uc.user_id FROM Modules co
+left JOIN User_Modules uc
+ON co.ID = uc.module_id
+Where uc.user_id = 1) as ac
+ON ac.id=modules.id
+WHERE modules.isDeleted is false) as fc
+left join (SELECT COUNT(Module_Content.Title) AS Total, Modules.ID FROM Modules
+LEFT JOIN Module_Content
+ON Module_content.ModuleID = Modules.ID
+GROUP BY Modules.ID) as cnt
+ON cnt.id = fc.id;
 ------------------------ IMPORTANT UPDATES ----------------------------
 
 UPDATE Courses

@@ -7,7 +7,7 @@
     export let data;
     let duration = stringify(data.dur_min, data.dur_max)+data.timeType;
     let mobileDisplay = "lessons";
-    let editMode = false;
+    let editMode = data.user.isAdmin === 'true';
     let aux = [{
         completed: 3,
         total: 3,
@@ -90,8 +90,8 @@
             <h2 class="center">Não existem módulos para este curso</h2>
             {/if}
             {#each data.lessons as lesson, i}
-            <a href={i <= 0 ? ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+0') : parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? '' : ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+0')}>
-                <div class="lesson {aux[i].completed===0?"" : parseFloat(aux[i].completed/aux[i].total)<1?"orange":"green"} {i===0 ? "":parseFloat(aux[i-1].completed/aux[i-1].total)<1 ? "disabled":""}">
+            <a data-sveltekit-reload href={i <= 0 ? ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+'+(lesson.completion-1)) : parseFloat(data.lessons[i-1].completion/data.lessons[i-1].total)<1 ? '' : ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+'+(lesson.completion-1))}>
+                <div class="lesson {lesson.completion===0?"" : lesson.total===0? "":parseFloat(lesson.completion/lesson.total)<1?"orange":"green"} {i===0 ? "":parseFloat(data.lessons[i-1].completion/data.lessons[i-1].total)<1 ? "disabled":""}">
                     <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
                 </div>
             </a>
@@ -171,7 +171,7 @@
                     </div>
                 </form>
             {/each}
-            <a data-sveltekit-reload href="/lessons/{data.id}/{data.lesson.length}:0+0">
+            <a data-sveltekit-reload href="/lessons/{data.id}/{data.lessons.length}:0+0">
                 <div class="lesson">
                     <div class="lesson-content">Adicionar Módulo</div>
                 </div>
