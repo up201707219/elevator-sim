@@ -5,9 +5,10 @@
     
     let hasEnded = false;
     export let data;
+    let displayedQuestion = data.questions[0];
     
     //--------------TIMER CODE------------------------
-    let original = data.time; // TYPE NUMBER OF SECONDS HERE
+    let original = displayedQuestion.time; // TYPE NUMBER OF SECONDS HERE
     let timer = tweened(original)
 
     setInterval(() => {
@@ -190,10 +191,10 @@
     <div class="container">
             <!--  -->
             <div class="exercise-details">
-                {data.title}
+                {displayedQuestion.title}
                 <br>
                 <br>
-                {#if data.image}
+                {#if displayedQuestion.image}
                     <img class="image-exercise" src="/api/exercise/{$page.params.exercise_id}" alt="não encontrado">
                     <!-- {:else}
                     <span style="border: 1px solid black;">Aqui fica a imagem do exercicio</span> -->

@@ -19,6 +19,7 @@ async function getImageByQuestionId(id){
             data: new Blob([res.rows[0].image_data], {type: res.rows[0].image_type})
         }
         
+        console.log(image.data);
         return image;
     } catch(err) {
         console.error(err);
@@ -41,7 +42,7 @@ export const GET = (async ({params, setHeaders}) => {
         'Content-Type': img.type,
         'Content-Length': img.size.toString(),
         'Last-Modified': new Date(img.lastModified).toUTCString(),
-        'Cache-Control': 'public, max-age=600'
+        'Cache-Control': 'public, no-cache'
     });
 
     return new Response(img.data);

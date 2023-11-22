@@ -8,23 +8,6 @@
     let duration = stringify(data.dur_min, data.dur_max)+data.timeType;
     let mobileDisplay = "lessons";
     let editMode = data.user.isAdmin === 'true';
-    let aux = [{
-        completed: 3,
-        total: 3,
-    },
-    {
-        completed: 1,
-        total: 2,
-    },
-    {
-        completed: 0,
-        total: 1,
-    },
-    {
-        completed: 0,
-        total: 1,
-    },
-    ];
 
     // Duration into string
     function stringify(min, max){;
@@ -99,12 +82,16 @@
         </div>
         <div class="lessons">
             <h2>Teste</h2>
-            <div class="quiz-content">
-                <a href="{$page.url.pathname}/exercise=0">
-                    <img class="quiz-content-image" src={quizImg} alt="">
-                    <span class="quiz-content-text">Sem nota atribuida</span>
-                </a>
-            </div>
+            {#if data.quiz.length === 0}
+                <h2 class="center">Não existe teste para este curso</h2>
+            {:else}
+                <div class="quiz-content">
+                    <a href="{$page.url.pathname}/exercise={data.quiz[0].id}">
+                        <img class="quiz-content-image" src={quizImg} alt="">
+                        <span class="quiz-content-text">Sem nota atribuida</span>
+                    </a>
+                </div>
+            {/if}
         </div>
         <div class="lessons">
             <h2>Certificado</h2>

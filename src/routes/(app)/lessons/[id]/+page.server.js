@@ -31,12 +31,10 @@ async function getCourseByID(userId, id){
             dur_max: res.rows[0].durmax,
             timeType: res.rows[0].timetype,
             lessons: [],
+            quiz: [],
             //image: res.rows[0].imageid,
             image: lessonModules[0].image,
-        }
-        // query = "SELECT * FROM Modules " +
-        // "WHERE courseId = '" + id + "' AND isDeleted is NOT TRUE " +
-        // "ORDER BY position ASC;";
+        };
 
         query = 'SELECT fc.*, cnt.total FROM \n' +
         '(SELECT modules.id, modules.title, ac.completion, ac.user_id FROM Modules \n' +
@@ -53,7 +51,7 @@ async function getCourseByID(userId, id){
         'ON cnt.id = fc.id '+
         'ORDER BY fc.id;';
         
-        const values = [userId, id]
+        let values = [userId, id]
         res = await pool.query(query, values);
         res.rows.forEach(element => {
             if(element.module !== null){
@@ -64,6 +62,24 @@ async function getCourseByID(userId, id){
                     total: parseInt(element.total)
                 }
                 course.lessons.push(aux);
+            }
+        });
+
+        // TODO: Check quiz completion and create quiz table(?)
+        query = 'SELECT * FROM Question_Dev '+
+        'WHERE course_id = $1;';
+        
+        values = [id];
+
+        res = await pool.query(query, values);
+        res.rows.forEach(element => {
+            if(element.id !== null){
+                let aux = {
+                    content: element.content,
+                    id: element.id,
+                    completionTime: element.completion_time
+                }
+                course.quiz.push(aux);
             }
         });
 
@@ -117,7 +133,6 @@ export async function load({cookies, params}){
     }
 
     await updateVisited(user.id, params.id);
-    //let module = lessonModules.find((element) => element.id === parseInt(params.id));
     let module = await getCourseByID(user.id, params.id);
     return module;
 }

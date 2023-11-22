@@ -5,15 +5,19 @@ async function getQuestionById(id){
     try{
         const query = "SELECT qd.*, qi.IMAGE_NAME FROM Question_Dev qd " +
         "left join question_images qi on qd.id = qi.question_id " +
-        "WHERE ID = '" + id + "';";
+        "WHERE Course_id = '" + id + "';";
         const res = await pool.query(query);
 
-        let val = {
-            title: res.rows[0].content,
-            time: res.rows[0].completion_time,
-            image: res.rows[0].image_name
-        };
-        
+        let val = [];
+
+        res.rows.forEach(element => {
+            let aux = {
+                title: element.content,
+                time: element.completion_time,
+                image: element.image_name
+            };
+            val.push(aux);
+        });
         return val;
     }catch (error){
         console.error(error);
@@ -40,8 +44,6 @@ async function getQuestionMenu(id){
             };
             val.push(option);
         });
-        // let decImage = new Blob([image[0].arr], {type: image[0].type});
-        // console.log(decImage);
         return val;
     }catch (error){
         console.error(error);
@@ -49,14 +51,38 @@ async function getQuestionMenu(id){
 }
 
 export async function load({params}){
-    let aux = await getQuestionById(params.exercise_id);
+    let aux = await getQuestionById(params.id);
     let exercise = {
-        title: aux.title,
-        time: aux.time,
-        image: aux.image,
+        questions: aux,
         option: await getQuestionMenu(params.exercise_id)
     };
 
+    //getImageByQuestionId(params.exercise_id);
     return exercise;
 
+}
+
+async function getImageByQuestionId(id){
+    try {
+        const query = 'SELECT * FROM Question_Images '+
+        'WHERE question_id = $1 '+
+        'LIMIT 1';
+
+        const values = [id];
+        
+        const res = await pool.query(query, values);
+
+        let image = {
+            name: res.rows[0].image_name,
+            type: res.rows[0].image_type,
+            lastModified: res.rows[0].image_last_modified,
+            size: res.rows[0].image_size,
+            data: new Blob([res.rows[0].image_data], {type: res.rows[0].image_type})
+        }
+        
+        //console.log(res.rows[0].image_data);
+        return image;
+    } catch(err) {
+        console.error(err);
+    }
 }

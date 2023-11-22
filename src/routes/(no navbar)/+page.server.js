@@ -28,8 +28,6 @@ export const actions = {
             if(res.rows.length === 0){
                 return {invalid: true};
             }
-            console.log(val)
-            console.log(res.rows[0]);
             
             if(val.password !== res.rows[0].pass){
                 return {invalid: true};
@@ -61,7 +59,7 @@ export const actions = {
                 sameSite: 'strict',
                 maxAge: 60*60*24*30
             });
-            throw redirect(303, '/home');
+            //throw redirect(303, '/home');
         }
         catch(err){
             console.error(err);
@@ -69,5 +67,22 @@ export const actions = {
                 error: err.message
             });           
         }
+    },
+
+    logoutUser:  async ({cookies, request}) => {
+        cookies.set('userId', '', {
+            path: '/',
+            expires: new Date(0),
+            });
+
+            cookies.set('user', '', {
+            path: '/',
+            expires: new Date(0),
+            });
+
+            cookies.set('userIsAdmin', '', {
+            path: '/',
+            expires: new Date(0),
+            })     
     }
 }

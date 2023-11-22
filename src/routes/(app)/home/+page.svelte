@@ -20,7 +20,7 @@
         <h2>Cursos Disponíveis</h2>
         {#if !data.lessonModules.length}
             <br style="margin: 1rem;">
-            <h1>Não existem cursos por se inscrever</h1>
+            <h1>Não existem novos cursos para se inscrever</h1>
         {/if}
         <div class="container-grid">
             {#each data.lessonModules as module, i}

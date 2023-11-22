@@ -7,10 +7,12 @@
     let previewImageExercise;
     export let data;
 
+    let displayedQuestion = data.questions[0];
+
     //console.log(data.option[0]);
     
     //--------------TIMER CODE------------------------
-    let timer = data.time; // TYPE NUMBER OF SECONDS HERE
+    let timer = displayedQuestion.time; // TYPE NUMBER OF SECONDS HERE
 
     
 
@@ -108,7 +110,10 @@
 <!-- svelte-ignore a11y-autofocus -->
 <main>
     <div>
-        <a href="{$page.url.pathname}/..">Voltar</a>
+        <a href="{$page.url.pathname}/..">Pré-visualizar</a>
+        <form method="post" action="?/copyExercise">
+            <button type="submit">+ Nova pergunta</button>
+        </form>
     </div>
     <h1>AVARIA</h1>
     
@@ -116,7 +121,7 @@
             <div class="exercise-details">
                 <form method="POST" action="?/updateExercise" enctype="multipart/form-data">
                     <input type="hidden" name="id" value={$page.params.exercise_id}>
-                    <textarea class="details-input" name="title" value={data.title}></textarea>
+                    <textarea class="details-input" name="title" value={displayedQuestion.title}></textarea>
                     <br>
                     <img class="input image-exercise" src={previewImageExercise} alt="imagem da opção"> 
                     <br>

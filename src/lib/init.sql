@@ -192,9 +192,10 @@ VALUES (
     '2'
  );
 
-INSERT INTO Question_Dev (ID, Content, Completion_Time)
+INSERT INTO Question_Dev (ID, Course_ID, Content, Completion_Time)
 VALUES (
-    '0',
+    '1',
+    '1',
     'Apesar de interromper o feixe da cortina fotoelétrica, a porta fecha.',
     120
  );
@@ -204,7 +205,7 @@ VALUES (
  INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Cabine do ascensor',
-    '0',
+    '1',
     'Escolha uma componente da cabine',
     'menu',
     null,
@@ -214,7 +215,7 @@ VALUES (
 INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Porta',
-    '0',
+    '1',
     'Escolha uma componente',
     'menu',
     1,
@@ -224,7 +225,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
 INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Comando de portas',
-    '0',
+    '1',
     'Escolha uma ação',
     'menu',
     2,
@@ -234,7 +235,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
  INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Reparar comando de porta',
-    '0',
+    '1',
     'Reparar comando de porta',
     'answer',
     3,
@@ -244,7 +245,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
  INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Reparar motor',
-    '0',
+    '1',
     'Reparar motor do comando de porta',
     'answer',
     3,
@@ -254,7 +255,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
  INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Reparar encoder',
-    '0',
+    '1',
     'Reparar encoder do comando de porta',
     'answer',
     3,
@@ -264,7 +265,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
  INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Cortina fotoelétrica',
-    '0',
+    '1',
     'Escolha uma componente',
     'menu',
     1,
@@ -274,7 +275,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
  INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Analisar Cabos',
-    '0',
+    '1',
     'Escolha uma ação',
     'menu',
     7,
@@ -284,7 +285,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
  INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Reparar',
-    '0',
+    '1',
     null,
     'answer',
     8,
@@ -294,7 +295,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
 INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Placa de controlo da cortina',
-    '0',
+    '1',
     'Escolha uma ação',
     'menu',
     7,
@@ -304,7 +305,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
  INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Reparar',
-    '0',
+    '1',
     'Reparar placa de controlo da cortina',
     'answer',
     10,
@@ -314,7 +315,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
 INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Reparar cortina fotoelétrica',
-    '0',
+    '1',
     null,
     'answer',
     7,
@@ -324,7 +325,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
 INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Alinhar cortina fotoelétrica',
-    '0',
+    '1',
     null,
     'answer',
     7,
@@ -334,7 +335,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
 INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Reparar botoneira',
-    '0',
+    '1',
     null,
     'answer',
     1,
@@ -344,7 +345,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
  INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Quadro de comandos',
-    '0',
+    '1',
     'Escolha uma ação',
     'menu',
     null,
@@ -354,7 +355,7 @@ INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Poi
  INSERT INTO Question_Menu(Title, Question_id, Descript, Response, Parent_ID, Points)
  VALUES (
     'Bater no quadro de comandos',
-    '0',
+    '1',
     null,
     'answer',
     15,
@@ -451,6 +452,13 @@ WHERE ID = '1';
 
 DELETE FROM Courses
 WHERE ID = 1;
+
+------------------------ USEFUL QUERIES --------------------------------
+insert into question_dev (ID, Course_ID, Content, Completion_Time)
+SELECT '2', course_id, content, completion_time from question_dev where course_id='1';
+
+insert into question_menu(question_id, title, descript, response, parent_id, points)
+select '2', title, descript, response, parent_id, points from question_menu where question_id = '1';
 
  ----------------------- DROP TABLES ------------------------
  DROP TABLE IF EXISTS Courses, Modules, Users, User_Courses, User_Modules, Module_Content, Question_Dev, Question_Menu, Menu_Images, Question_Images; 

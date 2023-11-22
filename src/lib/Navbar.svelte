@@ -45,10 +45,14 @@
   
   <div class="right">
       <!-- <button><img src={searchIcon} alt="search" class="sidebar-icon" ></button> -->
-      <button>{user.username}</button>
-      {#if !user.image}
-        <img class="pfp" src={defaultPfp} alt="">
-      {/if}
+      <form method="post" action="/?/logoutUser">
+        <button type="submit">
+          {user.username}
+        </button>
+        {#if !user.image}
+          <img class="pfp" src={defaultPfp} alt="">
+        {/if}
+      </form>
   </div>
 </nav>
 

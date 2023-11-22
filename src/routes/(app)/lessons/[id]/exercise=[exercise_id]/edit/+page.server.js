@@ -1,4 +1,6 @@
 import { pool } from "$lib/db";
+import { redirect } from "@sveltejs/kit";
+import {v4 as uuidv4} from "uuid";
 
 async function insertImage(menuId, image){
     const arrayBuffer = await image.arrayBuffer();
@@ -42,7 +44,7 @@ async function insertImageExercise(QuestionId, image){
 }
 
 export const actions = {
-    insertNewButton: async ({request}) => {
+    insertNewButton: async ({request, params}) => {
         const data = await request.formData();
         let val = {
             id: parseInt(data.get('id').valueOf()),
@@ -77,7 +79,7 @@ export const actions = {
             else{
                 query = 'INSERT INTO Question_Menu (Title, Question_Id, Descript, Response, Parent_ID, Points)' +
                 'Values($1, $2, $3, $4, $5, $6);';
-                values = [val.title, '0', val.description, val.response, val.parent, (isNaN(val.points) ? null : val.points)];
+                values = [val.title, params.exercise_id, val.description, val.response, val.parent, (isNaN(val.points) ? null : val.points)];
             }
             //console.log(query);
 
@@ -131,5 +133,32 @@ export const actions = {
         catch(err){
             console.error(err);
         }  
+    },
+    copyExercise: async ({request, params}) => {
+        const exerciseId = uuidv4();
+        try {
+            let query = 'insert into question_dev (ID, Course_ID, Content, Completion_Time) \n'+
+            'SELECT $1, course_id, content, completion_time from question_dev where ID= $2; ';
+            
+            
+            let values =[exerciseId, params.exercise_id];
+
+            // console.log(query);
+            // console.log(values);
+
+            await pool.query(query, values);
+
+            query = 'insert into question_menu(question_id, title, descript, response, parent_id, points) ' +
+            'select $1 , title, descript, response, parent_id, points from question_menu where question_id = $2 ;';
+
+            // console.log(query);
+            // console.log(values);
+
+            await pool.query(query, values);
+        } catch (error) {
+            console.error(error);   
+        }
+
+        throw redirect(302, "/lessons/"+params.id+"/exercise="+exerciseId+"/edit");        
     }
 }
