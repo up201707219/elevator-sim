@@ -68,6 +68,20 @@ async function updateCompletion(userId, moduleId, completion){
     }
 }
 
+async function updateCourseCompletion(userId, courseId, completion){
+    try {
+        const query = 'UPDATE User_Courses '+
+        'SET completion = $1 '+
+        'WHERE user_id = $2 AND course_id = $3;';
+
+        const values = [completion, userId, courseId];
+
+        await pool.query(query, values);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 async function getCourseTitle(id){
     try{
         const query = "SELECT Courses.title FROM Courses "+
@@ -125,6 +139,22 @@ async function getCompletion(userId, moduleId){
     }
 }
 
+async function getCourseCompletion(userId, courseId){
+    try {
+        const query = 'SELECT * FROM User_courses '+
+        'WHERE User_ID = $1 AND Course_ID = $2;';
+
+        const values = [userId, courseId];
+
+        const res = await pool.query(query, values);
+        
+        return res.rows[0].completion??0;
+        
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export async function load({cookies, params}){
     const user = {
         id: cookies.get('userId'),
@@ -149,8 +179,8 @@ export async function load({cookies, params}){
 
     let module = await getContentByModuleID(params.module_id);
     module.completion = await getCompletion(user.id, params.module_id);
-    if(module.completion > module.content.length || parseInt(params.page)>(module.content.length-1)){
-        module.completion = module.content.length;
+    if(parseInt(params.page)>(module.content.length-1)){
+        module.completion = module.content.length+1;
         await updateCompletion(user.id, params.module_id, module.completion);
         throw redirect(302, params.module_number+':'+params.module_id+"+"+(module.content.length-1))
     }
@@ -217,5 +247,24 @@ export const actions = {
         }
         throw redirect(302, nextPage);   
     },
+    finishModule: async ({cookies, request, params}) => {
+        const data = await request.formData();
+        const userId = cookies.get('userId');
+        const prevCompletion = data.get('completion');
+        const val = data.get('size');
+        if(parseFloat(prevCompletion)>1){
+            throw redirect(302, "/lessons/"+params.id);
+        }
+
+        try {
+            await updateCompletion(userId, params.module_id, parseInt(val)+1);
+            const courseCompletion = await getCourseCompletion(userId, params.id);
+            console.log(courseCompletion);
+            await updateCourseCompletion(userId, params.id, courseCompletion+1); 
+        } catch (error) {
+            console.error(error);
+        }
+        throw redirect(302, "/lessons/"+params.id);
+    }
 
 }

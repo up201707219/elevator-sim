@@ -74,7 +74,7 @@
             {/if}
             {#each data.lessons as lesson, i}
             <a data-sveltekit-reload href={i <= 0 ? ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+'+(lesson.completion-1)) : parseFloat(data.lessons[i-1].completion/data.lessons[i-1].total)<1 ? '' : ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+'+(lesson.completion-1))}>
-                <div class="lesson {lesson.completion===0?"" : lesson.total===0? "":parseFloat(lesson.completion/lesson.total)<1?"orange":"green"} {i===0 ? "":parseFloat(data.lessons[i-1].completion/data.lessons[i-1].total)<1 ? "disabled":""}">
+                <div class="lesson {lesson.completion===0?"" : lesson.total===0? "":parseFloat(lesson.completion/lesson.total)<=1?"orange":"green"} {i===0 ? "":parseFloat(data.lessons[i-1].completion/data.lessons[i-1].total)<=1 ? "disabled":""}">
                     <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
                 </div>
             </a>

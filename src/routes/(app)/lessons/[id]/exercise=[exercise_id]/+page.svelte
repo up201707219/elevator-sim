@@ -1,5 +1,5 @@
 <script>
-    //import {data} from "./data"
+    //import {data} from "./data";
     import { tweened } from 'svelte/motion';
     import {page} from "$app/stores";
     
@@ -25,10 +25,15 @@
     // MENU DISPLAY OPTIONS VARS
 
     let defaultOpt = data.option.filter((opt) => opt.parent === null);
-    let correctAns = data.option.filter((opt) => opt.points > 0);
+    let correctAns = data.option.filter((opt) => opt.points > 0 && opt.response==="answer");
+    let totalScoreOpts = data.option.filter((opt) => opt.points > 0);
     let maxScore = 0;
+    let totalMaxScore = 0;
     correctAns.forEach((elem)=>{
         maxScore += elem.points;
+    });
+    totalScoreOpts.forEach((elem)=>{
+        totalMaxScore += elem.points;
     });
     let sumPenalties = 0;
     let displayedMessage = "";
@@ -65,6 +70,9 @@
     // OPTIONS NAVIGATION
     function handleOption(index){
         if(displayedOptions[index].response === "menu"){
+            if(displayedOptions[index].points > 0){
+                answersSubmited.push(displayedOptions[index]);
+            }
             prevOptions.push(displayedOptions);
             prevOptions = prevOptions;
             displayedMessage = "";
@@ -139,6 +147,7 @@
                 console.log("The answer was neutral (" + displayedOptions[ind].points+ ")")
                 displayedOptions[ind].submission = "neutral";
                 displayedMessage = "Isto não resolveu o problema mas este passo não é incorrecto de se fazer";
+                displayedMessage = displayedOptions[ind].description;
                 messageColor = "blue";
                 return;
             }
@@ -148,6 +157,7 @@
             displayedMessage = "Isto não resolve o problema";
             messageColor = "red";
         }
+        displayedMessage = displayedOptions[ind].description;
     }
 
     function endExercise(){
@@ -186,8 +196,8 @@
     <div>
         <a href="{$page.url.pathname}/edit">Editar</a>
     </div>
-    <h1>AVARIA {hasEnded ?": FINALIZADO":""}</h1>
-    
+    <h1>EXERCÍCIO {hasEnded ?": FINALIZADO":""}</h1>
+
     <div class="container">
             <!--  -->
             <div class="exercise-details">
@@ -221,8 +231,8 @@
     
                 </div>
                 {#if !hasEnded}
-                <div class="centered">
-                        {displayedDesc.description}
+                    <div class="centered">
+                        Escolha uma opção
                     </div>
                     {#each displayedOptions as opt, i}
                         <div class="option">
@@ -244,7 +254,7 @@
                     </div>
                     {#each answersSubmited as answer}
                         <div class="submission {answer.points === 0 ? "" : answer.points > 0 ? "correct":"wrong"}">
-                            <p>{answer.description ?? answer.title} ({answer.points > 0 ? "+":""}{answer.points})</p>
+                            <p>{answer.title} ({answer.points > 0 ? "+":""}{answer.points})</p>
                         </div>
                     {/each}
                     {#if answersSubmited.length <= 0}
@@ -252,7 +262,7 @@
                             <p>Não foi submetida nenhuma resposta</p>
                         </div>
                     {/if}
-                    <p>Pontuação: {getScore()} / {maxScore}</p>
+                    <p>Pontuação: {getScore()} / {totalMaxScore}</p>
                     <button class="button-option return">sair</button>
                 {/if}
             </div>

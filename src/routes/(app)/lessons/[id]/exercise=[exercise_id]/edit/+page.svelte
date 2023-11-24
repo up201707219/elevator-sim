@@ -118,83 +118,85 @@
     <h1>AVARIA</h1>
     
     <div class="container">
-            <div class="exercise-details">
-                <form method="POST" action="?/updateExercise" enctype="multipart/form-data">
-                    <input type="hidden" name="id" value={$page.params.exercise_id}>
-                    <textarea class="details-input" name="title" value={displayedQuestion.title}></textarea>
-                    <br>
-                    <img class="input image-exercise" src={previewImageExercise} alt="imagem da opção"> 
-                    <br>
-                    <input type="file" name="image" accept="image/*" on:change={(e) => {handleImageUpload(e, "exercise")}}>
-                    <div>
-                        <button type="submit">submeter</button>
-                    </div>
-                </form>
-            </div>
+        <div class="exercise-details">
+            <form method="POST" action="?/updateExercise" enctype="multipart/form-data">
+                <input type="hidden" name="id" value={$page.params.exercise_id}>
+                <textarea class="details-input" name="title" value={displayedQuestion.title}></textarea>
+                <br>
+                <img class="input image-exercise" src={previewImageExercise} alt="imagem da opção"> 
+                <br>
+                <input type="file" name="image" accept="image/*" on:change={(e) => {handleImageUpload(e, "exercise")}}>
+                <div>
+                    <button type="submit">submeter</button>
+                </div>
+            </form>
+        </div>
 
-            <div class="image-component-container">
+        <div class="image-component-container">
             {#if prevOptions.length > 0}
-                    {#if displayedDesc.image}                  
-                    <img class="image-component" src='/api/exercise/{displayedDesc.id}/image/{displayedDesc.image}' alt="não encontrado"> 
-                    {:else}
-                    <span style="border: 1px solid black;">Aqui fica a imagem da componente</span>
-                    {/if}
-            {/if}
-            </div>
-            <div class="nav-options">
-                {#if !newButtonMenu}
-                    <div class="timer">
-                        {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}    
-                    </div>
-                    <div class="centered">
-                        {displayedDesc.description}
-                    </div>
-                    {#each displayedOptions as opt, i}
-                        <div class="option">
-                            <form method="post" action="?/deleteButton">
-                            <button type="button" class="button-option {(opt.response === "menu") ? "":"single"}" on:click|preventDefault={() => handleOption(i)}> {opt.title} </button>
-                            <button type="button" on:click={()=> {editButton(i)}}>editar</button>
-                                <input type="hidden" name="id" value={opt.id}>
-                                <button type="submit">del</button>
-                            </form>
-                        </div>
-                    {/each}
-                    <div class="option">
-                        <button class="button-option add" on:click={addNewButton}>Adicionar opção</button>
-                    </div>
-                    {#if prevOptions.length !== 0}
-                        <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
-                    {/if}
+                {#if displayedDesc.image}                  
+                <img class="image-component" src='/api/exercise/{displayedDesc.id}/image/{displayedDesc.image}' alt="não encontrado"> 
                 {:else}
-                    <form method="post" action="?/insertNewButton" enctype="multipart/form-data">
-                        <input type="hidden" name="id" value={newButton.id ?? "0"}>
-                        <input type="hidden" name="parent-id" value={newButton.parent}>
-                        <label for="title">Opção</label>
-                        <input type="text" name="title" value={newButton.title}>
-                        <label for="response">Tipo</label>
-                        <select name="response" bind:value={newButton.response} on:change={buttonType}>
-                            <option value="menu">menu</option>
-                            <option value="answer">resposta</option>
-                        </select>
-                        <br>
-                        <label for="description">Descrição: </label>
-                        <input class="input text" type="text" name="description" value={newButton.description}>
-                        {#if newButton.response === "menu"}
-                            <br>
-                            <img class="input image-component" src={previewImageMenu} alt="imagem da opção"> 
-                            <br>
-                            <input type="file" name="image" accept="image/*" on:change={(e) => {handleImageUpload(e, "menu")}}>
-                        {:else}
-                            <br>
-                            <input type="number" name="points">
-                        {/if}
-                        <br>
-                        <button type="submit">submeter</button>
-                        <button on:click={() => {newButtonMenu = false;}}>sair</button>
-
-                    </form>
+                <span style="border: 1px solid black;">Aqui fica a imagem da componente</span>
                 {/if}
-            </div>
+            {/if}
+        </div>
+        <div class="nav-options">
+            {#if !newButtonMenu}
+                <div class="timer">
+                    {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}    
+                </div>
+                <div class="centered">
+                    Escolha uma opção
+                </div>
+                {#each displayedOptions as opt, i}
+                    <div class="option">
+                        <form method="post" action="?/deleteButton">
+                        <button type="button" class="button-option {(opt.response === "menu") ? "":"single"}" on:click|preventDefault={() => handleOption(i)}> {opt.title} </button>
+                        <button type="button" on:click={()=> {editButton(i)}}>editar</button>
+                            <input type="hidden" name="id" value={opt.id}>
+                            <button type="submit">del</button>
+                        </form>
+                    </div>
+                {/each}
+                <div class="option">
+                    <button class="button-option add" on:click={addNewButton}>Adicionar opção</button>
+                </div>
+                {#if prevOptions.length !== 0}
+                    <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
+                {/if}
+            {:else}
+                <form method="post" action="?/insertNewButton" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value={newButton.id ?? "0"}>
+                    <input type="hidden" name="parent-id" value={newButton.parent}>
+                    <label for="title">Opção</label>
+                    <input type="text" name="title" value={newButton.title}>
+                    <label for="response">Tipo</label>
+                    <select name="response" bind:value={newButton.response} on:change={buttonType}>
+                        <option value="menu">menu</option>
+                        <option value="answer">resposta</option>
+                    </select>
+                    {#if newButton.response === "menu"}
+                    <br>
+                    <img class="input image-component" src={previewImageMenu} alt="imagem da opção"> 
+                    <br>
+                    <input type="file" name="image" accept="image/*" on:change={(e) => {handleImageUpload(e, "menu")}}>
+                    <br>
+                    {:else}
+                    <br>
+                    <label for="description">Descrição: </label>
+                    <textarea class="details-input" type="text" name="description" value={newButton.description}></textarea>
+                    {/if}
+                    <br>
+                    <label for="points">Cotação</label>
+                    <input type="number" name="points" value={newButton.points?newButton.points:0}>
+                    <br>
+                    <button type="submit">submeter</button>
+                    <button on:click={() => {newButtonMenu = false;}}>sair</button>
+
+                </form>
+            {/if}
+        </div>
 </main>
 
 <style>
@@ -291,9 +293,6 @@
 
     .input{
         margin: 0.5rem;
-    }
-    .input.text{
-        width:20rem;
     }
 
 </style>

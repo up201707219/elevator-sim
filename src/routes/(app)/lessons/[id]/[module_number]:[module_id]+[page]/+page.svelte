@@ -30,7 +30,7 @@
     
         <div class="nav-pages">
             {#each data.content as content, i}
-                <a data-sveltekit-reload href= {i<=$page.params.page? "/lessons/"+$page.params.id+"/"+$page.params.module_number+":"+data.moduleId+"+"+i:"/lessons/"+$page.params.id+"/"+$page.params.module_number+":"+data.moduleId+"+"+i}>
+                <a data-sveltekit-reload href= {i<=$page.params.page? "/lessons/"+$page.params.id+"/"+$page.params.module_number+":"+data.moduleId+"+"+i : ""}>
                     <div class="page-opt">
                         <div class="subchapter {$page.params.page <= i ? "active":""}">
                             
@@ -72,6 +72,14 @@
                     Avançar
                 </div>
             </a>
+        {:else}
+            <form method="post" action="?/finishModule">
+                <input type="hidden" name="size" value={data.content.length}>
+                <input type="hidden" name="completion" value={parseFloat(data.completion/data.content.length)}>
+                <button class="next-page" type="submit">
+                    Concluir
+                </button>
+            </form>
         {/if}
     {:else}
         <div class="container">
@@ -191,8 +199,11 @@
         margin: 1rem 0;
         background-color: blue;
         font-size: 12pt;
+        font-family: inherit;
+        outline: inherit;
         border-radius: 15%;
         color: white;
+        cursor: pointer;
     }
     .next-page.back{
         position: absolute;

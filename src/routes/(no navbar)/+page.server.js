@@ -19,6 +19,7 @@ export const actions = {
             username: data.get('username'),
             password: data.get('password')
         };
+
         try{
             const query = 'SELECT * FROM Users ' +
             'WHERE username = $1;';

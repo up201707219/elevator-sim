@@ -111,7 +111,7 @@ export const actions = {
     updateExercise: async ({request}) => {
         const data = await request.formData();
         let val = {
-            id: parseInt(data.get('id').valueOf()),
+            id: data.get('id').valueOf(),
             title: data.get('title').valueOf(),
             image: data.get('image')?.valueOf(),
         };
