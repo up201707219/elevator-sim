@@ -15,12 +15,24 @@
         if ($timer > 0) $timer--;
     }, 1000);
 
-    
+    function timeToMinSec(time){
+        let minutes = Math.floor((time) / 60);
+        let minname = minutes > 1 ? "mins" : "min";
+        let seconds = Math.floor(time - minutes * 60);
+
+        let res = {
+            minutes: minutes,
+            minname: minname,
+            seconds: seconds
+        };
+
+        return res;
+    }
 
     $: hours = Math.floor($timer / (60*60))
     $: minutes = Math.floor(($timer - hours *(60*60)) / 60);
     $: minname = minutes > 1 ? "mins" : "min";
-    $: seconds = Math.floor($timer - hours * (60*60) - minutes * 60)
+    $: seconds = Math.floor($timer - hours * (60*60) - minutes * 60);
 
     // MENU DISPLAY OPTIONS VARS
 
@@ -201,35 +213,25 @@
     <div class="container">
             <!--  -->
             <div class="exercise-details">
-                {displayedQuestion.title}
+                <div class="exercise-info">
+                    <div class="div-identifier brown">
+                        Sintoma da avaria
+                    </div>
+                    <div class="title">
+                        {displayedQuestion.title}
+                    </div>
+                    <span>Tempo de resolução: {timeToMinSec(displayedQuestion.time).minutes?timeToMinSec(displayedQuestion.time).minutes+timeToMinSec(displayedQuestion.time).minname:""} {timeToMinSec(displayedQuestion.time).seconds?timeToMinSec(displayedQuestion.time).minutes+"s":""}</span>
+                    <span>Dificuldade: 1</span>
+                </div>
                 <br>
                 <br>
                 {#if displayedQuestion.image}
                     <img class="image-exercise" src="/api/exercise/{$page.params.exercise_id}" alt="não encontrado">
-                    <!-- {:else}
-                    <span style="border: 1px solid black;">Aqui fica a imagem do exercicio</span> -->
                 {/if}
             </div>
 
-            <div class="image-component-container">
-            {#if !hasEnded}
-                {#if displayedDesc.image}
-                    
-                    <img class="image-component" src='/api/exercise/{displayedDesc.id}/image/{displayedDesc.image}' alt="não encontrado">   
-                {:else}
-                    <span style="border: 1px solid black;">Aqui fica a imagem da componente</span>
-                {/if}
-            {/if}
-            </div>
             <div class="nav-options">
-                <div class="timer">
-                    {#if !hasEnded}
-                        {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}    
-                    {:else}
-                        00:00
-                    {/if}
-    
-                </div>
+                
                 {#if !hasEnded}
                     <div class="centered">
                         Escolha uma opção
@@ -241,10 +243,14 @@
                     {/each}
                     
                     {#if prevOptions.length !== 0}
-                    <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
+                    <div class="option">
+                        <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
+                    </div>
                     {/if}
 
-                    <button class="button-option end" on:click={endExercise}> Acabar prova </button>
+                    <div class="option">
+                        <button class="button-option end" on:click={endExercise}> Acabar prova </button>
+                    </div>
 
                     
                 {:else}
@@ -253,23 +259,43 @@
                         <p>Respostas submetidas:</p>
                     </div>
                     {#each answersSubmited as answer}
-                        <div class="submission {answer.points === 0 ? "" : answer.points > 0 ? "correct":"wrong"}">
-                            <p>{answer.title} ({answer.points > 0 ? "+":""}{answer.points})</p>
-                        </div>
+                    <div class="submission {answer.points === 0 ? "" : answer.points > 0 ? "correct":"wrong"}">
+                        <p>{answer.title} ({answer.points > 0 ? "+":""}{answer.points})</p>
+                    </div>
                     {/each}
                     {#if answersSubmited.length <= 0}
-                        <div class="submission wrong">
-                            <p>Não foi submetida nenhuma resposta</p>
-                        </div>
+                    <div class="submission wrong">
+                        <p>Não foi submetida nenhuma resposta</p>
+                    </div>
                     {/if}
                     <p>Pontuação: {getScore()} / {totalMaxScore}</p>
                     <button class="button-option return">sair</button>
-                {/if}
+                    {/if}
+            </div>
+            <div class="right-container">
+                <div class="timer">
+                    {#if !hasEnded}
+                    {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}    
+                    {:else}
+                    00:00
+                    {/if}
+                    
+                </div>
+                <div class="image-component-container {displayedDesc.image?"":"gray"}">
+                    {#if !hasEnded}
+                        {#if displayedDesc.image}               
+                            <img class="image-component" src='/api/exercise/{displayedDesc.id}/image/{displayedDesc.image}' alt="não encontrado">   
+                        {/if}
+                    {/if}
+                </div>
+                <div class="finish-exercise">
+
+                </div>
             </div>
         </div>
-    <div class="displayed-message" style="color: {messageColor};">
-        {displayedMessage}
-    </div>
+        <div class="displayed-message" style="color: {messageColor};">
+            {displayedMessage}
+        </div>
 </main>
 
 <style>
@@ -280,42 +306,87 @@
     .container{
         position: relative;
         display: grid;
-        grid-template-columns: 65% auto;
+        grid-template-columns: max(20%, 300px) auto 50%;
         width: 90%;
         margin: auto;
     }
-
+    
     .exercise-details{
-        width: 55%;
+        width: 100%;
+        border-right: 1px solid black;
+    }
+
+    .div-identifier{
+        border-radius: 40px;
+        width: fit-content;
+        padding: 10px;
+        color: white;
+        background-color: brown;
+    }
+    .brown{
+        background-color: brown;
+    }
+    .green{
+        background-color: green;
+    }
+
+    .title{
+        text-align: center;
+        margin: 2rem 2rem;
+    }
+
+    .exercise-info{
+        display: flex;
+        width: 80%;
+        padding: 4%;
+        flex-direction: column;
+        border: 1px solid gray;
+        border-radius: 20px;
     }
 
     .nav-options{
         display: flex;
         flex-direction: column;
+        width: 25rem;
         align-items: center;
     }
 
+
+    .right-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+
     .image-component-container{
-        max-width: 600px;
-        max-height: 600px;
+        width: 600px;
+        height: 600px;
         overflow: hidden;
-        position: absolute;
-        top: 2rem;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         left: 50%;
         transform: translateX(-50%);
+        /* background-color: gray; */
+    }
+    .image-component-container.gray{
+        background-color: gray;
     }
 
     .image-exercise{
         position: relative;
-        left: 50%;
-        transform: translateX(-50%);
-        max-width: 500px;
+        /* left: 0;
+        transform: translateX(-50%); */
+        max-width: 80%;
+        padding: 4%;
         max-height: 500px;
     }
 
     .image-component{
-        max-width: 300px;
-        max-height: 250px;
+        max-width: 500px;
+        max-height: 500px;
         transition: 0.5s;
         cursor: pointer;
     }
@@ -389,11 +460,9 @@
     }
     .timer{
         position: relative;
-        grid-column-start: 2;
-        grid-column-end: 3;
-        justify-self: center;
-        margin-left: 15rem;
-        margin-bottom: 1rem;
+        width: fit-content;
+        left: 100%;
+        transform: translateX(-100%);
         font-size: 18pt;
     }
 
