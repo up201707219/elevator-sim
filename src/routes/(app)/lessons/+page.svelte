@@ -65,10 +65,12 @@
         <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
             
             <img src={module.image} alt="Not found" class="lesson-image">
-
-            <span style="margin: 0rem 0rem 1rem 3rem; padding:2px">
+            <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">
+                Subtitulo do {module.name}
+            </div>
+            <div style="margin: 0rem 0rem 1rem 3rem; padding:2px">
                 {module.name}
-            </span>
+            </div>
             <div class="completion">
                 <span style="margin: 0rem 0rem 0rem 3rem; padding:2px; font-size: 10pt">
                     {#if module.lessonsDone === null}

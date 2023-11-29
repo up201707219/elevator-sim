@@ -2,6 +2,7 @@
     //import {data} from "./data";
     import { tweened } from 'svelte/motion';
     import {page} from "$app/stores";
+    import finishImg from "$lib/assets/img/finish_question.png"
     
     let hasEnded = false;
     export let data;
@@ -12,7 +13,7 @@
     let timer = tweened(original)
 
     setInterval(() => {
-        if ($timer > 0) $timer--;
+        if ($timer > 0 && !hasEnded) $timer--;
     }, 1000);
 
     function timeToMinSec(time){
@@ -25,6 +26,16 @@
             minname: minname,
             seconds: seconds
         };
+
+        return res;
+    }
+
+    function timeToString(time){
+        let aux = timeToMinSec(time);
+        let res = {
+            minutes: aux.minutes/10 >= 1 ? ""+aux.minutes:"0"+aux.minutes,
+            seconds: aux.seconds/10 >= 1 ? ""+aux.seconds:"0"+aux.seconds
+        }
 
         return res;
     }
@@ -82,7 +93,8 @@
     // OPTIONS NAVIGATION
     function handleOption(index){
         if(displayedOptions[index].response === "menu"){
-            if(displayedOptions[index].points > 0){
+            let wasSubmitted = answersSubmited.map(function (e){return e.id}).indexOf(displayedOptions[index].id);
+            if(displayedOptions[index].points > 0 && wasSubmitted !== -1){
                 answersSubmited.push(displayedOptions[index]);
             }
             prevOptions.push(displayedOptions);
@@ -173,7 +185,6 @@
     }
 
     function endExercise(){
-        $timer = 1;
         hasEnded = true;
     }
 
@@ -205,12 +216,14 @@
         </div>
     </div>
     {/if}
-    <div>
-        <a href="{$page.url.pathname}/edit">Editar</a>
-    </div>
-    <h1>EXERCÍCIO {hasEnded ?": FINALIZADO":""}</h1>
+    {#if data.user.isAdmin !== "false"}
+        <div>
+            <a href="{$page.url.pathname}/edit">Editar</a>
+        </div>
+    {/if}
+    <h1>Exercício da máquina de café</h1>
 
-    <div class="container">
+    <div class="container {hasEnded?"end-grid":""}">
             <!--  -->
             <div class="exercise-details">
                 <div class="exercise-info">
@@ -230,66 +243,83 @@
                 {/if}
             </div>
 
-            <div class="nav-options">
-                
+            <div class="center-div">
                 {#if !hasEnded}
-                    <div class="centered">
-                        Escolha uma opção
+                    <div class="div-identifier green">
+                        Resolução da avaria
                     </div>
-                    {#each displayedOptions as opt, i}
-                        <div class="option">
-                            <button class="button-option {(opt.response === "menu") ? "":"single"} {opt.submission ?? ""}" on:click={() => handleOption(i)}> {opt.title} </button>
-                        </div>
-                    {/each}
-                    
-                    {#if prevOptions.length !== 0}
-                    <div class="option">
-                        <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
-                    </div>
-                    {/if}
-
-                    <div class="option">
-                        <button class="button-option end" on:click={endExercise}> Acabar prova </button>
-                    </div>
-
-                    
                 {:else}
-                    <div class="centered">
-                        <p>{sumPenalties >= 100 ? "Fizeste muitos erros não passaste a prova" : correctAns.length <= 0 ? "Achaste todas as tapas de resolução":"Não achaste todas as etapas"}</p>
-                        <p>Respostas submetidas:</p>
+                    <div class="summary">
+                        <div class="pass">
+                            PASS
+                        </div>
+                        <div class="answer-stats">
+                            <div class="stats-labels">
+                                <p>Pontuação: </p>
+                                <p>Pontuação minima: </p>
+                                <p>Tempo usado: </p>
+                            </div>
+                            <div class="stats-values">
+                                <p>{getScore()*100/totalMaxScore}%</p>
+                                <p>0%</p>
+                                <p>{timeToString(displayedQuestion.time - $timer).minutes}:{timeToString(displayedQuestion.time - $timer).seconds}</p>
+                            </div>
+                        </div>
                     </div>
-                    {#each answersSubmited as answer}
-                    <div class="submission {answer.points === 0 ? "" : answer.points > 0 ? "correct":"wrong"}">
-                        <p>{answer.title} ({answer.points > 0 ? "+":""}{answer.points})</p>
-                    </div>
-                    {/each}
-                    {#if answersSubmited.length <= 0}
-                    <div class="submission wrong">
-                        <p>Não foi submetida nenhuma resposta</p>
-                    </div>
+                {/if}
+                <div class="nav-options">
+                
+                    {#if !hasEnded}
+                        <div class="centered">
+                            Escolha uma opção
+                        </div>
+                        {#each displayedOptions as opt, i}
+                            <div class="option">
+                                <button class="button-option {(opt.response === "menu") ? "":"single"} {opt.submission ?? ""}" on:click={() => handleOption(i)}> {opt.title} </button>
+                            </div>
+                        {/each}
+                
+                        {#if prevOptions.length !== 0}
+                            <div class="option">
+                                <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
+                            </div>
+                        {/if}
+                    
                     {/if}
-                    <p>Pontuação: {getScore()} / {totalMaxScore}</p>
-                    <button class="button-option return">sair</button>
-                    {/if}
+                </div>
             </div>
             <div class="right-container">
+                {#if !hasEnded}
                 <div class="timer">
-                    {#if !hasEnded}
-                    {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}    
-                    {:else}
-                    00:00
-                    {/if}
-                    
+                    {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}     
                 </div>
-                <div class="image-component-container {displayedDesc.image?"":"gray"}">
-                    {#if !hasEnded}
+                {/if}
+                {#if !hasEnded}
+                    <div class="image-component-container {displayedDesc.image?"":"gray"}">
                         {#if displayedDesc.image}               
                             <img class="image-component" src='/api/exercise/{displayedDesc.id}/image/{displayedDesc.image}' alt="não encontrado">   
                         {/if}
-                    {/if}
-                </div>
-                <div class="finish-exercise">
-
+                    </div>
+                {:else}
+                    <div class="submitted-answers">
+                        <div class="centered">
+                            <p>{sumPenalties >= 100 ? "Fizeste muitos erros não passaste a prova" : correctAns.length <= 0 ? "Achaste todas as tapas de resolução":"Não achaste todas as etapas"}</p>
+                            <p>Respostas submetidas:</p>
+                        </div>
+                        {#each answersSubmited as answer}
+                            <div class="submission {answer.points === 0 ? "" : answer.points > 0 ? "correct":"wrong"}">
+                                <p>{answer.title} ({answer.points > 0 ? "+":""}{answer.points*100/totalMaxScore}%)</p>
+                            </div>
+                        {/each}
+                        {#if answersSubmited.length <= 0}
+                            <div class="submission wrong">
+                                <p>Não foi submetida nenhuma resposta</p>
+                            </div>
+                        {/if}
+                    </div>
+                {/if}
+                <div class="timer">
+                    <button title="Terminar prova" class="end-question-button" on:click={endExercise}><img class="end-image" src={finishImg} alt="Acabar prova"></button>
                 </div>
             </div>
         </div>
@@ -308,7 +338,12 @@
         display: grid;
         grid-template-columns: max(20%, 300px) auto 50%;
         width: 90%;
+        min-height: 80vh;
         margin: auto;
+    }
+
+    .container.end-grid{
+        grid-template-columns: max(20%, 300px) auto max(20%, 300px);
     }
     
     .exercise-details{
@@ -323,10 +358,12 @@
         color: white;
         background-color: brown;
     }
-    .brown{
+    .div-identifier.brown{
         background-color: brown;
     }
-    .green{
+    .div-identifier.green{
+        margin: 1rem 0 2rem 2.2rem;
+        font-size: 18pt;
         background-color: green;
     }
 
@@ -345,9 +382,11 @@
     }
 
     .nav-options{
+        position: relative;
         display: flex;
         flex-direction: column;
-        width: 25rem;
+        width: 100%;
+        font-size: 18pt;
         align-items: center;
     }
 
@@ -360,8 +399,8 @@
     }
 
     .image-component-container{
-        width: 600px;
-        height: 600px;
+        width: 500px;
+        height: 500px;
         overflow: hidden;
         position: relative;
         display: flex;
@@ -372,7 +411,7 @@
         /* background-color: gray; */
     }
     .image-component-container.gray{
-        background-color: gray;
+        background-color: rgb(185, 183, 183);
     }
 
     .image-exercise{
@@ -393,6 +432,43 @@
     .image-component:hover{
         max-width: 500px;
         max-height: 500px;
+    }
+
+    .summary{
+        position: relative;
+        margin-top: 5rem;
+        left: 50%;
+        height: max(50%,25.5rem);
+        width: 60%;
+        transform: translateX(-50%);
+        background-color: rgb(180, 180, 180);
+        font-size: 2rem;
+    }
+    .pass{
+        width: 100%;
+        text-align: center;
+        color: white;
+        font-size: 45pt;
+        padding: 1rem 0;
+        background-color: green;
+    }
+    .answer-stats{
+        display: flex;
+        justify-content: start;
+    }
+    .stats-labels{
+        width: 50%;
+        text-align: end;
+        margin: 0 1.2rem;
+    }
+
+    .submitted-answers{
+        width: fit-content;
+        position: relative;
+        left: 90%;
+        top: 3rem;
+        transform: translateX(-100%);
+        /* background-color: beige; */
     }
 
     .modal{
@@ -420,7 +496,7 @@
     }
 
     .button-option{
-        min-width: 20rem;
+        min-width: 30rem;
         margin: 0.5rem;
         padding: 5px;
         border-radius: 10px;
@@ -450,6 +526,20 @@
         background-color: rgb(201, 164, 1);
     }
 
+    .end-question-button{
+        background: none;
+        color: inherit;
+        border: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        outline: inherit;
+        }
+
+    .end-image{
+        max-width: 100px;
+    }
+
     .displayed-message{
         text-align: center;
     }
@@ -463,7 +553,7 @@
         width: fit-content;
         left: 100%;
         transform: translateX(-100%);
-        font-size: 18pt;
+        font-size: 23pt;
     }
 
     .submission{

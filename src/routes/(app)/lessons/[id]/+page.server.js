@@ -126,7 +126,7 @@ export async function load({cookies, params}){
         throw redirect(307, '/')
     }
 
-    if(parseInt(params.id) === 0){
+    if(params.id === '0'){
         addNew.id = uuidv4();
         await insertDefaultCourse();
         throw redirect(302, "/lessons/"+addNew.id);
