@@ -287,6 +287,17 @@
                     
                     {/if}
                 </div>
+                <div class="options-labels">
+                    <p>
+                        Legenda:
+                    </p>
+                    <div style="display: flex;">
+                        <div style="width: 15px; height: 15px; background-color: blue; margin:0 0.3rem 0.5rem 0;"></div> - Menu
+                    </div>
+                    <div style="display: flex;">
+                        <div style="width: 15px; height: 15px; background-color: darkblue; margin:0 0.3rem 0.5rem 0;"></div> - Resposta
+                    </div>
+                </div>
             </div>
             <div class="right-container">
                 {#if !hasEnded}
@@ -326,6 +337,7 @@
         <div class="displayed-message" style="color: {messageColor};">
             {displayedMessage}
         </div>
+        <!-- <div style="background-color: blue; width: 110%;">hello</div> -->
 </main>
 
 <style>
@@ -337,18 +349,24 @@
         position: relative;
         display: grid;
         grid-template-columns: max(20%, 300px) auto 50%;
-        width: 90%;
-        min-height: 80vh;
+        width: 94%;
+        min-height: 75vh;
+        max-height: 80vh;
+        /* overflow: hidden; */
         margin: auto;
     }
 
     .container.end-grid{
-        grid-template-columns: max(20%, 300px) auto max(20%, 300px);
+        grid-template-columns: max(20%, 400px) auto max(20%, 400px);
     }
     
     .exercise-details{
         width: 100%;
         border-right: 1px solid black;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* background-color: black; */
     }
 
     .div-identifier{
@@ -363,7 +381,7 @@
     }
     .div-identifier.green{
         margin: 1rem 0 2rem 2.2rem;
-        font-size: 18pt;
+        font-size: 15pt;
         background-color: green;
     }
 
@@ -374,33 +392,48 @@
 
     .exercise-info{
         display: flex;
-        width: 80%;
+        width: 90%;
         padding: 4%;
         flex-direction: column;
         border: 1px solid gray;
         border-radius: 20px;
     }
 
+    .center-div{
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        /* justify-content: space-between; */
+        /* background-color: red; */
+    }
     .nav-options{
         position: relative;
         display: flex;
         flex-direction: column;
-        width: 100%;
-        font-size: 18pt;
+        width: 90%;
+        font-size: 15pt;
+        margin-left: 1rem;
         align-items: center;
     }
-
+    .options-labels{
+        position: absolute;
+        top:100%;
+        left: 1rem;
+        font-size: 10pt;
+        transform: translateY(-100%);
+    }
 
     .right-container{
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         height: 100%;
+        /* width: 50%; */
     }
 
     .image-component-container{
-        width: 500px;
-        height: 500px;
+        width: min(70%, 400px);
+        height: min(70%, 400px);
         overflow: hidden;
         position: relative;
         display: flex;
@@ -416,11 +449,9 @@
 
     .image-exercise{
         position: relative;
-        /* left: 0;
-        transform: translateX(-50%); */
-        max-width: 80%;
+        max-width: 60%;
         padding: 4%;
-        max-height: 500px;
+        max-height: 300px;
     }
 
     .image-component{
@@ -439,7 +470,7 @@
         margin-top: 5rem;
         left: 50%;
         height: max(50%,25.5rem);
-        width: 60%;
+        width: max(60%, 40rem);
         transform: translateX(-50%);
         background-color: rgb(180, 180, 180);
         font-size: 2rem;
@@ -496,7 +527,7 @@
     }
 
     .button-option{
-        min-width: 30rem;
+        min-width: 25rem;
         margin: 0.5rem;
         padding: 5px;
         border-radius: 10px;

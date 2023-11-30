@@ -84,15 +84,18 @@
             <h2>Teste</h2>
             {#if data.quiz.length === 0}
                 <h2 class="center">Não existe teste para este curso</h2>
-            {:else}
+            {:else if parseFloat(data.lessons[data.lessons.length-1].completion/data.lessons[data.lessons.length-1].total)>=1}
                 <div class="quiz-content">
                     <a href="{$page.url.pathname}/exercise={data.quiz[0].id}">
                         <img class="quiz-content-image" src={quizImg} alt="">
                         <span class="quiz-content-text">Sem nota atribuida</span>
                     </a>
                 </div>
+            {:else}
+            <h2 class="center">Teste indisponível até terminar módulos</h2>
             {/if}
         </div>
+        {#if parseFloat(data.lessons[data.lessons.length-1].completion/data.lessons[data.lessons.length-1].total)>=1}
         <div class="lessons">
             <h2>Certificado</h2>
             <div class="quiz-content">
@@ -102,6 +105,7 @@
                 </a>
             </div>
         </div>
+        {/if}
     </div>
     
     {:else}

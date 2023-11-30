@@ -24,24 +24,27 @@
         {/if}
         <div class="container-grid">
             {#each data.lessonModules as module, i}
-                <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
+            <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
             
-                    <img src={module.image} alt="Not found" class="lesson-image">
-                    <span style="margin: 0rem 0rem 2rem 3rem; padding:2px">
-                        {module.name}
+                <img src={module.image} alt="Not found" class="lesson-image">
+                <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">
+                    {module.name}
+                </div>
+                <div style="margin: 0rem 0rem 1rem 3rem; padding:2px">
+                    Subtitulo do {module.name}
+                </div>
+                <div class="completion">
+                    <span style="margin: 0rem 0rem 0rem 3rem; padding:2px; font-size: 10pt">
+                        {#if module.lessonsDone === null}
+                            1%
+                        {:else}
+                            {parseInt(module.lessonsTotal) === 0 ? "0" : parseInt(module.lessonsDone*100/module.lessonsTotal)}%
+                        {/if}
+                        Concluido
                     </span>
-                    <div class="completion">
-                        <span style="margin: 0rem 0rem 0rem 3rem; padding:2px; font-size: 10pt">
-                            {#if !module.lessonsDone}
-                                1%
-                            {:else}
-                                {parseInt(module.lessonsDone*100/module.lessonsTotal)}%
-                            {/if}
-                            Concluido
-                        </span>
-                        <progress value={module.lessonsDone??0} max={module.lessonsTotal} class="completion-bar"></progress>
-                    </div>
-                </a>
+                    <progress value={module.lessonsDone??0} max={module.lessonsTotal} class="completion-bar"></progress>
+                </div>
+            </a>
             {/each}
         </div>
     </div>
@@ -122,9 +125,9 @@
     .lesson-image{
         min-width: 100%;
         width: auto;
-        min-height: 12rem;
+        max-height: 10rem;
         text-align: center;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
     }
     .completion{
         width: 100%;

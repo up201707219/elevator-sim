@@ -84,12 +84,13 @@
     width: 98%;
     background-color: white;
     border-bottom: 1px solid black;
-}
-.navbar.fixed{
-  position: sticky;
-  top: 0;
-  left: 0;
-}
+  }
+  .navbar.fixed{
+    position: sticky;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+  }
 
 .left{
     display: flex;

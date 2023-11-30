@@ -15,6 +15,16 @@
             }
         }
     }
+
+    let activeCourses;
+    let nonActiveCourses;
+    if(data.user.isAdmin !== "false"){
+        activeCourses = data.lessonModules;
+    }
+    else{
+        activeCourses = data.lessonModules.filter((lesson) => lesson.lessonsDone !== null);
+        nonActiveCourses = data.lessonModules.filter((lesson) => lesson.lessonsDone === null); 
+    }
     
     let message = [];
     let inputTest = [];
@@ -31,12 +41,12 @@
 </script>
 
 <div class="container">
-    <h1> Cursos </h1>
+    <h2> Cursos a decorrer</h2>
     {#if data.user.isAdmin === "true"}
         <button class="admin-edit" on:click={toggleEdit}>{editable ? "Concluir" : "Editar"}</button>
     {/if}
     <div class="container-grid">
-        {#each data.lessonModules as module, i}
+        {#each activeCourses as module, i}
         {#if editable}
         <div class="lessons edit">
             
@@ -66,10 +76,10 @@
             
             <img src={module.image} alt="Not found" class="lesson-image">
             <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">
-                Subtitulo do {module.name}
+                {module.name}
             </div>
             <div style="margin: 0rem 0rem 1rem 3rem; padding:2px">
-                {module.name}
+                Subtitulo do {module.name}
             </div>
             <div class="completion">
                 <span style="margin: 0rem 0rem 0rem 3rem; padding:2px; font-size: 10pt">
@@ -84,13 +94,38 @@
             </div>
         </a>
         {/if}
-        
         {/each}
         {#if editable}
         <a data-sveltekit-reload href= "/lessons/0" class="lessons add">
             Adicionar
         </a>
         {/if}
+    </div>
+    <h2> Cursos Disponíveis</h2>
+    <div class="container-grid">
+        {#each nonActiveCourses as module}
+        <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
+            
+            <img src={module.image} alt="Not found" class="lesson-image">
+            <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">
+                {module.name}
+            </div>
+            <div style="margin: 0rem 0rem 1rem 3rem; padding:2px">
+                Subtitulo do {module.name}
+            </div>
+            <div class="completion">
+                <span style="margin: 0rem 0rem 0rem 3rem; padding:2px; font-size: 10pt">
+                    {#if module.lessonsDone === null}
+                        1%
+                    {:else}
+                        {parseInt(module.lessonsTotal) === 0 ? "0" : parseInt(module.lessonsDone*100/module.lessonsTotal)}%
+                    {/if}
+                    Concluido
+                </span>
+                <progress value={module.lessonsDone??0} max={module.lessonsTotal} class="completion-bar"></progress>
+            </div>
+        </a>      
+        {/each}
     </div>
     {#if form?.error}
         <p>{form.error}</p>
@@ -104,7 +139,7 @@
         margin-left: 10%;
         margin-right: 10%;
         /* margin-top: 8rem; */
-        text-align: center;
+        text-align: start;
     }
 
     .container-grid{
