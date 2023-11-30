@@ -3,6 +3,7 @@
     import { tweened } from 'svelte/motion';
     import {page} from "$app/stores";
     import finishImg from "$lib/assets/img/finish_question.png"
+    import Timer from "$lib/timer.svelte"
     
     let hasEnded = false;
     export let data;
@@ -222,6 +223,12 @@
         </div>
     {/if}
     <h1>Exercício da máquina de café</h1>
+    {#if !hasEnded}
+                <div class="timer">
+                    <!-- {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}      -->
+                    <Timer countdown={displayedQuestion.time}/>
+                </div>
+                {/if}
 
     <div class="container {hasEnded?"end-grid":""}">
             <!--  -->
@@ -299,12 +306,9 @@
                     </div>
                 </div>
             </div>
+            
             <div class="right-container">
-                {#if !hasEnded}
-                <div class="timer">
-                    {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}     
-                </div>
-                {/if}
+                
                 {#if !hasEnded}
                     <div class="image-component-container {displayedDesc.image?"":"gray"}">
                         {#if displayedDesc.image}               
@@ -329,7 +333,7 @@
                         {/if}
                     </div>
                 {/if}
-                <div class="timer">
+                <div class="finish-question">
                     <button title="Terminar prova" class="end-question-button" on:click={endExercise}><img class="end-image" src={finishImg} alt="Acabar prova"></button>
                 </div>
             </div>
@@ -346,7 +350,7 @@
     }
     
     .container{
-        position: relative;
+        /* position: relative; */
         display: grid;
         grid-template-columns: max(20%, 300px) auto 50%;
         width: 94%;
@@ -439,8 +443,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        top: 50%;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translate(-50%, -50%);
         /* background-color: gray; */
     }
     .image-component-container.gray{
@@ -455,14 +460,14 @@
     }
 
     .image-component{
-        max-width: 500px;
-        max-height: 500px;
+        max-width: 400px;
+        max-height: 400px;
         transition: 0.5s;
         cursor: pointer;
     }
     .image-component:hover{
-        max-width: 500px;
-        max-height: 500px;
+        max-width: 400px;
+        max-height: 400px;
     }
 
     .summary{
@@ -580,13 +585,20 @@
         background-color: aqua;
     }
     .timer{
-        position: relative;
-        width: fit-content;
-        left: 100%;
+        position: absolute;
+        width: 12rem;
+        left: 94%;
+        top: 6rem;
         transform: translateX(-100%);
         font-size: 23pt;
     }
-
+    .finish-question{
+        position: relative;
+        width: 8rem;
+        left: 94%;
+        transform: translateX(-100%);
+        font-size: 23pt;
+    }
     .submission{
         margin: 0.5rem;
         padding: 0.3rem;
