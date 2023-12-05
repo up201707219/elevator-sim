@@ -1,27 +1,135 @@
 <script>
     
     import { lessonModules } from "./data.js"
+    import deleteIcon from "$lib/assets/svg/trash.svg"
+    import editIcon from "$lib/assets/svg/pencil.svg"
+    
+    export let data;
+    export let form;
+
+    function toggleEdit(){
+        editable = !editable;
+        if(!editable){
+            for(let i = 0; i<message.length; i++){
+                message[i] = "";
+            }
+        }
+    }
+
+    let activeCourses=[];
+    let nonActiveCourses =[];
+    if(data.user.isAdmin !== "false"){
+        activeCourses = data.lessonModules;
+    }
+    else{
+        activeCourses = data.lessonModules.filter((lesson) => lesson.lessonsDone !== null);
+        nonActiveCourses = data.lessonModules.filter((lesson) => lesson.lessonsDone === null); 
+    }
+    
+    let message = [];
+    let inputTest = [];
+
+    for(let i = 0; i<data.lessonModules.length; i++){
+        message[i] = "";
+        inputTest[i] = data.lessonModules[i].name;
+    }
+
+
+
+    let editable = data.user.isAdmin === 'true';
 
 </script>
 
 <div class="container">
-    <h1> Cursos </h1>
+
+    <!-- {#if data.user.isAdmin === "true"}
+    <button class="admin-edit" on:click={toggleEdit}>{editable ? "Concluir" : "Editar"}</button>
+    {/if} -->
+    {#if activeCourses.length}
+    <h2> Cursos a decorrer</h2>
+    {/if}
     <div class="container-grid">
-        {#each lessonModules as module}
-        <a href="/lessons/{module.id}" class="lessons">
+        {#each activeCourses as module, i}
+        {#if editable}
+            <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons edit">
+                
+                <img src={module.image} alt="Not found" class="lesson-image">
+                <div class="lessons-edit">
+                    <form method="POST" action="?/delete">
+                        <input type="hidden" name="id" value={module.id}>
+                        <button type="submit" class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
+                    </form>
+                    <!-- <button class="edit-button"><img src={editIcon} alt="editIcon" class="edit-icon"></button> -->
+                </div>
+                <form method="POST" action="?/changeTitle">
+                    <input type="hidden" name="id" value={module.id}>
+                    <label for="lesson-name">Título: </label>
+                    <input type="text" name="lesson-name" value={module.name} autocomplete="off">
+                    <button type="submit" class="confirm-title-button">✔️</button>
+                </form>
+                {message[i]}
+            </a>
+        {:else}
+        <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
+            
             <img src={module.image} alt="Not found" class="lesson-image">
-            <span style="margin-bottom: 2rem;">
+            <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">
                 {module.name}
-            </span>
+            </div>
+            <div style="margin: 0rem 0rem 1rem 3rem; padding:2px">
+                Subtitulo do {module.name}
+            </div>
             <div class="completion">
-                <span>
-                    {module.lessonsDone}/{module.lessonsTotal}
+                <span style="margin: 0rem 0rem 0rem 3rem; padding:2px; font-size: 10pt">
+                    {#if module.lessonsDone === null}
+                        1%
+                    {:else}
+                        {parseInt(module.lessonsTotal) === 0 ? "0" : parseInt(module.lessonsDone*100/module.lessonsTotal)}%
+                    {/if}
+                    Concluido
                 </span>
-                <progress value={module.lessonsDone} max={module.lessonsTotal} class="completion-bar"></progress>
+                <progress value={module.lessonsDone??0} max={module.lessonsTotal} class="completion-bar"></progress>
             </div>
         </a>
+        {/if}
+        {/each}
+        {#if editable}
+        <a data-sveltekit-reload href= "/lessons/0" class="lessons add">
+            Adicionar
+        </a>
+        {/if}
+    </div>
+    {#if nonActiveCourses.length}
+        <h2> Cursos Disponíveis</h2>
+    {/if}
+    <div class="container-grid">
+        {#each nonActiveCourses as module}
+        <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
+            
+            <img src={module.image} alt="Not found" class="lesson-image">
+            <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">
+                {module.name}
+            </div>
+            <div style="margin: 0rem 0rem 1rem 3rem; padding:2px">
+                Subtitulo do {module.name}
+            </div>
+            <div class="completion">
+                <span style="margin: 0rem 0rem 0rem 3rem; padding:2px; font-size: 10pt">
+                    {#if module.lessonsDone === null}
+                        1%
+                    {:else}
+                        {parseInt(module.lessonsTotal) === 0 ? "0" : parseInt(module.lessonsDone*100/module.lessonsTotal)}%
+                    {/if}
+                    Concluido
+                </span>
+                <progress value={module.lessonsDone??0} max={module.lessonsTotal} class="completion-bar"></progress>
+            </div>
+        </a>      
         {/each}
     </div>
+    {#if form?.error}
+        <p>{form.error}</p>
+    {/if}
 </div>
 
 <style>
@@ -31,7 +139,7 @@
         margin-left: 10%;
         margin-right: 10%;
         /* margin-top: 8rem; */
-        text-align: center;
+        text-align: start;
     }
 
     .container-grid{
@@ -41,10 +149,11 @@
         padding: 1rem;
     }
     .lessons{
+        position: relative;
         margin: auto;
         margin-bottom: 2rem;
         margin-top: 2rem;
-        width: 82%;
+        width: 86%;
         max-height: 26rem;
         overflow: hidden;
         background-color: white;
@@ -54,15 +163,50 @@
         background-color: rgb(255, 255, 255);
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: start;
         justify-content: stretch;
         cursor: pointer;
         z-index: 2;
         transition: 0.5s;
     }
+
+    .lessons.unvisited{
+        opacity: 40%;
+    }
+    .lessons.edit{
+        cursor: default;
+        transition: none;
+        align-items: center;
+        padding-bottom: 20px;
+    }
     .lessons:hover{
         transform: scale(1.08);
         box-shadow: 10px 8px 7px 5px rgba(87, 87, 87, 0.144);
+    }
+    .lessons.edit:hover{
+        transform: none;
+        box-shadow: 5px 3px 5px 3px rgba(87, 87, 87, 0.219);
+    }
+    .lessons.add{
+        opacity: 80%;
+        background-color: gray;
+        justify-content: center;
+        font-size: 40pt;
+        align-items: center;
+    }
+    .lessons-edit{
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        top: 0;
+        right: 0;
+    }
+    .delete{
+        opacity: 70%;
+        cursor: pointer;
+    }
+    .delete-icon:hover{
+        filter: invert(20%) sepia(67%) saturate(6629%) hue-rotate(357deg) brightness(96%) contrast(129%);
     }
     a{
         text-decoration: none;
@@ -71,13 +215,13 @@
     .lesson-image{
         min-width: 100%;
         width: auto;
-        height: 12rem;
+        max-height: 10rem;
         text-align: center;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
     }
     .completion{
         width: 100%;
-        text-align: center;
+        text-align: start;
         margin-bottom: 1.5rem;
         margin-top: auto;
         display: flex;
@@ -106,6 +250,26 @@
     }
     progress.completion-bar::-webkit-progress-bar{ 
         border-radius: 10px;
+    }
+
+    /* .admin-edit{
+        background-color: rgb(48, 209, 43);
+        color: white;
+        border-radius: 10px;
+        border-width: 0;
+        font-family: inherit;
+        font-size: inherit;
+        font-style: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+        padding: 5px 10px;
+        cursor: pointer;
+    } */
+    .confirm-title-button{
+        background-color: rgb(48, 209, 43);
+        color: white;
+        border-radius: 8px;
+        padding: 0.3rem;
     }
 
     @media (max-width: 1100px) {
