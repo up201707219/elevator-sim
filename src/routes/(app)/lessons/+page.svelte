@@ -16,8 +16,8 @@
         }
     }
 
-    let activeCourses;
-    let nonActiveCourses;
+    let activeCourses=[];
+    let nonActiveCourses =[];
     if(data.user.isAdmin !== "false"){
         activeCourses = data.lessonModules;
     }
@@ -41,36 +41,34 @@
 </script>
 
 <div class="container">
+
+    <!-- {#if data.user.isAdmin === "true"}
+    <button class="admin-edit" on:click={toggleEdit}>{editable ? "Concluir" : "Editar"}</button>
+    {/if} -->
+    {#if activeCourses.length}
     <h2> Cursos a decorrer</h2>
-    {#if data.user.isAdmin === "true"}
-        <button class="admin-edit" on:click={toggleEdit}>{editable ? "Concluir" : "Editar"}</button>
     {/if}
     <div class="container-grid">
         {#each activeCourses as module, i}
         {#if editable}
-        <div class="lessons edit">
-            
-            <img src={module.image} alt="Not found" class="lesson-image">
-            <div class="lessons-edit">
-                <form method="POST" action="?/delete">
+            <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons edit">
+                
+                <img src={module.image} alt="Not found" class="lesson-image">
+                <div class="lessons-edit">
+                    <form method="POST" action="?/delete">
+                        <input type="hidden" name="id" value={module.id}>
+                        <button type="submit" class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
+                    </form>
+                    <!-- <button class="edit-button"><img src={editIcon} alt="editIcon" class="edit-icon"></button> -->
+                </div>
+                <form method="POST" action="?/changeTitle">
                     <input type="hidden" name="id" value={module.id}>
-                    <button type="submit" class="delete"><img src={deleteIcon} alt="deleteIcon" class="delete-icon"></button>
+                    <label for="lesson-name">Título: </label>
+                    <input type="text" name="lesson-name" value={module.name} autocomplete="off">
+                    <button type="submit" class="confirm-title-button">✔️</button>
                 </form>
-                <!-- <button class="edit-button"><img src={editIcon} alt="editIcon" class="edit-icon"></button> -->
-            </div>
-            <form method="POST" action="?/changeTitle">
-                <input type="hidden" name="id" value={module.id}>
-                <input type="text" name="lesson-name" value={module.name} autocomplete="off">
-                <button type="submit" class="confirm-title-button">✔️</button>
-            </form>
-            {message[i]}
-            <div class="completion">
-                <span>
-                    {module.lessonsDone??0}/{module.lessonsTotal}
-                </span>
-                <progress value={module.lessonsDone??0} max={module.lessonsTotal} class="completion-bar"></progress>
-            </div>
-        </div>
+                {message[i]}
+            </a>
         {:else}
         <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
             
@@ -101,7 +99,9 @@
         </a>
         {/if}
     </div>
-    <h2> Cursos Disponíveis</h2>
+    {#if nonActiveCourses.length}
+        <h2> Cursos Disponíveis</h2>
+    {/if}
     <div class="container-grid">
         {#each nonActiveCourses as module}
         <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
@@ -176,6 +176,8 @@
     .lessons.edit{
         cursor: default;
         transition: none;
+        align-items: center;
+        padding-bottom: 20px;
     }
     .lessons:hover{
         transform: scale(1.08);
@@ -190,6 +192,7 @@
         background-color: gray;
         justify-content: center;
         font-size: 40pt;
+        align-items: center;
     }
     .lessons-edit{
         position: absolute;
@@ -249,7 +252,7 @@
         border-radius: 10px;
     }
 
-    .admin-edit{
+    /* .admin-edit{
         background-color: rgb(48, 209, 43);
         color: white;
         border-radius: 10px;
@@ -261,7 +264,7 @@
         line-height: inherit;
         padding: 5px 10px;
         cursor: pointer;
-    }
+    } */
     .confirm-title-button{
         background-color: rgb(48, 209, 43);
         color: white;

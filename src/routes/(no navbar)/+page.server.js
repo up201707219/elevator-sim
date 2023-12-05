@@ -20,6 +20,8 @@ export const actions = {
             password: data.get('password')
         };
 
+        console.log(val);
+
         try{
             const query = 'SELECT * FROM Users ' +
             'WHERE username = $1;';
@@ -44,6 +46,7 @@ export const actions = {
                 path: '/',
                 httpOnly: true,
                 sameSite: 'strict',
+                secure: false,
                 maxAge: 60*60*24*30
             });
             
@@ -51,6 +54,7 @@ export const actions = {
                 path: '/',
                 httpOnly: true,
                 sameSite: 'strict',
+                secure: false,
                 maxAge: 60*60*24*30
             });
 
@@ -58,6 +62,7 @@ export const actions = {
                 path: '/',
                 httpOnly: true,
                 sameSite: 'strict',
+                secure: false,
                 maxAge: 60*60*24*30
             });
             //throw redirect(303, '/home');

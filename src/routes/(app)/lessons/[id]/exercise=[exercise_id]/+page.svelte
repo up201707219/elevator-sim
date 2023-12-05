@@ -4,10 +4,14 @@
     import {page} from "$app/stores";
     import finishImg from "$lib/assets/img/finish_question.png"
     import Timer from "$lib/timer.svelte"
+    import Modal from "$lib/modal.svelte"
     
     let hasEnded = false;
+    let showModal = false;
+    let modal;
     export let data;
-    let displayedQuestion = data.questions[0];
+    let displayedQuestionIndex = data.questions.map(function (e) {return e.id;}).indexOf($page.params.exercise_id);
+    let displayedQuestion = data.questions[displayedQuestionIndex];
     
     //--------------TIMER CODE------------------------
     let original = displayedQuestion.time; // TYPE NUMBER OF SECONDS HERE
@@ -74,7 +78,7 @@
     $: {
         if($timer <= 0){
             console.log("Time is over");
-            hasEnded = true;
+            endExercise()
         }
         if(sumPenalties >= maxScore){
             endExercise();
@@ -83,6 +87,7 @@
             displayedMessage = ""
         }
     }
+    $: showModal=(displayedMessage && modalMode ==="none")
     
     // ANSWER SUBMISSON VARS
     let messageColor = "black";
@@ -147,12 +152,11 @@
             goDefault();
         }
     }
-    
+    let res;
 
     function checkAnswer(){
         answersSubmited.push(displayedOptions[ind]);
         answersSubmited = answersSubmited;
-
         let isCorrect = correctAns.map(function (e) {return e.id;}).indexOf(displayedOptions[ind].id);
 
         if(isCorrect !== -1) {
@@ -166,6 +170,7 @@
                 endExercise();
             }
             messageColor = "darkgreen";
+            res = "Certo";
         }
         else{
             if(displayedOptions[ind].points === 0){
@@ -174,19 +179,22 @@
                 displayedMessage = "Isto não resolveu o problema mas este passo não é incorrecto de se fazer";
                 displayedMessage = displayedOptions[ind].description;
                 messageColor = "blue";
-                return;
+                res = "Neutro";
+                return ;
             }
             console.log("The answer was wrong (" + displayedOptions[ind].points+ ")");
             sumPenalties -= displayedOptions[ind].points;
             displayedOptions[ind].submission = "wrong";
             displayedMessage = "Isto não resolve o problema";
             messageColor = "red";
+            res = "Errado"
         }
         displayedMessage = displayedOptions[ind].description;
     }
 
     function endExercise(){
         hasEnded = true;
+        modalMode ="none";
     }
 
     function getScore(){
@@ -224,18 +232,18 @@
     {/if}
     <h1>Exercício da máquina de café</h1>
     {#if !hasEnded}
-                <div class="timer">
-                    <!-- {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}      -->
-                    <Timer countdown={displayedQuestion.time}/>
-                </div>
-                {/if}
+        <div class="timer">
+            <!-- {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}      -->
+            <Timer countdown={displayedQuestion.time}/>
+        </div>
+    {/if}
 
     <div class="container {hasEnded?"end-grid":""}">
             <!--  -->
             <div class="exercise-details">
                 <div class="exercise-info">
                     <div class="div-identifier brown">
-                        Sintoma da avaria
+                        Sintoma da avaria+
                     </div>
                     <div class="title">
                         {displayedQuestion.title}
@@ -246,7 +254,7 @@
                 <br>
                 <br>
                 {#if displayedQuestion.image}
-                    <img class="image-exercise" src="/api/exercise/{$page.params.exercise_id}" alt="não encontrado">
+                    <img class="image-exercise" src="/api/exercise/{displayedQuestion.id}" alt="não encontrado">
                 {/if}
             </div>
 
@@ -338,9 +346,26 @@
                 </div>
             </div>
         </div>
-        <div class="displayed-message" style="color: {messageColor};">
-            {displayedMessage}
-        </div>
+        <!-- {#if displayedMessage && modalMode!=="show"}    
+            <div class="modal">
+                <div class="modal-content message">
+                    <span>{displayedMessage}</span>
+                    <div class="confirm-action">
+                        <button class="button-confirmation ok"  on:click={() => {displayedMessage = ""; modalMode = "none";}}>ok</button>
+                    </div>
+                </div>
+            </div>
+        {/if} -->
+        <Modal class="message-display" bind:this={modal} bind:showModal>
+            <h2 slot="header">{res}</h2>
+            <div>{displayedMessage}</div>
+            <div slot="actions" class="confirm-action">
+                <button class="button-confirmation ok"  on:click={() => {modal.close()}}>ok</button>
+            </div>
+        </Modal>
+        {#if displayedQuestionIndex+1 < data.questions.length}
+            <a data-sveltekit-reload href="/lessons/{$page.params.id}/exercise={data.questions[displayedQuestionIndex+1].id}">next question</a>
+        {/if}
         <!-- <div style="background-color: blue; width: 110%;">hello</div> -->
 </main>
 
@@ -361,7 +386,7 @@
     }
 
     .container.end-grid{
-        grid-template-columns: max(20%, 400px) auto max(20%, 400px);
+        grid-template-columns: max(20%, 300px) auto max(20%, 300px);
     }
     
     .exercise-details{
@@ -469,16 +494,19 @@
         max-width: 400px;
         max-height: 400px;
     }
+    .message-displayed{
+        width: 110%;
+    }
 
     .summary{
         position: relative;
         margin-top: 5rem;
         left: 50%;
-        height: max(50%,25.5rem);
-        width: max(60%, 40rem);
+        height: max(50%,23.5rem);
+        width: max(60%, 30rem);
         transform: translateX(-50%);
         background-color: rgb(180, 180, 180);
-        font-size: 2rem;
+        font-size: 18pt;
     }
     .pass{
         width: 100%;
@@ -491,11 +519,12 @@
     .answer-stats{
         display: flex;
         justify-content: start;
+        margin: 1.4rem;
     }
     .stats-labels{
         width: 50%;
         text-align: end;
-        margin: 0 1.2rem;
+        margin: 0rem 1.2rem;
     }
 
     .submitted-answers{
@@ -520,6 +549,7 @@
         background-color: rgba(0,0,0,0.4);
     }
     .modal-content{
+        position: relative;
         background-color: white;
         width: 80%;
         margin: auto;
@@ -527,6 +557,24 @@
         opacity: 100%;
     }
 
+    .modal-content.message{
+        width: 20%;
+        min-height: 20%;
+        border-radius: 20px;
+    }
+
+    .button-confirmation.ok{
+        position: relative;
+        left: 90%;
+        transform: translateX(-100%);
+        min-width: 4rem;
+        padding: 7px 10px;
+        border-radius: 10px;
+        font: inherit;
+        background-color: green;
+        color: white;
+    }
+    
     .button-confirmation:focus{
         border-color: orange;
     }

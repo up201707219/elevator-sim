@@ -146,8 +146,9 @@
         <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
             <h2>Módulos</h2>
             {#each data.lessons as lesson, i}
-                <form method="POST" action="?/updateModule">
-                    <div class="lesson">
+            <a data-sveltekit-reload href="{$page.url.pathname}/{i}:{lesson.id}+0" class="lesson">
+                <div class="lesson">
+                    <form method="POST" action="?/updateModule">
                         <input type="hidden" name="module-id" value={lesson.id}>
                         <label for="module-title" class="lesson-content">Módulo {i+1}: </label>
                         <input class="module-input" type="text" name="module-title" value={lesson.title} autocomplete="off">
@@ -159,8 +160,9 @@
                                 <button class="edit-button" style="background-color: red; margin-left:0.2rem;" type="submit">del</button>
                             </form>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
+            </a>
             {/each}
             <a data-sveltekit-reload href="/lessons/{data.id}/{data.lessons.length}:0+0">
                 <div class="lesson">

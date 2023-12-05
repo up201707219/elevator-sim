@@ -12,6 +12,7 @@ async function getQuestionById(id){
 
         res.rows.forEach(element => {
             let aux = {
+                id: element.id,
                 title: element.content,
                 time: element.completion_time,
                 image: element.image_name
@@ -56,7 +57,7 @@ export async function load({params}){
         questions: aux,
         option: await getQuestionMenu(params.exercise_id)
     };
-
+    //console.log(aux);
     //getImageByQuestionId(params.exercise_id);
     return exercise;
 
