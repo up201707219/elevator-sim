@@ -448,6 +448,15 @@ SET content = 'algo',
     page_ind = 1,
 WHERE ID = '1';
 
+update question_menu
+SET parent_id = parent_id + (select (newer.id - older.id) as id_dif from (select id, title from question_menu
+where question_id = '932bf4e6-1583-451a-b173-781282baa235')as older
+inner join (select id, title from question_menu
+where question_id = '303a02b0-8f8e-41ea-a3a7-8b828d89452a') as newer
+on older.title = newer.title
+Limit 1)
+Where question_id = '303a02b0-8f8e-41ea-a3a7-8b828d89452a';
+
 ------------------------ IMPORTANT DELETES ----------------------------
 
 DELETE FROM Courses

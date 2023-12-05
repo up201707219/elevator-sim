@@ -5,11 +5,7 @@
 
     export let data;
 
-<<<<<<< HEAD
-    let editMode = false;
-=======
     let editMode = data.user.isAdmin !== "false";
->>>>>>> main
 
     let displayedContent;
 
@@ -25,19 +21,11 @@
         <a href="./" style="margin-right: 1rem;"><img class="close-lesson" src={closeIcon} alt="x"></a>
         <span>Módulo {parseInt($page.params.module_number) +1}: {data.moduleTitle}</span>
     </div>
-<<<<<<< HEAD
-    {#if data.user.isAdmin === "true"}
-        <div class="admin-button">
-            <button class="edit-button" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
-        </div>
-    {/if}
-=======
     <!-- {#if data.user.isAdmin === "true"}
         <div class="admin-button">
             <button class="edit-button" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
         </div>
     {/if} -->
->>>>>>> main
     {#if !editMode}
     
         <div class="nav-pages">
@@ -94,8 +82,6 @@
             </form>
         {/if}
     {:else}
-<<<<<<< HEAD
-=======
         <div class="nav-pages">
             {#each data.content as content, i}
                 <a data-sveltekit-reload href= "/lessons/{$page.params.id}/{$page.params.module_number}:{data.moduleId}+{i}">
@@ -116,7 +102,6 @@
                 </a>
             {/each}
         </div>
->>>>>>> main
         <div class="container">
             <h1>{data.moduleTitle ?? ""}</h1>
             <form method="POST" action="?/updateContent">
@@ -247,11 +232,7 @@
         left: 8%;
     }
 
-<<<<<<< HEAD
-    .admin-button{
-=======
     /* .admin-button{
->>>>>>> main
         position: relative;
         width: 60%;
         top: 1rem;
@@ -272,11 +253,7 @@
         line-height: inherit;
         padding: 5px 10px;
         cursor: pointer;
-<<<<<<< HEAD
-    }
-=======
     } */
->>>>>>> main
     .module-submit{
         background-color: rgb(48, 209, 43);
         color: white;
