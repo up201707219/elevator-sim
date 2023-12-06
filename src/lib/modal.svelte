@@ -13,10 +13,10 @@
 <dialog
 	bind:this={dialog}
 	on:close={() => (showModal = false)}
-	on:click|self={() => close()}
+	on:click|preventDefault|self={() => close()}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div on:click|stopPropagation>
+	<div on:click|preventDefault|stopPropagation>
 		<slot name="header" />
 		<hr />
 		<slot />

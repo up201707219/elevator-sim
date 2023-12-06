@@ -1,5 +1,19 @@
 import { pool } from "$lib/db";
+import { redirect } from "@sveltejs/kit";
+import {v4 as uuidv4} from "uuid";
 
+async function insertDefaultExercise(id, courseId){
+    try {
+        const query = "INSERT INTO Question_dev (id, course_id, content, completion_time) \n" +
+        "VALUES ($1, $2, 'Isto é uma avaria', 300);";
+
+        const values = [id, courseId];
+
+        await pool.query(query, values);
+    } catch (error) {
+        console.error(error)
+    }
+}
 
 async function getQuestionById(id){
     try{
@@ -51,7 +65,12 @@ async function getQuestionMenu(id){
     }
 }
 
-export async function load({params}){
+export async function load({cookies, params}){
+    if(params.exercise_id === "0" && cookies.get('userIsAdmin') !== "false"){
+        let id = uuidv4();
+        insertDefaultExercise(id, params.id);
+        throw redirect(302, "/lessons/"+params.id+"/exercise="+id+"/edit");
+    }
     let aux = await getQuestionById(params.id);
     let exercise = {
         questions: aux,
@@ -61,29 +80,4 @@ export async function load({params}){
     //getImageByQuestionId(params.exercise_id);
     return exercise;
 
-}
-
-async function getImageByQuestionId(id){
-    try {
-        const query = 'SELECT * FROM Question_Images '+
-        'WHERE question_id = $1 '+
-        'LIMIT 1';
-
-        const values = [id];
-        
-        const res = await pool.query(query, values);
-
-        let image = {
-            name: res.rows[0].image_name,
-            type: res.rows[0].image_type,
-            lastModified: res.rows[0].image_last_modified,
-            size: res.rows[0].image_size,
-            data: new Blob([res.rows[0].image_data], {type: res.rows[0].image_type})
-        }
-        
-        //console.log(res.rows[0].image_data);
-        return image;
-    } catch(err) {
-        console.error(err);
-    }
 }

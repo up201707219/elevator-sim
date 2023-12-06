@@ -132,7 +132,7 @@ async function getCompletion(userId, moduleId){
 
         const res = await pool.query(query, values);
         
-        return res.rows[0].completion??0;
+        return res.rows[0]?.completion??0;
         
     } catch (error) {
         console.error(error);

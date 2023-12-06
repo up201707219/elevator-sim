@@ -78,16 +78,19 @@ export const actions = {
     logoutUser:  async ({cookies, request}) => {
         cookies.set('userId', '', {
             path: '/',
+            secure: false,
             expires: new Date(0),
             });
 
             cookies.set('user', '', {
             path: '/',
+            secure: false,
             expires: new Date(0),
             });
 
             cookies.set('userIsAdmin', '', {
             path: '/',
+            secure: false,
             expires: new Date(0),
             })     
     }

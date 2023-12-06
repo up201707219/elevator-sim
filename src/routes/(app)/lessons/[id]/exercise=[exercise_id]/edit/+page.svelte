@@ -7,14 +7,11 @@
     let previewImageExercise;
     export let data;
 
-    let displayedQuestion = data.questions[0];
-
-    //console.log(data.option[0]);
+    let displayedQuestionIndex = data.questions.map(function (e) {return e.id;}).indexOf($page.params.exercise_id);
+    let displayedQuestion = data.questions[displayedQuestionIndex];
     
     //--------------TIMER CODE------------------------
     let timer = displayedQuestion.time; // TYPE NUMBER OF SECONDS HERE
-
-    
 
     $: hours = Math.floor(timer / (60*60))
     $: minutes = Math.floor((timer - hours *(60*60)) / 60);
@@ -121,7 +118,13 @@
         <div class="exercise-details">
             <form method="POST" action="?/updateExercise" enctype="multipart/form-data">
                 <input type="hidden" name="id" value={$page.params.exercise_id}>
+                <label for="title">Enunciado: </label>
                 <textarea class="details-input" name="title" value={displayedQuestion.title}></textarea>
+                <br>
+                <label for="time">Tempo: </label>
+                <input class="time-input" type="number" name="time-hours" value={hours}>h
+                <input class="time-input" type="number" name="time-minutes" value={minutes}>min
+                <input class="time-input" type="number" name="time-seconds" value={seconds}>s
                 <br>
                 <img class="input image-exercise" src={previewImageExercise} alt="imagem da opção"> 
                 <br>
@@ -222,6 +225,11 @@
         width: 100%;
         height: 4rem;
         resize: none;
+    }
+
+    .time-input{
+        width:3rem;
+        text-align: end;
     }
 
     .nav-options{

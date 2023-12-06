@@ -114,6 +114,7 @@ export const actions = {
             id: data.get('id').valueOf(),
             title: data.get('title').valueOf(),
             image: data.get('image')?.valueOf(),
+            time: parseInt(data.get('time-hours'))*60*60+parseInt(data.get('time-minutes'))*60+parseInt(data.get('time-seconds'))
         };
         console.log(val.image);
         if(val.image.size !== 0){
@@ -122,11 +123,11 @@ export const actions = {
         //console.log(buffer);
         try{
             const query = 'UPDATE Question_Dev '+
-            'SET content = $1 '+
-            'WHERE ID = $2;';
+            'SET content = $1, '+
+            'completion_time = $2 ' +
+            'WHERE ID = $3;';
 
-            const values = [val.title, val.id];
-            //console.log(query);
+            const values = [val.title, val.time, val.id];
 
             await pool.query(query, values);
         }
@@ -149,7 +150,7 @@ export const actions = {
             await pool.query(query, values);
 
             query = 'insert into question_menu(question_id, title, descript, response, parent_id, points) ' +
-            'select $1 , title, descript, response, parent_id, points from question_menu where question_id = $2 ;';
+            'select $1 , title, descript, response, parent_id, points from question_menu where question_id = $2 ORDER BY ID;';
 
             // console.log(query);
             // console.log(values);

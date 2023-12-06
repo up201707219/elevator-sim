@@ -3,8 +3,15 @@
     import * as converter from "$lib/stringHtmlConverter";
     import quizImg from "$lib/assets/img/quiz.png";
     import certificateImg from "$lib/assets/img/certificate.png";
+    import Modal from "$lib/modal.svelte"
 
     export let data;
+    data.lessons.forEach(element => {
+        element.showModal = false;
+    });
+
+    let modal = [];
+    // let showModal = false;
     let duration = stringify(data.dur_min, data.dur_max)+data.timeType;
     let mobileDisplay = "lessons";
     let editMode = data.user.isAdmin === 'true';
@@ -45,74 +52,8 @@
     {/if}
     
     {#if !editMode}
-    <div class="mobile-content">
-        <h1>{data.name}</h1>
-        <div class="course-details {(mobileDisplay === "details")? "open":""}">
-            
-            <!-- Mobile Image -->
-            <div class="mobile-details-image">
-                <img src={data.image} alt="mc12" class="course-image">
-            </div>
-            
-
-            <div class="details-context">
-                <h2>Vista geral do curso</h2>
-                <div class="details-content">
-                    <p><b>Descrição:</b> {@html data.description}</p>
-                    <p><b>Duração:</b> {duration}</p>
-                </div>
-                <p>Formador: Gonçalo Resende</p>
-            </div>
-            <div class="details-image">
-                <img src={data.image} alt="mc12" class="course-image">
-            </div>
-        </div>
-        <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
-            <h2>Módulos</h2>
-            {#if data.lessons.length === 0}
-            <h2 class="center">Não existem módulos para este curso</h2>
-            {/if}
-            {#each data.lessons as lesson, i}
-            <a data-sveltekit-reload href={i <= 0 ? ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+'+(lesson.completion-1)) : parseFloat(data.lessons[i-1].completion/data.lessons[i-1].total)<1 ? '' : ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+'+(lesson.completion-1))}>
-                <div class="lesson {lesson.completion===0?"" : lesson.total===0? "":parseFloat(lesson.completion/lesson.total)<=1?"orange":"green"} {i===0 ? "":parseFloat(data.lessons[i-1].completion/data.lessons[i-1].total)<=1 ? "disabled":""}">
-                    <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
-                </div>
-            </a>
-            {/each}
-        </div>
-        <div class="lessons">
-            <h2>Teste</h2>
-            {#if data.quiz.length === 0}
-                <h2 class="center">Não existe teste para este curso</h2>
-            {:else if parseFloat(data.lessons[data.lessons.length-1].completion/data.lessons[data.lessons.length-1].total)>=1}
-                <div class="quiz-content">
-                    <a href="{$page.url.pathname}/exercise={data.quiz[0].id}">
-                        <img class="quiz-content-image" src={quizImg} alt="">
-                        <span class="quiz-content-text">Sem nota atribuida</span>
-                    </a>
-                </div>
-            {:else}
-            <h2 class="center">Teste indisponível até terminar módulos</h2>
-            {/if}
-        </div>
-        {#if parseFloat(data.lessons[data.lessons.length-1].completion/data.lessons[data.lessons.length-1].total)>=1}
-        <div class="lessons">
-            <h2>Certificado</h2>
-            <div class="quiz-content">
-                <a href={$page.url}>
-                    <img class="quiz-content-image" src={certificateImg} alt="">
-                    <span class="quiz-content-text"></span>
-                </a>
-            </div>
-        </div>
-        {/if}
-    </div>
-    
-    {:else}
-    <div class="mobile-content">
-        <form method="POST" action="?/updateCourse">
-            <label class="input-label title" for="title">Titulo:</label>
-            <input class="details-input title" type="text" name="title" value={data.name} autocomplete="off">
+        <div class="mobile-content">
+            <h1>{data.name}</h1>
             <div class="course-details {(mobileDisplay === "details")? "open":""}">
                 
                 <!-- Mobile Image -->
@@ -120,57 +61,158 @@
                     <img src={data.image} alt="mc12" class="course-image">
                 </div>
                 
+
                 <div class="details-context">
                     <h2>Vista geral do curso</h2>
-                    <input type="hidden" name="id" value={data.id}>
-                    <!-- <input type="hidden" name="title" value={data.name}> -->
-                    <label for="description">Descrição: </label>
-                    <textarea class="details-input" type="text" name="description" value = {converter.htmlToString(data.description)}></textarea> <br><br>
-                    <label for="duration-min">Duração: de</label>
-                    <input class="details-input number" type="number" name="duration-min" value = {data.dur_min}>
-                    <label for="duration-max">a</label>
-                    <input class="details-input number" type="number" name="duration-max" value = {data.dur_max}>
-                    <select name="time-type">
-                        <option value="min">minutos</option>
-                        <option value="h">horas</option>
-                        <option value="d">dias</option>
-                        
-                    </select> <br> <br>        
-                    <button type="submit" class="edit-button"> Guardar </button>
+                    <div class="details-content">
+                        <p><b>Descrição:</b> {@html data.description}</p>
+                        <p><b>Duração:</b> {duration}</p>
+                    </div>
+                    <p>Formador: Gonçalo Resende</p>
                 </div>
                 <div class="details-image">
                     <img src={data.image} alt="mc12" class="course-image">
                 </div>
             </div>
-        </form>
-        <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
-            <h2>Módulos</h2>
-            {#each data.lessons as lesson, i}
-            <a data-sveltekit-reload href="{$page.url.pathname}/{i}:{lesson.id}+0" class="lesson">
-                <div class="lesson">
-                    <form method="POST" action="?/updateModule">
-                        <input type="hidden" name="module-id" value={lesson.id}>
-                        <label for="module-title" class="lesson-content">Módulo {i+1}: </label>
-                        <input class="module-input" type="text" name="module-title" value={lesson.title} autocomplete="off">
-                        
-                        <div class="module-edit-buttons">
-                            <button class="edit-button" type="submit">ok</button>
-                            <form method="POST" action="?/deleteModule">
-                                <input type="hidden" name="module-id-delete" value={lesson.id}>
-                                <button class="edit-button" style="background-color: red; margin-left:0.2rem;" type="submit">del</button>
+            <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
+                <h2>Módulos</h2>
+                {#if data.lessons.length === 0}
+                <h2 class="center">Não existem módulos para este curso</h2>
+                {:else}
+                {#each data.lessons as lesson, i}
+                <a data-sveltekit-reload href={i <= 0 ? ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+'+(lesson.completion-1)) : parseFloat(data.lessons[i-1].completion/data.lessons[i-1].total)<1 ? '' : ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+'+(lesson.completion-1))}>
+                    <div class="lesson {lesson.completion===0?"" : lesson.total===0? "":parseFloat(lesson.completion/lesson.total)<=1?"orange":"green"} {i===0 ? "":parseFloat(data.lessons[i-1].completion/data.lessons[i-1].total)<=1 ? "disabled":""}">
+                        <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
+                    </div>
+                </a>
+                {/each}
+                {/if}
+            </div>
+            {#if data.lessons.length>0}
+                <div class="lessons">
+                    <h2>Teste</h2>
+                    {#if data.quiz.length === 0 || data.lesson.length}
+                        <h2 class="center">Não existe teste para este curso</h2>
+                    {:else if parseFloat(data.lessons[data.lessons.length-1].completion/data.lessons[data.lessons.length-1].total)>=1}
+                        <div class="quiz-content">
+                            <a href="{$page.url.pathname}/exercise={data.quiz[0].id}">
+                                <img class="quiz-content-image" src={quizImg} alt="">
+                                <span class="quiz-content-text">Sem nota atribuida</span>
+                            </a>
+                        </div>
+                    {:else}
+                    <h2 class="center">Teste indisponível até terminar módulos</h2>
+                    {/if}
+                </div>
+                    
+                {#if parseFloat(data.lessons[data.lessons.length-1].completion/data.lessons[data.lessons.length-1].total)>=1}
+                <div class="lessons">
+                    <h2>Certificado</h2>
+                    <div class="quiz-content">
+                        <a href={$page.url}>
+                            <img class="quiz-content-image" src={certificateImg} alt="">
+                            <span class="quiz-content-text"></span>
+                        </a>
+                    </div>
+                </div>
+                {/if}
+            {/if}
+        </div>
+    
+    {:else}
+        <div class="mobile-content">
+            <form method="POST" action="?/updateCourse">
+                <label class="input-label title" for="title">Titulo:</label>
+                <input class="details-input title" type="text" name="title" value={data.name} autocomplete="off">
+                <div class="course-details {(mobileDisplay === "details")? "open":""}">
+                    
+                    <!-- Mobile Image -->
+                    <div class="mobile-details-image">
+                        <img src={data.image} alt="mc12" class="course-image">
+                    </div>
+                    
+                    <div class="details-context">
+                        <h2>Vista geral do curso</h2>
+                        <input type="hidden" name="id" value={data.id}>
+                        <!-- <input type="hidden" name="title" value={data.name}> -->
+                        <label for="description">Descrição: </label>
+                        <textarea class="details-input" type="text" name="description" value = {converter.htmlToString(data.description)}></textarea> <br><br>
+                        <label for="duration-min">Duração: de</label>
+                        <input class="details-input number" type="number" name="duration-min" value = {data.dur_min}>
+                        <label for="duration-max">a</label>
+                        <input class="details-input number" type="number" name="duration-max" value = {data.dur_max}>
+                        <select name="time-type">
+                            <option value="min">minutos</option>
+                            <option value="h">horas</option>
+                            <option value="d">dias</option>
+                            
+                        </select> <br> <br>        
+                        <button type="submit" class="edit-button"> Guardar </button>
+                    </div>
+                    <div class="details-image">
+                        <img src={data.image} alt="mc12" class="course-image">
+                    </div>
+                </div>
+            </form>
+            <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
+                <h2>Módulos</h2>
+                {#each data.lessons as lesson, i}
+                    <a data-sveltekit-reload href="{$page.url.pathname}/{i}:{lesson.id}+0" class="lesson">
+                        <div class="lesson">
+                            <form method="POST" action="?/updateModule">
+                                <input type="hidden" name="module-id" value={lesson.id}>
+                                <label for="module-title" class="lesson-content">Módulo {i+1}: </label>
+                                <input on:click|preventDefault class="module-input" type="text" name="module-title" value={lesson.title} autocomplete="off">
+                                
+                                <div class="module-edit-buttons">
+                                    <button class="edit-button" type="submit">ok</button>
+                                    <form method="POST" action="?/deleteModule">
+                                        <input type="hidden" name="module-id-delete" value={lesson.id}>
+                                        <button on:click|preventDefault|stopPropagation={()=>{lesson.showModal=true;}} class="edit-button" style="background-color: red; margin-left:0.2rem;" type="button">del</button>
+                                        
+                                        <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
+                                        <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                        <div on:click|preventDefault style="cursor: default;">
+                                            <Modal bind:this={modal[i]} bind:showModal={lesson.showModal} >
+                                                <div class="modal-header" slot="header"><h1>Warning</h1></div>
+                                                <div class="modal-content" style="padding: 1rem;"> Tem a certeza que quer apagar o módulo?</div>
+                                                <div class="modal-actions" slot="actions">
+                                                    <button class="modal-action" type="submit">sim</button>
+                                                    <button on:click|preventDefault={()=>{modal[i].close();}} type="button">não</button>
+                                                </div>
+                                            </Modal>
+                                        </div>
+                                    </form>
+                                </div>
                             </form>
                         </div>
-                    </form>
-                </div>
-            </a>
-            {/each}
-            <a data-sveltekit-reload href="/lessons/{data.id}/{data.lessons.length}:0+0">
-                <div class="lesson">
-                    <div class="lesson-content">Adicionar Módulo</div>
-                </div>
-            </a>
-        </div>
-    </div>    
+                    </a>
+                {/each}
+                <a data-sveltekit-reload href="/lessons/{data.id}/{data.lessons.length}:0+0">
+                    <div class="lesson">
+                        <div class="lesson-content">Adicionar Módulo</div>
+                    </div>
+                </a>
+            </div>
+            <div class="lessons">
+                <h2>Teste</h2>
+                {#if data.quiz.length === 0}
+                    <div class="quiz-content">
+                        <a href="{$page.url.pathname}/exercise=0">
+                            <img class="quiz-content-image" src={quizImg} alt="">
+                            <span class="quiz-content-text">Adicionar Teste</span>
+                        </a>
+                    </div>
+                {:else}
+                    <div class="quiz-content">
+                        <a href="{$page.url.pathname}/exercise={data.quiz[0].id}/edit">
+                            <img class="quiz-content-image" src={quizImg} alt="">
+                            <span class="quiz-content-text">Editar Teste</span>
+                        </a>
+                    </div>
+                {/if}
+            </div>
+        </div>    
     {/if}
 </main>
 
@@ -335,6 +377,15 @@
         font:inherit;
         min-width: max-content;
         max-width: 60%;
+    }
+
+    .modal-content{
+        padding: 1rem;
+    }
+
+    .modal-actions{
+        display: flex;
+        justify-content: space-between;
     }
 
     @media (max-width: 900px){

@@ -14,18 +14,32 @@
     function toggleEdit(){
         editMode = !editMode;
     }
+
+    let contentInput = false;
+
+    function beforeUnloadHandler(){
+        if(data.user.isAdmin !== "false" && contentInput){
+            event.preventDefault();
+            event.returnValue = '';
+            return '';
+        }
+        // event.preventDefault();
+        // event.returnValue = 'hello?';
+        // return '';
+    }
 </script>
 
+<svelte:window on:beforeunload={beforeUnloadHandler}/>
 <main>
     <div class="top-close-bar">
         <a href="./" style="margin-right: 1rem;"><img class="close-lesson" src={closeIcon} alt="x"></a>
         <span>Módulo {parseInt($page.params.module_number) +1}: {data.moduleTitle}</span>
     </div>
-    <!-- {#if data.user.isAdmin === "true"}
+    {#if data.user.isAdmin === "true"}
         <div class="admin-button">
-            <button class="edit-button" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
+            <button class="edit-button" on:click={toggleEdit}>{editMode ? "Pré-visualizar" : "Editar"}</button>
         </div>
-    {/if} -->
+    {/if}
     {#if !editMode}
     
         <div class="nav-pages">
@@ -58,7 +72,6 @@
             </a>
             {/if}
             <div class="module-content">
-                <h2>{parseInt($page.params.page)+1} - {displayedContent.title}</h2>
                 <div class="module-text">
                     {@html displayedContent.context ?? ""}
                 </div>
@@ -75,7 +88,7 @@
         {:else}
             <form method="post" action="?/finishModule">
                 <input type="hidden" name="size" value={data.content.length}>
-                <input type="hidden" name="completion" value={parseFloat(data.completion/data.content.length)}>
+                <input type="hidden" name="completion" value={data.completion?parseFloat(data.completion/data.content.length):0}>
                 <button class="next-page" type="submit">
                     Concluir
                 </button>
@@ -108,7 +121,7 @@
                 <input type="hidden" name="module-id" value={data.moduleId}>
                 <input type="hidden" name="content-id" value={displayedContent.id}>
                 <label for="module-content">Conteúdo da página: </label>
-                <textarea class="content-input" name="module-content" value={converter.htmlToString(displayedContent.context)}></textarea><br>
+                <textarea class="content-input" name="module-content" on:change={()=>{contentInput=true;}} value={converter.htmlToString(displayedContent.context)}></textarea><br>
                 <button class="module-submit content" type="submit">Guardar</button>
             </form>
             <form method="POST" action="?/insertContent">
@@ -232,7 +245,7 @@
         left: 8%;
     }
 
-    /* .admin-button{
+    .admin-button{
         position: relative;
         width: 60%;
         top: 1rem;
@@ -253,7 +266,7 @@
         line-height: inherit;
         padding: 5px 10px;
         cursor: pointer;
-    } */
+    }
     .module-submit{
         background-color: rgb(48, 209, 43);
         color: white;
