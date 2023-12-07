@@ -2,9 +2,12 @@
   import menuIcon from "./assets/svg/menu.svg"
   import logo from "./assets/img/S+_logo.png"
   import searchIcon from "./assets/svg/search.svg"
+  import defaultPfp from "./assets/img/default_pfp.jpg"
 
   export let hasSidebar = false;
   export let navbarFixed = true;
+
+  export let user;
 
   let mobileNavOpen = false;
   function toggleNav(){
@@ -15,33 +18,58 @@
 <div class="mobile">
   <img class="mobile-logo" src={logo} alt="logo">
   {#if hasSidebar}
-    <span class="position: sticky;" on:click>sidebar</span>
+    <button on:click>sidebar</button>
   {/if}
-    <img src={menuIcon} alt="nav" class="navbar-icon" on:click={toggleNav}>
+    <button on:click={toggleNav}>
+      <img src={menuIcon} alt="nav" class="navbar-icon">
+    </button>
 </div>
 
 
 <nav class="navbar {navbarFixed ? "fixed" : ""} {mobileNavOpen ? "open" : ""}">
   <div class="left">
     {#if hasSidebar}
-        <a id="nav-button" on:click><img src={menuIcon} alt="menu" class="sidebar-icon"></a>
+        <button id="nav-button" on:click><img src={menuIcon} alt="menu" class="sidebar-icon"></button>
     {/if}
     <img class="logo" src={logo} alt="logo">
   </div>
   
   <div class="navbar-menu">
-    <a href="/">Início</a>
+    <a href="/home">Início</a>
     <a href="/lessons">Cursos</a>
     <a href="/quiz">Formações</a>
-    <a href="/in_construction">Simulador</a>
+    {#if user.isAdmin === "true"}
+      <a href="/in_construction">Admin</a>
+    {/if}
   </div>
   
   <div class="right">
-      <a href=""><img src={searchIcon} alt="search" class="sidebar-icon" ></a>
+      <!-- <button><img src={searchIcon} alt="search" class="sidebar-icon" ></button> -->
+      <form method="post" action="/?/logoutUser">
+        <button type="submit">
+          {user.username}
+        </button>
+        {#if !user.image}
+          <img class="pfp" src={defaultPfp} alt="">
+        {/if}
+      </form>
   </div>
 </nav>
 
 <style>
+  button{
+    position: relative;
+    top:-15px;
+    margin-right: 1rem;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+  }
+
   .mobile{
     display: none;
   }
@@ -49,30 +77,20 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-
     padding: 1%;
     padding-top: 2rem;
     padding-bottom: 0rem;
     z-index: 10;
     width: 98%;
-
-    /* beggining of fixed bar */
-    
-    /* position: fixed;
-    top: 0;
-    left: 0;
-     */
-    
-    /* end of fixed bar */
-    
     background-color: white;
     border-bottom: 1px solid black;
-}
-.navbar.fixed{
-  position: sticky;
-  top: 0;
-  left: 0;
-}
+  }
+  .navbar.fixed{
+    position: sticky;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+  }
 
 .left{
     display: flex;
@@ -81,7 +99,7 @@
 
 .navbar a{
     margin: 20px;
-    font-size: 16pt;
+    font-size: 18pt;
     color: rgb(149, 149, 149);
     text-decoration: none;
     transition: 0.5s;
@@ -92,7 +110,7 @@
 }
 
 #nav-button{
-    margin-top: 6px;
+    margin: 13px 10px 13px 30px;
     position: relative;
     transition: 1s;
     cursor: pointer;
@@ -114,6 +132,12 @@
 
 .right{
   margin-right: 20px;
+}
+
+.pfp{
+  max-width: 40px;
+  max-height: 40px;
+  border-radius: 20px;
 }
 
 @media (max-width: 900px){

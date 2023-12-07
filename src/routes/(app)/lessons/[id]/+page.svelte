@@ -1,22 +1,36 @@
 <script>
+    import {page} from "$app/stores";
+    import * as converter from "$lib/stringHtmlConverter";
+    import quizImg from "$lib/assets/img/quiz.png";
+    import certificateImg from "$lib/assets/img/certificate.png";
+    import Modal from "$lib/modal.svelte"
+
     export let data;
-    function stringify(min, max){
-        let timeType = "min";
-        if(min > 120){
-            [min, max] = [(min/60), (max/60)];
-            timeType = "h";
-        }
+    data.lessons.forEach(element => {
+        element.showModal = false;
+    });
+
+    let modal = [];
+    // let showModal = false;
+    let duration = stringify(data.dur_min, data.dur_max)+data.timeType;
+    let mobileDisplay = "lessons";
+    let editMode = data.user.isAdmin === 'true';
+
+    // Duration into string
+    function stringify(min, max){;
         let str;
         if(min === max){
-            str = min+timeType;
+            str = min;
         }
         else{
-            str = min + "-" + max+timeType;
+            str = min + "-" + max;
         }
         return str;
     }
-    let duration = stringify(data.dur_min, data.dur_max);
-    let mobileDisplay = "lessons";
+
+    function toggleEdit(){
+        editMode = !editMode;
+    }
 
     function updateMobileDisplay(display){
         mobileDisplay = display;
@@ -24,37 +38,182 @@
 </script>
 
 <main>
+    
+    <!-- mobile subsections -->
     <div class="mobile-nav">
         <button class="mobile-button {(mobileDisplay === "lessons")? "active":""}" on:click={() => updateMobileDisplay("lessons")}>Módulos</button>
         <button class="mobile-button {(mobileDisplay === "details")? "active":""}" on:click={() => updateMobileDisplay("details")}>Detalhes</button>
     </div>
-    <div class="mobile-content">
-        <h1>{data.name}</h1>
-        <div class="course-details {(mobileDisplay === "details")? "open":""}">
-            <div class="mobile-details-image">
-                <img src={data.image} alt="mc12" class="course-image">
-            </div>
-            <div class="details-context">
-                <p><b>Descrição:</b> {@html data.description}</p>
-                <p><b>Duração:</b> {duration}</p>
-            </div>
-            <div class="details-image">
-                <img src={data.image} alt="mc12" class="course-image">
-            </div>
+
+    {#if data.user.isAdmin === "true"}
+        <div class="admin-button">
+            <button class="edit-button toggle" on:click={toggleEdit}>{editMode ? "Voltar" : "Editar"}</button>
         </div>
-        <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
-            {#if data.lessons.length === 0}
-            <h2>Não existem módulos para este curso</h2>
-            {/if}
-            {#each data.lessons as lesson, i}
-            <a href="/in_construction">
-                <div class="lesson">
-                    <div class="lesson-content">Módulo {i+1}: {lesson}</div>
+    {/if}
+    
+    {#if !editMode}
+        <div class="mobile-content">
+            <h1>{data.name}</h1>
+            <div class="course-details {(mobileDisplay === "details")? "open":""}">
+                
+                <!-- Mobile Image -->
+                <div class="mobile-details-image">
+                    <img src={data.image} alt="mc12" class="course-image">
                 </div>
-            </a>
-            {/each}
+                
+
+                <div class="details-context">
+                    <h2>Vista geral do curso</h2>
+                    <div class="details-content">
+                        <p><b>Descrição:</b> {@html data.description}</p>
+                        <p><b>Duração:</b> {duration}</p>
+                    </div>
+                    <p>Formador: Gonçalo Resende</p>
+                </div>
+                <div class="details-image">
+                    <img src={data.image} alt="mc12" class="course-image">
+                </div>
+            </div>
+            <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
+                <h2>Módulos</h2>
+                {#if data.lessons.length === 0}
+                <h2 class="center">Não existem módulos para este curso</h2>
+                {:else}
+                {#each data.lessons as lesson, i}
+                <a data-sveltekit-reload href={i <= 0 ? ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+'+(lesson.completion-1)) : parseFloat(data.lessons[i-1].completion/data.lessons[i-1].total)<1 ? '' : ('/lessons/'+ $page.params.id +'/'+ i + ':' + lesson.id +'+'+(lesson.completion-1))}>
+                    <div class="lesson {lesson.completion===0?"" : lesson.total===0? "":parseFloat(lesson.completion/lesson.total)<=1?"orange":"green"} {i===0 ? "":parseFloat(data.lessons[i-1].completion/data.lessons[i-1].total)<=1 ? "disabled":""}">
+                        <div class="lesson-content">Módulo {i+1}: {lesson.title}</div>
+                    </div>
+                </a>
+                {/each}
+                {/if}
+            </div>
+            {#if data.lessons.length>0}
+                <div class="lessons">
+                    <h2>Teste</h2>
+                    {#if data.quiz.length === 0 }
+                        <h2 class="center">Não existe teste para este curso</h2>
+                    {:else if parseFloat(data.lessons[data.lessons.length-1].completion/data.lessons[data.lessons.length-1].total)>=1}
+                        <div class="quiz-content">
+                            <a href="{$page.url.pathname}/exercise={data.quiz[0].id}">
+                                <img class="quiz-content-image" src={quizImg} alt="">
+                                <span class="quiz-content-text">Sem nota atribuida</span>
+                            </a>
+                        </div>
+                    {:else}
+                    <h2 class="center">Teste indisponível até terminar módulos</h2>
+                    {/if}
+                </div>
+                    
+                {#if parseFloat(data.lessons[data.lessons.length-1].completion/data.lessons[data.lessons.length-1].total)>=1}
+                <div class="lessons">
+                    <h2>Certificado</h2>
+                    <div class="quiz-content">
+                        <a href={$page.url}>
+                            <img class="quiz-content-image" src={certificateImg} alt="">
+                            <span class="quiz-content-text"></span>
+                        </a>
+                    </div>
+                </div>
+                {/if}
+            {/if}
         </div>
-    </div>
+    
+    {:else}
+        <div class="mobile-content">
+            <form method="POST" action="?/updateCourse">
+                <label class="input-label title" for="title">Titulo:</label>
+                <input class="details-input title" type="text" name="title" value={data.name} autocomplete="off">
+                <div class="course-details {(mobileDisplay === "details")? "open":""}">
+                    
+                    <!-- Mobile Image -->
+                    <div class="mobile-details-image">
+                        <img src={data.image} alt="mc12" class="course-image">
+                    </div>
+                    
+                    <div class="details-context">
+                        <h2>Vista geral do curso</h2>
+                        <input type="hidden" name="id" value={data.id}>
+                        <!-- <input type="hidden" name="title" value={data.name}> -->
+                        <label for="description">Descrição: </label>
+                        <textarea class="details-input" type="text" name="description" value = {converter.htmlToString(data.description)}></textarea> <br><br>
+                        <label for="duration-min">Duração: de</label>
+                        <input class="details-input number" type="number" name="duration-min" value = {data.dur_min}>
+                        <label for="duration-max">a</label>
+                        <input class="details-input number" type="number" name="duration-max" value = {data.dur_max}>
+                        <select name="time-type">
+                            <option value="min">minutos</option>
+                            <option value="h">horas</option>
+                            <option value="d">dias</option>
+                            
+                        </select> <br> <br>        
+                        <button type="submit" class="edit-button"> Guardar </button>
+                    </div>
+                    <div class="details-image">
+                        <img src={data.image} alt="mc12" class="course-image">
+                    </div>
+                </div>
+            </form>
+            <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
+                <h2>Módulos</h2>
+                {#each data.lessons as lesson, i}
+                    <a data-sveltekit-reload href="{$page.url.pathname}/{i}:{lesson.id}+0" class="lesson">
+                        <div class="lesson">
+                            <form method="POST" action="?/updateModule">
+                                <input type="hidden" name="module-id" value={lesson.id}>
+                                <label for="module-title" class="lesson-content">Módulo {i+1}: </label>
+                                <input on:click|preventDefault class="module-input" type="text" name="module-title" value={lesson.title} autocomplete="off">
+                                
+                                <div class="module-edit-buttons">
+                                    <button class="edit-button" type="submit">ok</button>
+                                    <form method="POST" action="?/deleteModule">
+                                        <input type="hidden" name="module-id-delete" value={lesson.id}>
+                                        <button on:click|preventDefault|stopPropagation={()=>{lesson.showModal=true;}} class="edit-button" style="background-color: red; margin-left:0.2rem;" type="button">del</button>
+                                        
+                                        <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
+                                        <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                        <div on:click|preventDefault style="cursor: default;">
+                                            <Modal bind:this={modal[i]} bind:showModal={lesson.showModal} >
+                                                <div class="modal-header" slot="header"><h1>Warning</h1></div>
+                                                <div class="modal-content" style="padding: 1rem;"> Tem a certeza que quer apagar o módulo?</div>
+                                                <div class="modal-actions" slot="actions">
+                                                    <button class="modal-action" type="submit">sim</button>
+                                                    <button on:click|preventDefault={()=>{modal[i].close();}} type="button">não</button>
+                                                </div>
+                                            </Modal>
+                                        </div>
+                                    </form>
+                                </div>
+                            </form>
+                        </div>
+                    </a>
+                {/each}
+                <a data-sveltekit-reload href="/lessons/{data.id}/{data.lessons.length}:0+0">
+                    <div class="lesson">
+                        <div class="lesson-content">Adicionar Módulo</div>
+                    </div>
+                </a>
+            </div>
+            <div class="lessons">
+                <h2>Teste</h2>
+                {#if data.quiz.length === 0}
+                    <div class="quiz-content">
+                        <a href="{$page.url.pathname}/exercise=0">
+                            <img class="quiz-content-image" src={quizImg} alt="">
+                            <span class="quiz-content-text">Adicionar Teste</span>
+                        </a>
+                    </div>
+                {:else}
+                    <div class="quiz-content">
+                        <a href="{$page.url.pathname}/exercise={data.quiz[0].id}/edit">
+                            <img class="quiz-content-image" src={quizImg} alt="">
+                            <span class="quiz-content-text">Editar Teste</span>
+                        </a>
+                    </div>
+                {/if}
+            </div>
+        </div>    
+    {/if}
 </main>
 
 <style>
@@ -64,6 +223,11 @@
     .mobile-details-image{
         display: none;
     }
+    .mobile-content{
+        position: relative;
+    }
+
+    
     h1{
         margin-left: auto;
         margin-right: auto;
@@ -75,9 +239,38 @@
         margin: 1rem auto 3rem auto;
         width: 80%;
         text-align: start;
+        padding-bottom: 2rem;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
     }
     .details-context{
         margin-right: 2rem;
+    }
+    .details-content{
+        margin-left: 2rem;
+    }
+    .input-label.title{
+        font-size: inherit;
+        font-family: inherit;
+        margin-left: 10%;
+        font-size: 20pt;
+    }
+    .details-input{
+        font-size: inherit;
+        font-family: inherit;
+        width: 100%;
+        height: 10rem;
+        resize: none;
+    }
+    .details-input.title{
+        width: auto;
+        height: auto;
+        font-size: 20pt;
+        margin-top: 2rem;
+    }
+    .details-input.number{
+        width: 50px;
+        height: auto;
     }
     .details-image{
         position: relative;
@@ -90,21 +283,48 @@
         position: absolute;
         right: 0;
         top:50%;
+        border: 1px solid black;
         transform: translateY(-50%);
     }
-    h2{
+    .lessons{
+        width: 80%;
+        margin: auto;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid black;
+    }
+    h2.center{
         text-align: center;
         margin-top: 3rem;
     }
     .lesson{
-        width: 80%;
+        position: relative;
+        width: 100%;
         margin:2rem auto 2rem auto;
         padding: 1rem 0rem 1rem 0rem;
-        background-color: rgb(173, 173, 173);
+        background-color: rgb(156, 156, 156);
         border-radius: 10px;
+    }
+    .lesson.disabled{
+        background-color: rgb(190, 190, 190);
+        cursor: default;
+    }
+    .lesson.green{
+        background-color: green;
+    }
+    .lesson.orange{
+        background-color: orange;
     }
     .lesson:hover{
         background-color: rgb(146, 146, 146);
+    }
+    .lesson.disabled:hover{
+        background-color: rgb(190, 190, 190);
+    }
+    .lesson.green:hover{
+        background-color: rgb(0, 224, 0);
+    }
+    .lesson.orange:hover{
+        background-color: rgb(253, 187, 64);
     }
     .lesson-content{
         margin-left: min(5%, 2rem);
@@ -112,6 +332,60 @@
     a{
         text-decoration: none;
         color: black;
+    }
+    .quiz-content{
+        width: fit-content;
+        margin-left: 2rem;
+        position: relative;
+    }
+    .quiz-content-image{
+        max-width: 60px;
+        max-height: 60px;
+    }
+    .quiz-content-text{
+        position: relative;
+        top: -20px;
+        margin-left: 1rem;
+    }
+    .admin-button{
+        text-align: center;
+    }
+    .edit-button{
+        background-color: rgb(48, 209, 43);
+        color: white;
+        border-radius: 10px;
+        border-width: 0;
+        font-family: inherit;
+        font-size: inherit;
+        font-style: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+    .edit-button.toggle{
+        margin:1rem auto 0rem auto;
+    }
+    .module-edit-buttons{
+        display: flex;
+        position: absolute;
+        top: 50%;
+        right: 2rem;
+        transform: translateY(-50%);
+    }
+    .module-input{
+        font:inherit;
+        min-width: max-content;
+        max-width: 60%;
+    }
+
+    .modal-content{
+        padding: 1rem;
+    }
+
+    .modal-actions{
+        display: flex;
+        justify-content: space-between;
     }
 
     @media (max-width: 900px){
@@ -175,7 +449,7 @@
             margin: 0;
             max-width: 200px;
             max-height: 200px;
-            
+            text-align: center;
         }
         .details-image{
             display: none;

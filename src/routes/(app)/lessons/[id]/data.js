@@ -1,4 +1,6 @@
-import example2 from "$lib/assets/img/example2.jpg";
+import example1 from "$lib/assets/img/example1.jpg"
+import example2 from "$lib/assets/img/example2.jpg"
+import example3 from "$lib/assets/img/example3.jpg"
 
 export const lessonModules = [
     {
@@ -20,7 +22,7 @@ export const lessonModules = [
         dur_min: 15,
         dur_max: 30,
         lessons:[],
-        image: example2
+        image: example1
     },
     {
         id: 3,
@@ -29,7 +31,7 @@ export const lessonModules = [
         dur_min: 15,
         dur_max: 30,
         lessons: [],
-        image: example2
+        image: example3
     },
     // {
     //     id:4,
