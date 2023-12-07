@@ -323,6 +323,9 @@
                             <img class="image-component" src='/api/exercise/{displayedDesc.id}/image/{displayedDesc.image}' alt="não encontrado">   
                         {/if}
                     </div>
+                    <div class="finish-question">
+                        <button title="Terminar prova" class="end-question-button" on:click={endExercise}><img class="end-image" src={finishImg} alt="Acabar prova"></button>
+                    </div>
                 {:else}
                     <div class="submitted-answers">
                         <div class="centered">
@@ -341,9 +344,7 @@
                         {/if}
                     </div>
                 {/if}
-                <div class="finish-question">
-                    <button title="Terminar prova" class="end-question-button" on:click={endExercise}><img class="end-image" src={finishImg} alt="Acabar prova"></button>
-                </div>
+                
             </div>
         </div>
         <!-- {#if displayedMessage && modalMode!=="show"}    
@@ -358,7 +359,7 @@
         {/if} -->
         <Modal class="message-display" bind:this={modal} bind:showModal>
             <h2 slot="header">{res}</h2>
-            <div>{displayedMessage}</div>
+            <div class="modal-answer-message">{displayedMessage}</div>
             <div slot="actions" class="confirm-action">
                 <button class="button-confirmation ok"  on:click={() => {modal.close()}}>ok</button>
             </div>
@@ -380,7 +381,6 @@
         grid-template-columns: max(20%, 300px) auto 50%;
         width: 94%;
         min-height: 75vh;
-        max-height: 80vh;
         /* overflow: hidden; */
         margin: auto;
     }
@@ -529,11 +529,10 @@
 
     .submitted-answers{
         width: fit-content;
-        position: relative;
-        left: 90%;
-        top: 3rem;
+        /* position: relative; */
+        margin-left: 90%;
+        margin-top: 3rem;
         transform: translateX(-100%);
-        /* background-color: beige; */
     }
 
     .modal{
@@ -661,6 +660,11 @@
     }
     .submission.wrong{
         background-color: rgb(255, 48, 48);
+    }
+
+    .modal-answer-message{
+        font-size: 18pt;
+        padding: 1rem;
     }
 
 </style>

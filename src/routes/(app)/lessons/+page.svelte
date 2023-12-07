@@ -82,11 +82,11 @@
             <div class="completion">
                 <span style="margin: 0rem 0rem 0rem 3rem; padding:2px; font-size: 10pt">
                     {#if module.lessonsDone === null}
-                        1%
+                        Não Inscrito
                     {:else}
-                        {parseInt(module.lessonsTotal) === 0 ? "0" : parseInt(module.lessonsDone*100/module.lessonsTotal)}%
+                        {parseInt(module.lessonsTotal) === 0 ? "0" : parseInt(module.lessonsDone*100/module.lessonsTotal)>100?100:parseInt(module.lessonsDone*100/module.lessonsTotal)}% Concluido
                     {/if}
-                    Concluido
+                    
                 </span>
                 <progress value={module.lessonsDone??0} max={module.lessonsTotal} class="completion-bar"></progress>
             </div>
@@ -116,11 +116,11 @@
             <div class="completion">
                 <span style="margin: 0rem 0rem 0rem 3rem; padding:2px; font-size: 10pt">
                     {#if module.lessonsDone === null}
-                        1%
+                        Não inscrito
                     {:else}
-                        {parseInt(module.lessonsTotal) === 0 ? "0" : parseInt(module.lessonsDone*100/module.lessonsTotal)}%
+                        {parseInt(module.lessonsTotal) === 0 ? "0" : parseInt(module.lessonsDone*100/module.lessonsTotal)}% Concluido
                     {/if}
-                    Concluido
+                    
                 </span>
                 <progress value={module.lessonsDone??0} max={module.lessonsTotal} class="completion-bar"></progress>
             </div>

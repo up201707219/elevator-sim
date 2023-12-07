@@ -91,7 +91,7 @@
             {#if data.lessons.length>0}
                 <div class="lessons">
                     <h2>Teste</h2>
-                    {#if data.quiz.length === 0 || data.lesson.length}
+                    {#if data.quiz.length === 0 }
                         <h2 class="center">Não existe teste para este curso</h2>
                     {:else if parseFloat(data.lessons[data.lessons.length-1].completion/data.lessons[data.lessons.length-1].total)>=1}
                         <div class="quiz-content">
