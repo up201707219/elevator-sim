@@ -30,6 +30,66 @@
     };
     let displayedDesc = defaultDesc;
 
+    function analiseTree(parent_id, level){
+        let aux = data.option.filter((opt) => opt.parent === parent_id);
+        if(!aux){
+            return;
+        }
+        level += 1;
+        aux.forEach(element => {
+            analiseTree(element.id, level);
+            element.level = level;
+            // console.log(element);
+        });
+    }
+
+    analiseTree(null, 0);
+
+    // function sortByLevel(tree){
+    //     let layer = 1;
+    //     let aux= tree.filter((elem) => elem.level===layer);
+    //     let res = [[]];
+    //     while(aux.length !== 0){
+    //         res[layer-1] = aux;
+    //         layer += 1;
+    //         aux = tree.filter((elem) => elem.level===layer);
+    //     }
+    //     //console.log(res[1]);
+    //     groupBy(res[1], 'level');
+    // }
+
+    function groupBy(xs, prop) {
+        var grouped = {};
+        for (var i=0; i<xs.length; i++) {
+            var p = xs[i][prop];
+            if (!grouped[p]) { grouped[p] = []; }
+            grouped[p].push(xs[i]);
+        }
+        return groupToArrays(grouped);
+    }
+    function groupToArrays(group){
+        let res = [[]];
+        for(let i=0; i<Object.keys(group).length; i+=1){
+            res[i] = group[Object.keys(group)[i]];
+        }
+
+        return res
+    }
+
+    let maxLevel = 0;
+
+    function sortByLevelParent(arr){
+        let aux = [[[]]];
+        let leveledArr = groupBy(arr, 'level');
+        maxLevel = leveledArr.length;
+        for(let i=0; i<leveledArr.length; i+=1){
+            aux[i]=groupBy(leveledArr[i], 'parent');
+        }
+        return aux;
+    }
+    let sortedTree = sortByLevelParent(data.option);
+    // console.log(sortedTree[2][0][0].level);
+
     // OPTIONS NAVIGATION
     function handleOption(index){
         if(displayedOptions[index].response === "menu"){
@@ -54,13 +114,6 @@
 
         prevOptions = prevOptions;
         prevDesc = prevDesc;
-    }
-
-    function goDefault(){
-        displayedDesc = defaultDesc;
-        displayedOptions = defaultOpt;
-        prevOptions = [];
-        prevDesc =[];
     }
 
 
@@ -200,6 +253,24 @@
                 </form>
             {/if}
         </div>
+    </div>
+    <div class="tree-display" style="display: flex;">
+        {#each sortedTree as level}
+            <div class="tree-level" style="border: 1px solid black; margin: 1rem; display: flex; flex-direction: column; justify-content: center;">
+                <h1>N{level[0][0].level}</h1>
+                {#each level as parentGroup}
+                    <div class="tree-parent-group" style="border: 1px solid black; margin: 1rem;">
+                        <h2>{parentGroup[0].parent? data.option.find((x)=> x.id ===parentGroup[0].parent).title :"Nó pai"}</h2>
+                        {#each parentGroup as button}
+                            <div class="tree-button">
+                                {button.title}
+                            </div>
+                        {/each}
+                    </div>
+                {/each}
+            </div>
+        {/each}
+    </div>
 </main>
 
 <style>
