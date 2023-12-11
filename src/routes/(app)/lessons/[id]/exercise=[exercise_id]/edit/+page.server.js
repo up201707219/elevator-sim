@@ -75,15 +75,23 @@ export const actions = {
                 'WHERE ID = $5';
 
                 values = [val.description, val.response, (isNaN(val.points) ? null : val.points), val.title, val.id];
+                await pool.query(query, values);
             }
             else{
                 query = 'INSERT INTO Question_Menu (Title, Question_Id, Descript, Response, Parent_ID, Points)' +
-                'Values($1, $2, $3, $4, $5, $6);';
+                'Values($1, $2, $3, $4, $5, $6) RETURNING ID;';
                 values = [val.title, params.exercise_id, val.description, val.response, val.parent, (isNaN(val.points) ? null : val.points)];
+                const res = await pool.query(query, values);
+                if(val.response === "menu"){
+                    query = "INSERT INTO Question_Menu (Title, Question_Id, Descript, Response, Parent_ID, Points)" +
+                    "Values($1, $2, $3, $4, $5, $6);";
+                    values = ['Resposta Exemplo', params.exercise_id, 'Uma descrição', 'answer', res.rows[0].id, 0];
+                    await pool.query(query, values);
+                }
             }
             //console.log(query);
 
-            await pool.query(query, values);
+
         }
         catch(err){
             console.error(err);

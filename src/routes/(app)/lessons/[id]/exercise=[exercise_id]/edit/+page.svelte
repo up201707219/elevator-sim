@@ -84,6 +84,17 @@
         maxLevel = leveledArr.length;
         for(let i=0; i<leveledArr.length; i+=1){
             aux[i]=groupBy(leveledArr[i], 'parent');
+            if(i === 0){
+                continue;
+            }
+            aux[i].forEach((elem, j) => {
+                if(arr.find(opt => opt.id === elem[0].parent).response !== "menu"){
+                    aux[i].splice(j, 1);
+                    if(aux[i].length === 0){
+                        aux.splice(i, 1);
+                    }
+                }
+            })
         }
         return aux;
     }
@@ -139,7 +150,7 @@
     function addNewButton(){
         newButtonMenu = true;
         newButton = {
-            description: "Aqui vai a descrição da ação do menu",
+            description: "Aqui vai a descrição quando resposta submetida",
             title: "Nome do botão"       
         };
         newButton.parent = displayedDesc.id;
@@ -228,7 +239,7 @@
                     <label for="title">Opção</label>
                     <input type="text" name="title" value={newButton.title}>
                     <label for="response">Tipo</label>
-                    <select name="response" bind:value={newButton.response} on:change={buttonType}>
+                    <select name="response" bind:value={newButton.response}>
                         <option value="menu">menu</option>
                         <option value="answer">resposta</option>
                     </select>
@@ -254,18 +265,19 @@
             {/if}
         </div>
     </div>
-    <div class="tree-display" style="display: flex;">
+    <div class="tree-display">
         {#each sortedTree as level}
-            <div class="tree-level" style="border: 1px solid black; margin: 1rem; display: flex; flex-direction: column; justify-content: center;">
+            <div class="tree-level">
                 <h1>N{level[0][0].level}</h1>
                 {#each level as parentGroup}
-                    <div class="tree-parent-group" style="border: 1px solid black; margin: 1rem;">
+                    <div class="tree-parent-group">
                         <h2>{parentGroup[0].parent? data.option.find((x)=> x.id ===parentGroup[0].parent).title :"Nó pai"}</h2>
                         {#each parentGroup as button}
                             <div class="tree-button">
-                                {button.title}
+                                <button type="button" class="button-option {(button.response === "menu") ? "":"single"}" > {button.title} </button>
                             </div>
                         {/each}
+                        <button type="button" class="button-option add"> Adicionar opção</button>
                     </div>
                 {/each}
             </div>
@@ -374,4 +386,29 @@
         margin: 0.5rem;
     }
 
+    .tree-display{
+        display: flex;
+    }
+
+    .tree-level{
+        /* border: 1px solid black; */
+        margin: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .tree-parent-group{
+        border: 1px solid black;
+        margin: 1rem;
+        display:flex;
+        flex-direction: column;
+        justify-content:center;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .tree-button{
+        width: fit-content;
+    }
 </style>
