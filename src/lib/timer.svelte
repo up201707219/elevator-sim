@@ -71,12 +71,10 @@
             font-size="23"
         >
             <text x="-3" y="6.5">
-                {#each Object.entries({ h, m, s }) as [key, value], i}
-                    {#if countdown >= 60 ** (2 - i)}
+                {#each Object.entries({ m, s }) as [key, value], i}
                         <tspan dx="3" font-weight="bold"
                             >{padValue(value)}</tspan
                         ><tspan dx="0.5" font-size="7">{key}</tspan>
-                    {/if}
                 {/each}
             </text>
         </g>

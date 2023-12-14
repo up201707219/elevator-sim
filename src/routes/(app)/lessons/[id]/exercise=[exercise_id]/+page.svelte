@@ -12,9 +12,10 @@
     export let data;
     let displayedQuestionIndex = data.questions.map(function (e) {return e.id;}).indexOf($page.params.exercise_id);
     let displayedQuestion = data.questions[displayedQuestionIndex];
+    //console.log(timeToMinSec(displayedQuestion.time));
     
     //--------------TIMER CODE------------------------
-    let original = displayedQuestion.time; // TYPE NUMBER OF SECONDS HERE
+    let original = data.time??displayedQuestion.time; // TYPE NUMBER OF SECONDS HERE
     let timer = tweened(original)
 
     setInterval(() => {
@@ -234,7 +235,7 @@
     {#if !hasEnded}
         <div class="timer">
             <!-- {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}      -->
-            <Timer countdown={displayedQuestion.time}/>
+            <Timer countdown={data.time??displayedQuestion.time}/>
         </div>
     {/if}
 
@@ -248,7 +249,7 @@
                     <div class="title">
                         {displayedQuestion.title}
                     </div>
-                    <span>Tempo de resolução: {timeToMinSec(displayedQuestion.time).minutes?timeToMinSec(displayedQuestion.time).minutes+timeToMinSec(displayedQuestion.time).minname:""} {timeToMinSec(displayedQuestion.time).seconds?timeToMinSec(displayedQuestion.time).minutes+"s":""}</span>
+                    <span>Tempo de resolução: {timeToMinSec(displayedQuestion.time).minutes?timeToMinSec(displayedQuestion.time).minutes+timeToMinSec(displayedQuestion.time).minname:""} {timeToMinSec(displayedQuestion.time).seconds?timeToMinSec(displayedQuestion.time).seconds+"s":""}</span>
                     <span>Dificuldade: 1</span>
                 </div>
                 <br>

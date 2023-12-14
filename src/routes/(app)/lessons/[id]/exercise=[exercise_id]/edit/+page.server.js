@@ -78,18 +78,19 @@ export const actions = {
                 await pool.query(query, values);
             }
             else{
-                query = 'INSERT INTO Question_Menu (Title, Question_Id, Descript, Response, Parent_ID, Points)' +
+                query = 'INSERT INTO Question_Menu (Title, Question_Id, Descript, Response, Parent_ID, Points) ' +
                 'Values($1, $2, $3, $4, $5, $6) RETURNING ID;';
-                values = [val.title, params.exercise_id, val.description, val.response, val.parent, (isNaN(val.points) ? null : val.points)];
+                values = [val.title, params.exercise_id, val.description, val.response, val.parent ===""?null: val.parent, (isNaN(val.points) ? null : val.points)];
+                // console.log(query);
+                // console.log(values);
                 const res = await pool.query(query, values);
-                if(val.response === "menu"){
-                    query = "INSERT INTO Question_Menu (Title, Question_Id, Descript, Response, Parent_ID, Points)" +
-                    "Values($1, $2, $3, $4, $5, $6);";
-                    values = ['Resposta Exemplo', params.exercise_id, 'Uma descrição', 'answer', res.rows[0].id, 0];
-                    await pool.query(query, values);
-                }
+                // if(val.response === "menu"){
+                //     query = "INSERT INTO Question_Menu (Title, Question_Id, Descript, Response, Parent_ID, Points)" +
+                //     "Values($1, $2, $3, $4, $5, $6);";
+                //     values = ['Resposta Exemplo', params.exercise_id, 'Uma descrição', 'answer', res.rows[0].id, 0];
+                //     await pool.query(query, values);
+                // }
             }
-            //console.log(query);
 
 
         }

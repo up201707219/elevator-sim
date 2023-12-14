@@ -198,15 +198,16 @@ export const actions = {
         let val = {
             moduleId: data.get('module-id'),
             id: data.get('content-id'),
-            content: data.get('module-content')
+            content: data.get('module-content'),
+            title: data.get('module-title')
         };
         
         val.content = converter.stringToHtml(val.content);
 
         if(val.id === ""){
             try{
-                let query = "INSERT INTO Module_Content (ID, Content, ModuleID) "+
-            "Values( '" + uuidv4() + "', '" + val.content + "', '" + val.moduleId + "');" 
+                let query = "INSERT INTO Module_Content (ID, Content, ModuleID, title) "+
+            "Values( '" + uuidv4() + "', '" + val.content + "', '" + val.moduleId + "', '" + val.title +"');" 
 
             await pool.query(query);
             }
@@ -217,7 +218,8 @@ export const actions = {
         else{
             try{
                 let query = "UPDATE Module_content "+
-                "SET content = '" + val.content + "' " +
+                "SET content = '" + val.content + "',c " +
+                "title = '" + val.title + "' " +
                 "WHERE ID = '" + val.id + "';";
     
                 await pool.query(query);

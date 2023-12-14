@@ -18,8 +18,6 @@ async function getImageByQuestionId(id){
             size: res.rows[0].image_size,
             data: new Blob([res.rows[0].image_data], {type: res.rows[0].image_type})
         }
-        
-        console.log(image.data);
         return image;
     } catch(err) {
         console.error(err);

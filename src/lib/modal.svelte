@@ -16,7 +16,7 @@
 	on:click|preventDefault|self={() => close()}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div on:click|preventDefault|stopPropagation>
+	<div on:click|stopPropagation>
 		<slot name="header" />
 		<hr />
 		<slot />

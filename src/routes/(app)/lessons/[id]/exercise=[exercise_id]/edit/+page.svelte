@@ -1,8 +1,11 @@
 <script>
     //import {data} from "./data"
     import {page} from "$app/stores";
+    import Modal from "$lib/modal.svelte";
+    import Tree from "$lib/treeView.svelte";
 
     let hasEnded = false;
+    let modal;
     let previewImageMenu;
     let previewImageExercise;
     export let data;
@@ -43,20 +46,29 @@
         });
     }
 
-    analiseTree(null, 0);
+    function arrToTree(arr, parent_id){
+        let aux = arr.filter((opt) => opt.parent === parent_id);
+        if(!aux){
+            return null;
+        }
+        aux.forEach(element => {
+            element.children = arrToTree(arr, element.id);
+            if(element.children.length === 0){
+                element.children = null;
+            }
+        });
+        return aux;
+    }
 
-    // function sortByLevel(tree){
-    //     let layer = 1;
-    //     let aux= tree.filter((elem) => elem.level===layer);
-    //     let res = [[]];
-    //     while(aux.length !== 0){
-    //         res[layer-1] = aux;
-    //         layer += 1;
-    //         aux = tree.filter((elem) => elem.level===layer);
-    //     }
-    //     //console.log(res[1]);
-    //     groupBy(res[1], 'level');
-    // }
+    let tree = {
+        title: "tree",
+        children: []
+    };
+
+    tree.children = arrToTree(data.option, null);
+    //console.log(tree);
+
+    analiseTree(null, 0);
 
     function groupBy(xs, prop) {
         var grouped = {};
@@ -99,7 +111,6 @@
         return aux;
     }
     let sortedTree = sortByLevelParent(data.option);
-    // console.log(sortedTree[2][0][0].level);
 
     // OPTIONS NAVIGATION
     function handleOption(index){
@@ -144,21 +155,24 @@
     let newButtonMenu = false;
     let newButton = {
         description: "Aqui vai a descrição da ação do menu",
-        title: "Nome do botão"       
+        title: "Nome do botão",
+        response: "menu"  
     };
     
-    function addNewButton(){
+    function addNewButton(parent){
         newButtonMenu = true;
         newButton = {
             description: "Aqui vai a descrição quando resposta submetida",
-            title: "Nome do botão"       
+            title: "Nome do botão",
+            response: "menu"     
         };
-        newButton.parent = displayedDesc.id;
+        newButton.parent = parent;
     }
 
-    function editButton(i){
+    function editButton(button){
         newButtonMenu = true;
-        newButton = displayedOptions[i];
+        newButton = button;
+        newButton.parent = newButton.parent === ''?null:newButton.parent;
     }
 
     function buttonType(){
@@ -219,49 +233,19 @@
                 {#each displayedOptions as opt, i}
                     <div class="option">
                         <form method="post" action="?/deleteButton">
-                        <button type="button" class="button-option {(opt.response === "menu") ? "":"single"}" on:click|preventDefault={() => handleOption(i)}> {opt.title} </button>
-                        <button type="button" on:click={()=> {editButton(i)}}>editar</button>
+                            <button type="button" class="button-option {(opt.response === "menu") ? "":"single"}" on:click|preventDefault={() => handleOption(i)}> {opt.title} </button>
+                            <button type="button" on:click={()=> {editButton(opt)}}>editar</button>
                             <input type="hidden" name="id" value={opt.id}>
                             <button type="submit">del</button>
                         </form>
                     </div>
                 {/each}
                 <div class="option">
-                    <button class="button-option add" on:click={addNewButton}>Adicionar opção</button>
+                    <button class="button-option add" on:click={()=>{addNewButton(displayedDesc.id)}}>Adicionar opção</button>
                 </div>
                 {#if prevOptions.length !== 0}
                     <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
                 {/if}
-            {:else}
-                <form method="post" action="?/insertNewButton" enctype="multipart/form-data">
-                    <input type="hidden" name="id" value={newButton.id ?? "0"}>
-                    <input type="hidden" name="parent-id" value={newButton.parent}>
-                    <label for="title">Opção</label>
-                    <input type="text" name="title" value={newButton.title}>
-                    <label for="response">Tipo</label>
-                    <select name="response" bind:value={newButton.response}>
-                        <option value="menu">menu</option>
-                        <option value="answer">resposta</option>
-                    </select>
-                    {#if newButton.response === "menu"}
-                    <br>
-                    <img class="input image-component" src={previewImageMenu} alt="imagem da opção"> 
-                    <br>
-                    <input type="file" name="image" accept="image/*" on:change={(e) => {handleImageUpload(e, "menu")}}>
-                    <br>
-                    {:else}
-                    <br>
-                    <label for="description">Descrição: </label>
-                    <textarea class="details-input" type="text" name="description" value={newButton.description}></textarea>
-                    {/if}
-                    <br>
-                    <label for="points">Cotação</label>
-                    <input type="number" name="points" value={newButton.points?newButton.points:0}>
-                    <br>
-                    <button type="submit">submeter</button>
-                    <button on:click={() => {newButtonMenu = false;}}>sair</button>
-
-                </form>
             {/if}
         </div>
     </div>
@@ -274,15 +258,53 @@
                         <h2>{parentGroup[0].parent? data.option.find((x)=> x.id ===parentGroup[0].parent).title :"Nó pai"}</h2>
                         {#each parentGroup as button}
                             <div class="tree-button">
-                                <button type="button" class="button-option {(button.response === "menu") ? "":"single"}" > {button.title} </button>
+                                <button type="button" class="button-option {(button.response === "menu") ? "":"single"}" on:click={()=> {editButton(button)}}> {button.title} </button>
                             </div>
                         {/each}
-                        <button type="button" class="button-option add"> Adicionar opção</button>
+                        <button type="button" class="button-option add" on:click={()=>{addNewButton(parentGroup[0].parent)}}> Adicionar opção</button>
                     </div>
                 {/each}
             </div>
         {/each}
     </div>
+    <form method="post" action="?/insertNewButton" enctype="multipart/form-data">
+        <Modal bind:this={modal} bind:showModal={newButtonMenu}>
+            <div class="edit-header" slot="header">
+                <h2>Editar</h2>
+
+            </div>
+            <input type="hidden" name="id" value={newButton.id ?? "0"}>
+            <input type="hidden" name="parent-id" value={newButton.parent}>
+            <label for="title">Opção</label>
+            <input type="text" name="title" value={newButton.title}>
+            <label for="response">Tipo</label>
+            <select name="response" bind:value={newButton.response}>
+                <option value="menu">menu</option>
+                <option value="answer">resposta</option>
+            </select>
+            {#if newButton.response === "menu"}
+            <br>
+            <img class="input image-component" src={previewImageMenu} alt="imagem da opção"> 
+            <br>
+            <input type="file" name="image" accept="image/*" on:change={(e) => {handleImageUpload(e, "menu")}}>
+            <br>
+            {:else}
+            <br>
+            <label for="description">Descrição: </label>
+            <textarea class="details-input" type="text" name="description" value={newButton.description}></textarea>
+            {/if}
+            <br>
+            <label for="points">Cotação</label>
+            <input type="number" name="points" value={newButton.points?newButton.points:0}>
+            <br>
+
+            <div class="edit-actions" slot="actions">
+                <button type="submit">submeter</button>
+                <button on:click|preventDefault={() => {newButtonMenu = false; modal.close()}}>sair</button>
+            </div>
+        
+        </Modal>
+    </form> 
 </main>
 
 <style>

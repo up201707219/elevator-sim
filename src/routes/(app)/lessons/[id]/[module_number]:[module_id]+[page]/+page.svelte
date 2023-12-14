@@ -120,6 +120,9 @@
             <form method="POST" action="?/updateContent">
                 <input type="hidden" name="module-id" value={data.moduleId}>
                 <input type="hidden" name="content-id" value={displayedContent.id}>
+                <label for="module-title">Título do módulo: </label>
+                <input class="title-input" type="text" name="module-title" value={displayedContent.title}>
+                <br>
                 <label for="module-content">Conteúdo da página: </label>
                 <textarea class="content-input" name="module-content" on:change={()=>{contentInput=true;}} value={converter.htmlToString(displayedContent.context)}></textarea><br>
                 <button class="module-submit content" type="submit">Guardar</button>
@@ -300,5 +303,8 @@
         margin-bottom: 2rem;
         font: inherit;
         resize: none;
+    }
+    .title-input{
+        font: inherit;
     }
 </style>

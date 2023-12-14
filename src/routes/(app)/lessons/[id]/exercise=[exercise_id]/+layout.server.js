@@ -65,7 +65,37 @@ async function getQuestionMenu(id){
     }
 }
 
+async function getUserSubmissions(userId, questionID){
+    try {
+        let query = "SELECT *, extract ('epoch' from expires_at-now()) as time_remaining FROM user_question WHERE user_id = $1 and question_id = $2;"
+
+        let values =[userId, questionID];
+        let res = await pool.query(query, values);
+        if(res.rows.length === 0){
+            //todo: insert into table to start exercise
+            query = "INSERT INTO user_question(user_id, question_id, expires_at) "+
+            "SELECT $1, $2, (NOW()+interval '1 second' * completion_time) "+
+            "from question_dev where id = $3;";
+            values =[userId, questionID, questionID];
+            await pool.query(query, values);
+            return null;
+        }
+
+        let val = {
+            time_remaining: res.rows[0].time_remaining < 0? 0:Math.floor(res.rows[0].time_remaining)
+        }
+        return val.time_remaining;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export async function load({cookies, params}){
+    const user = {
+        id: cookies.get('userId'),
+        username: cookies.get('user'),
+        isAdmin: cookies.get('userIsAdmin')
+    };
     if(params.exercise_id === "0" && cookies.get('userIsAdmin') !== "false"){
         let id = uuidv4();
         insertDefaultExercise(id, params.id);
@@ -76,6 +106,10 @@ export async function load({cookies, params}){
         questions: aux,
         option: await getQuestionMenu(params.exercise_id)
     };
+    if(user.isAdmin !== "true"){
+       exercise.time = await getUserSubmissions(user.id, params.exercise_id);
+       console.log(exercise.time);
+    }
     //console.log(aux);
     //getImageByQuestionId(params.exercise_id);
     return exercise;

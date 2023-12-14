@@ -65,6 +65,20 @@ CREATE TABLE Question_Dev (
     isDeleted boolean DEFAULT FALSE
 );
 
+CREATE OR REPLACE FUNCTION find_expiration(question_id varchar) 
+RETURNS timestamp with time zone LANGUAGE SQL AS $$
+   SELECT now()+interval '1 second' * completion_time FROM question_dev WHERE id = question_id;
+$$;
+
+CREATE TABLE User_Question (
+   User_ID Integer REFERENCES Users(id) ON DELETE CASCADE,
+   Question_ID varchar(128) REFERENCES Question_Dev(id) ON DELETE CASCADE,
+   Score INTEGER DEFAULT 0,
+   Started_At TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+   Expires_At TIMESTAMP WITH TIME ZONE,
+   PRIMARY KEY (User_ID, Question_ID)
+);
+
 CREATE TABLE Question_Menu (
     ID SERIAL PRIMARY KEY,
     question_id varchar(128) REFERENCES Question_Dev(ID) ON DELETE CASCADE,
@@ -92,6 +106,7 @@ CREATE TABLE Question_Images (
    IMAGE_SIZE INTEGER NOT NULL,
    IMAGE_DATA BYTEA NOT NULL
 );
+
 
 ------------------------ INSERT QUERIES ----------------------
 --USERS
