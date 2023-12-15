@@ -73,11 +73,12 @@ $$;
 CREATE TABLE User_Question (
    User_ID Integer REFERENCES Users(id) ON DELETE CASCADE,
    Question_ID varchar(128) REFERENCES Question_Dev(id) ON DELETE CASCADE,
-   Score INTEGER DEFAULT 0,
    Started_At TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+   Finished_At TIMESTAMP WITH TIME ZONE,
    Expires_At TIMESTAMP WITH TIME ZONE,
    PRIMARY KEY (User_ID, Question_ID)
 );
+
 
 CREATE TABLE Question_Menu (
     ID SERIAL PRIMARY KEY,
@@ -87,6 +88,14 @@ CREATE TABLE Question_Menu (
     Response varchar(64),
     Parent_ID INTEGER REFERENCES Question_Menu(ID) ON DELETE CASCADE,
     Points Integer
+);
+
+CREATE TABLE User_Answers (
+   User_ID Integer REFERENCES Users(id) ON DELETE CASCADE,
+   Question_ID varchar(128) REFERENCES Question_dev(id) ON DELETE CASCADE,
+   answer_id integer REFERENCES Question_Menu(id) ON DELETE CASCADE,
+   Score integer,
+   PRIMARY KEY (answer_id)
 );
 
 CREATE TABLE Menu_Images (

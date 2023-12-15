@@ -5,17 +5,24 @@
     import finishImg from "$lib/assets/img/finish_question.png"
     import Timer from "$lib/timer.svelte"
     import Modal from "$lib/modal.svelte"
-    
-    let hasEnded = false;
+    import { enhance, applyAction, deserialize } from '$app/forms';
+    import { invalidateAll, goto } from '$app/navigation';
+
+    export let data;
+    let answerForm;
+    let endForm;
     let showModal = false;
     let modal;
-    export let data;
+    let hasEnded = data.questionState?.finished_at?true:false;
+
+    
+
     let displayedQuestionIndex = data.questions.map(function (e) {return e.id;}).indexOf($page.params.exercise_id);
     let displayedQuestion = data.questions[displayedQuestionIndex];
     //console.log(timeToMinSec(displayedQuestion.time));
     
     //--------------TIMER CODE------------------------
-    let original = data.time??displayedQuestion.time; // TYPE NUMBER OF SECONDS HERE
+    let original = data.questionState?.time_remaining??displayedQuestion.time; // TYPE NUMBER OF SECONDS HERE
     let timer = tweened(original)
 
     setInterval(() => {
@@ -84,6 +91,9 @@
         if(sumPenalties >= maxScore){
             endExercise();
         }
+        if(correctAns.length === 0){
+            hasEnded=true;
+        }
         if(hasEnded){
             displayedMessage = ""
         }
@@ -94,7 +104,17 @@
     let messageColor = "black";
     let modalMode = "none";
     let answersSubmited = [];
-    //answersSubmited = data.option.filter((opt) => opt.response === "answer");
+
+    data.questionState?.answer?.forEach((elem)=>{
+        let aux = data.option.find((e) => e.id === elem.id);
+        answersSubmited.push(aux);
+        let isCorrect = correctAns.map(function (e) {return e.id;}).indexOf(aux.id);
+        if(isCorrect !== -1) {
+            correctAns.splice(isCorrect, 1);
+        }
+
+    });
+    
     let ind = 0;
 
     // OPTIONS NAVIGATION
@@ -118,7 +138,6 @@
             ind = index;
             let wasSubmitted = answersSubmited.map(function (e){return e.id}).indexOf(displayedOptions[index].id);
             if(wasSubmitted !== -1){
-                console.log("this answer was already submitted");
                 displayedMessage = "Esta resposta já foi submetida";
                 messageColor = "black";
                 goDefault();
@@ -146,11 +165,20 @@
 
 
     // ANSWER SUBMISSION
-    function handleConfirmation(isAfirmative){
+    async function handleConfirmation(isAfirmative){
         modalMode = "none";
         if(isAfirmative){
+            const data = new FormData(answerForm);
+
+            const response = await fetch(answerForm.action, {
+                method: 'POST',
+                body: data
+            });
+            const result = deserialize(await response.text());
+
             checkAnswer();
             goDefault();
+            applyAction(result);
         }
     }
     let res;
@@ -161,13 +189,8 @@
         let isCorrect = correctAns.map(function (e) {return e.id;}).indexOf(displayedOptions[ind].id);
 
         if(isCorrect !== -1) {
-            console.log("The answer was correct (+" + displayedOptions[ind].points + ")");
             correctAns.splice(isCorrect, 1);
-            console.log(correctAns);
-            displayedOptions[ind].submission = "correct";
-            displayedMessage = "Isto é uma resolução da avaria";
             if(correctAns.length <= 0){
-                displayedMessage = "Achaste todas as etapas de resolução";
                 endExercise();
             }
             messageColor = "darkgreen";
@@ -175,27 +198,46 @@
         }
         else{
             if(displayedOptions[ind].points === 0){
-                console.log("The answer was neutral (" + displayedOptions[ind].points+ ")")
-                displayedOptions[ind].submission = "neutral";
-                displayedMessage = "Isto não resolveu o problema mas este passo não é incorrecto de se fazer";
                 displayedMessage = displayedOptions[ind].description;
                 messageColor = "blue";
                 res = "Neutro";
                 return ;
             }
-            console.log("The answer was wrong (" + displayedOptions[ind].points+ ")");
             sumPenalties -= displayedOptions[ind].points;
-            displayedOptions[ind].submission = "wrong";
-            displayedMessage = "Isto não resolve o problema";
             messageColor = "red";
             res = "Errado"
         }
         displayedMessage = displayedOptions[ind].description;
     }
 
-    function endExercise(){
+    function setSubmissions(ans){
+        ans.forEach((elem) =>{
+            let indexAux = data.option.map(function(e) { return e.id; }).indexOf(elem.id);
+            data.option[indexAux].submission = data.option[indexAux].points === 0? "neutral" : data.option[indexAux].points > 0 ? "correct":"wrong"; 
+        });
+    }
+
+    $:setSubmissions(answersSubmited);
+
+    async function endExercise(){
         hasEnded = true;
+        if(!endForm){
+            return;
+        }
+        const data = new FormData(endForm);
+
+        const response = await fetch(endForm.action, {
+            method: 'POST',
+            body: data
+        });
+        const result = deserialize(await response.text());
+
+        if (result.type === 'success') {
+			// rerun all `load` functions, following the successful update
+			await invalidateAll();
+		}
         modalMode ="none";
+        applyAction(result);
     }
 
     function getScore(){
@@ -209,6 +251,8 @@
         return score;
     }
 
+    //$:console.log(JSON.parse(JSON.stringify(answersSubmited)));
+
 </script>
 
 
@@ -220,8 +264,12 @@
         <div class="modal-content">
             <span>Tem a certeza que quer submeter esta resposta?</span>
             <div class="confirm-action">
-                <button class="button-confirmation positive" autofocus on:click={() => handleConfirmation(true)}>sim</button>
-                <button class="button-confirmation negative" on:click={() => handleConfirmation(false)}>não</button>
+                <form method="post" action="?/insertAnswer" use:enhance bind:this={answerForm}>
+                    <input type="hidden" name="answer-id" value={displayedOptions[ind].id}>
+                    <input type="hidden" name="answer-score" value={displayedOptions[ind].points}>
+                    <button type="submit" class="button-confirmation positive" autofocus on:click={() => handleConfirmation(true)}>sim</button>
+                    <button class="button-confirmation negative" on:click={() => handleConfirmation(false)}>não</button>
+                </form>
             </div>
         </div>
     </div>
@@ -235,7 +283,7 @@
     {#if !hasEnded}
         <div class="timer">
             <!-- {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}      -->
-            <Timer countdown={data.time??displayedQuestion.time}/>
+            <Timer countdown={data.questionState?.time_remaining??displayedQuestion.time}/>
         </div>
     {/if}
 
@@ -244,7 +292,7 @@
             <div class="exercise-details">
                 <div class="exercise-info">
                     <div class="div-identifier brown">
-                        Sintoma da avaria+
+                        Sintoma da avaria
                     </div>
                     <div class="title">
                         {displayedQuestion.title}
@@ -278,30 +326,34 @@
                             <div class="stats-values">
                                 <p>{getScore()*100/totalMaxScore}%</p>
                                 <p>0%</p>
-                                <p>{timeToString(displayedQuestion.time - $timer).minutes}:{timeToString(displayedQuestion.time - $timer).seconds}</p>
+                                <p>
+                                    {data.questionState?.time_remaining > 0 && data.questionState?.finished_at && Math.floor((data.questionState?.finished_at-data.questionState?.started_at)/1000) < displayedQuestion.time ? 
+                                    timeToString(Math.floor((data.questionState?.finished_at-data.questionState?.started_at)/1000)).minutes+":"+timeToString(Math.floor((data.questionState?.finished_at-data.questionState?.started_at)/1000)).seconds:
+                                    timeToString(displayedQuestion.time - $timer).minutes+":"+timeToString(displayedQuestion.time - $timer).seconds}
+                                </p>
                             </div>
                         </div>
                     </div>
                 {/if}
                 <div class="nav-options">
                 
-                    {#if !hasEnded}
-                        <div class="centered">
-                            Escolha uma opção
+                {#if !hasEnded}
+                    <div class="centered">
+                        Escolha uma opção
+                    </div>
+                    {#each displayedOptions as opt, i}
+                        <div class="option">
+                            <button class="button-option {(opt.response === "menu") ? "":"single"} {opt.submission ?? ""}" on:click={() => handleOption(i)}> {opt.title} </button>
                         </div>
-                        {#each displayedOptions as opt, i}
-                            <div class="option">
-                                <button class="button-option {(opt.response === "menu") ? "":"single"} {opt.submission ?? ""}" on:click={() => handleOption(i)}> {opt.title} </button>
-                            </div>
-                        {/each}
-                
-                        {#if prevOptions.length !== 0}
-                            <div class="option">
-                                <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
-                            </div>
-                        {/if}
-                    
+                    {/each}
+            
+                    {#if prevOptions.length !== 0}
+                        <div class="option">
+                            <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
+                        </div>
                     {/if}
+                
+                {/if}
                 </div>
                 <div class="options-labels">
                     <p>
@@ -325,7 +377,9 @@
                         {/if}
                     </div>
                     <div class="finish-question">
-                        <button title="Terminar prova" class="end-question-button" on:click={endExercise}><img class="end-image" src={finishImg} alt="Acabar prova"></button>
+                        <form bind:this={endForm} method="post" action="?/submitAnswers" use:enhance>
+                            <button type="submit" title="Terminar prova" class="end-question-button" on:click={endExercise}><img class="end-image" src={finishImg} alt="Acabar prova"></button>
+                        </form>
                     </div>
                 {:else}
                     <div class="submitted-answers">
@@ -348,17 +402,7 @@
                 
             </div>
         </div>
-        <!-- {#if displayedMessage && modalMode!=="show"}    
-            <div class="modal">
-                <div class="modal-content message">
-                    <span>{displayedMessage}</span>
-                    <div class="confirm-action">
-                        <button class="button-confirmation ok"  on:click={() => {displayedMessage = ""; modalMode = "none";}}>ok</button>
-                    </div>
-                </div>
-            </div>
-        {/if} -->
-        <Modal class="message-display" bind:this={modal} bind:showModal>
+        <Modal bind:this={modal} bind:showModal>
             <h2 slot="header">{res}</h2>
             <div class="modal-answer-message">{displayedMessage}</div>
             <div slot="actions" class="confirm-action">

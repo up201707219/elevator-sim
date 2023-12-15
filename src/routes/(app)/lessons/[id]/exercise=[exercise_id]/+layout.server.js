@@ -82,9 +82,27 @@ async function getUserSubmissions(userId, questionID){
         }
 
         let val = {
-            time_remaining: res.rows[0].time_remaining < 0? 0:Math.floor(res.rows[0].time_remaining)
+            started_at: res.rows[0].started_at,
+            time_remaining: res.rows[0].time_remaining < 0? 0:Math.floor(res.rows[0].time_remaining),
+            finished_at: res.rows[0].finished_at,
+            answer: []
         }
-        return val.time_remaining;
+        query = "SELECT * FROM user_answers "+
+        "WHERE user_id = $1 and question_id = $2;";
+
+        values =[userId, questionID];
+
+        res = await pool.query(query, values);
+
+        res.rows.forEach((elem)=>{
+            let aux = {
+                id: elem.answer_id,
+                score: elem.score
+            }
+            val.answer.push(aux);
+        })
+
+        return val;
     } catch (error) {
         console.error(error);
     }
@@ -104,11 +122,12 @@ export async function load({cookies, params}){
     let aux = await getQuestionById(params.id);
     let exercise = {
         questions: aux,
-        option: await getQuestionMenu(params.exercise_id)
+        option: await getQuestionMenu(params.exercise_id),
+        questionState: null
     };
     if(user.isAdmin !== "true"){
-       exercise.time = await getUserSubmissions(user.id, params.exercise_id);
-       console.log(exercise.time);
+       exercise.questionState = await getUserSubmissions(user.id, params.exercise_id);
+       //console.log(exercise.questionState?.answer??0);
     }
     //console.log(aux);
     //getImageByQuestionId(params.exercise_id);
