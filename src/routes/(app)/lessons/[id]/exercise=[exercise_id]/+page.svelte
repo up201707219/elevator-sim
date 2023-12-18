@@ -251,7 +251,12 @@
         return score;
     }
 
-    //$:console.log(JSON.parse(JSON.stringify(answersSubmited)));
+    function getTimeUsed(){
+        if(!data.questionState?.finished_at || !data.questionState?.started_at || Math.floor((data.questionState?.finished_at-data.questionState?.started_at)/1000) > displayedQuestion.time ){
+            return timeToString(displayedQuestion.time - $timer).minutes+":"+timeToString(displayedQuestion.time - $timer).seconds;
+        }
+        return timeToString(Math.floor((data.questionState?.finished_at-data.questionState?.started_at)/1000)).minutes+":"+timeToString(Math.floor((data.questionState?.finished_at-data.questionState?.started_at)/1000)).seconds;                         
+    }
 
 </script>
 
@@ -327,9 +332,7 @@
                                 <p>{getScore()*100/totalMaxScore}%</p>
                                 <p>0%</p>
                                 <p>
-                                    {data.questionState?.time_remaining > 0 && data.questionState?.finished_at && Math.floor((data.questionState?.finished_at-data.questionState?.started_at)/1000) < displayedQuestion.time ? 
-                                    timeToString(Math.floor((data.questionState?.finished_at-data.questionState?.started_at)/1000)).minutes+":"+timeToString(Math.floor((data.questionState?.finished_at-data.questionState?.started_at)/1000)).seconds:
-                                    timeToString(displayedQuestion.time - $timer).minutes+":"+timeToString(displayedQuestion.time - $timer).seconds}
+                                    {getTimeUsed()}    
                                 </p>
                             </div>
                         </div>
