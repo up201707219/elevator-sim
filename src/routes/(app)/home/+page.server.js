@@ -6,7 +6,7 @@ async function getCourses(userId){
     try{
 
         const query = 'SELECT fc.*, cnt.total FROM \n' +
-        '(SELECT courses.id, courses.title, ac.completion, ac.user_id FROM Courses \n' +
+        '(SELECT courses.id, courses.imageid, courses.title, ac.completion, ac.user_id FROM Courses \n' +
         'LEFT JOIN (SELECT co.id, co.title, uc.completion, uc.user_id FROM Courses co \n' +
         'left JOIN User_Courses uc \n' +
         'ON co.ID = uc.course_id \n' +
@@ -29,7 +29,7 @@ async function getCourses(userId){
             courses.push({
                 id: element.id,
                 name: element.title,
-                image: lessonModules[0].image,
+                image: element.imageid,
                 lessonsDone: element.completion,
                 lessonsTotal: element.total
             });

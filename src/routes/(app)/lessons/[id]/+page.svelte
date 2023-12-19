@@ -1,11 +1,15 @@
 <script>
     import {page} from "$app/stores";
+    import { lessonModules } from "./data";
     import * as converter from "$lib/stringHtmlConverter";
     import quizImg from "$lib/assets/img/quiz.png";
     import certificateImg from "$lib/assets/img/certificate.png";
     import Modal from "$lib/modal.svelte"
 
     export let data;
+
+    let previewImage;
+
     data.lessons.forEach(element => {
         element.showModal = false;
     });
@@ -35,6 +39,13 @@
     function updateMobileDisplay(display){
         mobileDisplay = display;
     }
+
+    function handleImageUpload(e){
+        let image = e.target.files[0];
+        if(!image) return;
+        
+        previewImage = URL.createObjectURL(image);
+    }
 </script>
 
 <main>
@@ -58,7 +69,7 @@
                 
                 <!-- Mobile Image -->
                 <div class="mobile-details-image">
-                    <img src={data.image} alt="mc12" class="course-image">
+                    <img src={data.image?"/api/lessons/"+$page.params.id:lessonModules[0].image} alt="mc12" class="course-image">
                 </div>
                 
 
@@ -71,7 +82,7 @@
                     <p>Formador: Gonçalo Resende</p>
                 </div>
                 <div class="details-image">
-                    <img src={data.image} alt="mc12" class="course-image">
+                    <img src={data.image?"/api/lessons/"+$page.params.id:lessonModules[0].image} alt="mc12" class="course-image">
                 </div>
             </div>
             <div class="lessons {(mobileDisplay === "lessons")? "open":""}">
@@ -121,14 +132,14 @@
     
     {:else}
         <div class="mobile-content">
-            <form method="POST" action="?/updateCourse">
+            <form method="POST" action="?/updateCourse" enctype="multipart/form-data">
                 <label class="input-label title" for="title">Titulo:</label>
                 <input class="details-input title" type="text" name="title" value={data.name} autocomplete="off">
                 <div class="course-details {(mobileDisplay === "details")? "open":""}">
                     
                     <!-- Mobile Image -->
                     <div class="mobile-details-image">
-                        <img src={data.image} alt="mc12" class="course-image">
+                        <img src={data.image?"/api/lessons/"+$page.params.id:lessonModules[0].image} alt="mc12" class="course-image">
                     </div>
                     
                     <div class="details-context">
@@ -150,7 +161,9 @@
                         <button type="submit" class="edit-button"> Guardar </button>
                     </div>
                     <div class="details-image">
-                        <img src={data.image} alt="mc12" class="course-image">
+                        <img src={previewImage??(data.image?"/api/lessons/"+$page.params.id:lessonModules[0].image)} alt="mc12" class="course-image edit">
+                        <br>
+                        <input type="file" name="image" accept="image/*" on:change={(e) => {handleImageUpload(e)}}>
                     </div>
                 </div>
             </form>
@@ -239,7 +252,7 @@
         margin: 1rem auto 3rem auto;
         width: 80%;
         text-align: start;
-        padding-bottom: 2rem;
+        padding: 1rem 0;
         border-top: 1px solid black;
         border-bottom: 1px solid black;
     }
@@ -279,12 +292,11 @@
     }
     .course-image{
         max-width: 100%;
-        max-height: 20rem;
-        position: absolute;
-        right: 0;
-        top:50%;
+        height: 20rem;
+        /* position: absolute; */
+        margin-left: 50%;
         border: 1px solid black;
-        transform: translateY(-50%);
+        transform: translateX(-50%);
     }
     .lessons{
         width: 80%;

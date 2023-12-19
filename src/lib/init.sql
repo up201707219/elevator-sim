@@ -20,6 +20,15 @@ CREATE TABLE Courses (
     CONSTRAINT course_title_notEmpty CHECK ( (Title = '') IS NOT TRUE)
 );
 
+CREATE TABLE Course_Images (
+   Course_ID Varchar(128) PRIMARY KEY REFERENCES Courses(ID) ON DELETE CASCADE,
+   IMAGE_NAME Varchar(128) NOT NULL,
+   IMAGE_TYPE Varchar(128) NOT NULL,
+   IMAGE_LAST_MODIFIED INTEGER NOT NULL DEFAULT date_part('epoch', now()), 
+   IMAGE_SIZE INTEGER NOT NULL,
+   IMAGE_DATA BYTEA NOT NULL
+);
+
 CREATE TABLE User_Courses (
    User_ID Integer REFERENCES Users(id) ON DELETE CASCADE,
    Course_ID varchar(128) REFERENCES Courses(id) ON DELETE CASCADE,

@@ -20,8 +20,13 @@ let addNew = {
 async function getCourseByID(userId, id){
     try{
         
-        let query = "SELECT * FROM Courses " +
-        "WHERE ID = '" + id +"';";
+        // let query = "SELECT * FROM Courses " +
+        // "WHERE ID = '" + id +"';";
+
+        let query = "SELECT C.*, ci.IMAGE_NAME FROM Courses C " +
+        "left join course_images ci on C.id = ci.course_id " +
+        "WHERE C.id = '" + id + "';";
+
         let res = await pool.query(query);
         let course = {
             id: res.rows[0].id,
@@ -32,8 +37,7 @@ async function getCourseByID(userId, id){
             timeType: res.rows[0].timetype,
             lessons: [],
             quiz: [],
-            //image: res.rows[0].imageid,
-            image: lessonModules[0].image,
+            image: res.rows[0].imageid
         };
 
         query = 'SELECT fc.*, cnt.total FROM \n' +
@@ -116,6 +120,26 @@ async function updateVisited(userId, courseId){
     }
 }
 
+async function insertImage(courseId, image){
+    const arrayBuffer = await image.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    try {
+        const query = 'INSERT INTO Course_Images (Course_ID, IMAGE_NAME, IMAGE_TYPE, IMAGE_SIZE, IMAGE_DATA)' +
+        'VALUES ($1, $2, $3, $4, $5) '+
+        'ON CONFLICT (Course_ID) DO UPDATE '+
+        'SET IMAGE_NAME = $2, '+
+        'IMAGE_TYPE = $3, ' +
+        'IMAGE_SIZE = $4, ' +
+        'IMAGE_DATA = $5;';
+
+        const values = [courseId, image.name, image.type, image.size, buffer];
+
+        await pool.query(query, values);
+    } catch(err) {
+        console.error(err);
+    }
+}
+
 export async function load({cookies, params}){
     const user = {
         id: cookies.get('userId'),
@@ -146,18 +170,28 @@ export const actions = {
             description: data.get('description'),
             dur_min: data.get('duration-min'),
             dur_max: data.get('duration-max'),
-            timeType: data.get('time-type')
+            timeType: data.get('time-type'),
+            image: data.get('image')
         };
+
+        if(val.image){
+            if(val.image?.size !== 0){
+                insertImage(val.id, val.image);
+            }
+        }
+
         val.description = converter.stringToHtml(val.description);
         try{
-            let query = "UPDATE Courses "+
-            "SET Title = '" + val.name + "', " +
-            "Descript = '" + val.description + "', " +
-            "DurMin = " + val.dur_min + ", " +
-            "DurMax = " + val.dur_max + ", " +
-            "TimeType = '" +val.timeType + "' " +
+            let query = "UPDATE Courses \n"+
+            "SET Title = '" + val.name + "', \n" +
+            "Descript = '" + val.description + "', \n" +
+            "DurMin = " + val.dur_min + ", \n" +
+            "DurMax = " + val.dur_max + ", \n" +
+            (val.image?.size === 0?"":"ImageId = 1, \n") +
+            "TimeType = '" +val.timeType + "' \n" +
             "WHERE ID = '" + val.id + "';";
 
+            //console.log(query);
             await pool.query(query);
         }
         catch(err){

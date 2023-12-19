@@ -53,7 +53,7 @@
         {#if editable}
             <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons edit">
                 
-                <img src={module.image} alt="Not found" class="lesson-image">
+                <img src={module.image?"api/lessons/"+module.id:lessonModules[0].image} alt="Not found" class="lesson-image">
                 <div class="lessons-edit">
                     <form method="POST" action="?/delete">
                         <input type="hidden" name="id" value={module.id}>
@@ -72,7 +72,7 @@
         {:else}
         <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
             
-            <img src={module.image} alt="Not found" class="lesson-image">
+            <img src={module.image?"api/lessons/"+module.id:lessonModules[0].image} alt="Not found" class="lesson-image">
             <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">
                 {module.name}
             </div>
@@ -106,7 +106,7 @@
         {#each nonActiveCourses as module}
         <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
             
-            <img src={module.image} alt="Not found" class="lesson-image">
+            <img src={module.image?"api/lessons/"+module.id:lessonModules[0].image} alt="Not found" class="lesson-image">
             <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">
                 {module.name}
             </div>

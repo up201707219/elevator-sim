@@ -1,4 +1,6 @@
 <script>
+    import { lessonModules } from '../lessons/[id]/data.js';
+
     export let data;
 </script>
 
@@ -26,7 +28,7 @@
             {#each data.lessonModules as module, i}
             <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
             
-                <img src={module.image} alt="Not found" class="lesson-image">
+                <img src={module.image?"":lessonModules[0].image} alt="Not found" class="lesson-image">
                 <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">
                     {module.name}
                 </div>
@@ -36,11 +38,10 @@
                 <div class="completion">
                     <span style="margin: 0rem 0rem 0rem 3rem; padding:2px; font-size: 10pt">
                         {#if module.lessonsDone === null}
-                            1%
+                            Não inscrito
                         {:else}
-                            {parseInt(module.lessonsTotal) === 0 ? "0" : parseInt(module.lessonsDone*100/module.lessonsTotal)}%
+                            {parseInt(module.lessonsTotal) === 0 ? "0" : parseInt(module.lessonsDone*100/module.lessonsTotal)}% Concluido
                         {/if}
-                        Concluido
                     </span>
                     <progress value={module.lessonsDone??0} max={module.lessonsTotal} class="completion-bar"></progress>
                 </div>
