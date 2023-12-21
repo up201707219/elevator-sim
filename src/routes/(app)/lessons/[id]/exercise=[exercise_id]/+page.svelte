@@ -293,53 +293,52 @@
     {/if}
 
     <div class="container {hasEnded?"end-grid":""}">
-            <!--  -->
-            <div class="exercise-details">
-                <div class="exercise-info">
-                    <div class="div-identifier brown">
-                        Sintoma da avaria
-                    </div>
-                    <div class="title">
-                        {displayedQuestion.title}
-                    </div>
-                    <span>Tempo de resolução: {timeToMinSec(displayedQuestion.time).minutes?timeToMinSec(displayedQuestion.time).minutes+timeToMinSec(displayedQuestion.time).minname:""} {timeToMinSec(displayedQuestion.time).seconds?timeToMinSec(displayedQuestion.time).seconds+"s":""}</span>
-                    <span>Dificuldade: 1</span>
+        <div class="exercise-details">
+            <div class="exercise-info">
+                <div class="div-identifier brown">
+                    Sintoma da avaria
                 </div>
-                <br>
-                <br>
-                {#if displayedQuestion.image}
-                    <img class="image-exercise" src="/api/exercise/{displayedQuestion.id}" alt="não encontrado">
-                {/if}
+                <div class="title">
+                    {displayedQuestion.title}
+                </div>
+                <span>Tempo de resolução: {timeToMinSec(displayedQuestion.time).minutes?timeToMinSec(displayedQuestion.time).minutes+timeToMinSec(displayedQuestion.time).minname:""} {timeToMinSec(displayedQuestion.time).seconds?timeToMinSec(displayedQuestion.time).seconds+"s":""}</span>
+                <span>Dificuldade: 1</span>
             </div>
+            <br>
+            <br>
+            {#if displayedQuestion.image}
+                <img class="image-exercise" src="/api/exercise/{displayedQuestion.id}" alt="não encontrado">
+            {/if}
+        </div>
 
-            <div class="center-div">
-                {#if !hasEnded}
-                    <div class="div-identifier green">
-                        Resolução da avaria
+        <div class="center-div">
+            {#if !hasEnded}
+                <div class="div-identifier green">
+                    Resolução da avaria
+                </div>
+            {:else}
+                <div class="summary">
+                    <div class="pass">
+                        PASS
                     </div>
-                {:else}
-                    <div class="summary">
-                        <div class="pass">
-                            PASS
+                    <div class="answer-stats">
+                        <div class="stats-labels">
+                            <p>Pontuação: </p>
+                            <p>Pontuação minima: </p>
+                            <p>Tempo usado: </p>
                         </div>
-                        <div class="answer-stats">
-                            <div class="stats-labels">
-                                <p>Pontuação: </p>
-                                <p>Pontuação minima: </p>
-                                <p>Tempo usado: </p>
-                            </div>
-                            <div class="stats-values">
-                                <p>{getScore()*100/totalMaxScore}%</p>
-                                <p>0%</p>
-                                <p>
-                                    {getTimeUsed()}    
-                                </p>
-                            </div>
+                        <div class="stats-values">
+                            <p>{getScore()*100/totalMaxScore}%</p>
+                            <p>0%</p>
+                            <p>
+                                {getTimeUsed()}    
+                            </p>
                         </div>
                     </div>
-                {/if}
-                <div class="nav-options">
-                
+                </div>
+            {/if}
+            <div class="nav-options">
+            
                 {#if !hasEnded}
                     <div class="centered">
                         Escolha uma opção
@@ -357,65 +356,66 @@
                     {/if}
                 
                 {/if}
-                </div>
-                <div class="options-labels">
-                    <p>
-                        Legenda:
-                    </p>
-                    <div style="display: flex;">
-                        <div style="width: 15px; height: 15px; background-color: blue; margin:0 0.3rem 0.5rem 0;"></div> - Menu
-                    </div>
-                    <div style="display: flex;">
-                        <div style="width: 15px; height: 15px; background-color: darkblue; margin:0 0.3rem 0.5rem 0;"></div> - Resposta
-                    </div>
-                </div>
             </div>
-            
-            <div class="right-container">
-                
-                {#if !hasEnded}
-                    <div class="image-component-container {displayedDesc.image?"":"gray"}">
-                        {#if displayedDesc.image}               
-                            <img class="image-component" src='/api/exercise/{displayedDesc.id}/image/{displayedDesc.image}' alt="não encontrado">   
-                        {/if}
-                    </div>
-                    <div class="finish-question">
-                        <form bind:this={endForm} method="post" action="?/submitAnswers" use:enhance>
-                            <button type="submit" title="Terminar prova" class="end-question-button" on:click={endExercise}><img class="end-image" src={finishImg} alt="Acabar prova"></button>
-                        </form>
-                    </div>
-                {:else}
-                    <div class="submitted-answers">
-                        <div class="centered">
-                            <p>{sumPenalties >= 100 ? "Fizeste muitos erros não passaste a prova" : correctAns.length <= 0 ? "Achaste todas as tapas de resolução":"Não achaste todas as etapas"}</p>
-                            <p>Respostas submetidas:</p>
-                        </div>
-                        {#each answersSubmited as answer}
-                            <div class="submission {answer.points === 0 ? "" : answer.points > 0 ? "correct":"wrong"}">
-                                <p>{answer.title} ({answer.points > 0 ? "+":""}{answer.points*100/totalMaxScore}%)</p>
-                            </div>
-                        {/each}
-                        {#if answersSubmited.length <= 0}
-                            <div class="submission wrong">
-                                <p>Não foi submetida nenhuma resposta</p>
-                            </div>
-                        {/if}
-                    </div>
-                {/if}
-                
+            <div class="options-labels">
+                <p>
+                    Legenda:
+                </p>
+                <div style="display: flex;">
+                    <div style="width: 15px; height: 15px; background-color: blue; margin:0 0.3rem 0.5rem 0;"></div> - Menu
+                </div>
+                <div style="display: flex;">
+                    <div style="width: 15px; height: 15px; background-color: darkblue; margin:0 0.3rem 0.5rem 0;"></div> - Resposta
+                </div>
             </div>
         </div>
-        <Modal bind:this={modal} bind:showModal>
-            <h2 slot="header">{res}</h2>
-            <div class="modal-answer-message">{displayedMessage}</div>
-            <div slot="actions" class="confirm-action">
-                <button class="button-confirmation ok"  on:click={() => {modal.close()}}>ok</button>
-            </div>
-        </Modal>
-        {#if displayedQuestionIndex+1 < data.questions.length}
-            <a data-sveltekit-reload href="/lessons/{$page.params.id}/exercise={data.questions[displayedQuestionIndex+1].id}">next question</a>
-        {/if}
-        <!-- <div style="background-color: blue; width: 110%;">hello</div> -->
+            
+        <div class="right-container">
+            
+            {#if !hasEnded}
+                <div class="image-component-container {displayedDesc.image?"":"gray"}">
+                    {#if displayedDesc.image}               
+                        <img class="image-component" src='/api/exercise/{displayedDesc.id}/image/{displayedDesc.image}' alt="não encontrado">   
+                    {/if}
+                </div>
+                <div class="finish-question">
+                    <form bind:this={endForm} method="post" action="?/submitAnswers" use:enhance>
+                        <button type="submit" title="Terminar prova" class="end-question-button" on:click={endExercise}><img class="end-image" src={finishImg} alt="Acabar prova"></button>
+                    </form>
+                </div>
+            {:else}
+                <div class="submitted-answers">
+                    <div class="centered">
+                        <p>{sumPenalties >= 100 ? "Fizeste muitos erros não passaste a prova" : correctAns.length <= 0 ? "Achaste todas as tapas de resolução":"Não achaste todas as etapas"}</p>
+                        <p>Respostas submetidas:</p>
+                    </div>
+                    {#each answersSubmited as answer}
+                        <div class="submission {answer.points === 0 ? "" : answer.points > 0 ? "correct":"wrong"}">
+                            <p>{answer.title} ({answer.points > 0 ? "+":""}{answer.points*100/totalMaxScore}%)</p>
+                        </div>
+                    {/each}
+                    {#if answersSubmited.length <= 0}
+                        <div class="submission wrong">
+                            <p>Não foi submetida nenhuma resposta</p>
+                        </div>
+                    {/if}
+                    {#if displayedQuestionIndex+1 < data.questions.length}
+                        <a data-sveltekit-reload href="/lessons/{$page.params.id}/exercise={data.questions[displayedQuestionIndex+1].id}">next question</a>
+                    {/if}
+                </div>
+            {/if}
+            
+        </div>
+    </div>
+    <Modal bind:this={modal} bind:showModal>
+        <h2 slot="header">{res}</h2>
+        <div class="modal-answer-message">{displayedMessage}</div>
+        <div slot="actions" class="confirm-action">
+            <button class="button-confirmation ok"  on:click={() => {modal.close()}}>ok</button>
+        </div>
+    </Modal>
+    
+    <!-- <div style="background-color: blue; width: 110%;">hello</div> -->
 </main>
 
 <style>

@@ -14,7 +14,7 @@
     let displayedQuestion = data.questions[displayedQuestionIndex];
     
     //--------------TIMER CODE------------------------
-    let timer = displayedQuestion.time; // TYPE NUMBER OF SECONDS HERE
+    let timer = displayedQuestion?.time?? 0; // TYPE NUMBER OF SECONDS HERE
 
     $: hours = Math.floor(timer / (60*60))
     $: minutes = Math.floor((timer - hours *(60*60)) / 60);
@@ -198,12 +198,16 @@
             <button type="submit">Copiar problema</button>
         </form>
         <br>
-        <a href="/lessons/{$page.params.id}/exercise=0/edit">Novo problema</a>
+        <a data-sveltekit-reload href="/lessons/{$page.params.id}/exercise=0/edit">Novo problema</a>
         <br>
         <br>
         {#each data.questions as question, i}
-            <a href="/lessons/{$page.params.id}/exercise={question.id}/edit">Pergunta {i+1}</a>
-            <br>
+            <form method="post" action="?/deleteExercise">
+                <a data-sveltekit-reload href="/lessons/{$page.params.id}/exercise={question.id}/edit">Pergunta {i+1}</a>
+                <input type="hidden" name="question-redirect" value={data.questions.length <= 1? "0":i === 0 ? data.questions[i+1].id:data.questions[i-1].id}>
+                <input type="hidden" name="question-id" value={question.id}>
+                <button type="submit">del</button>
+            </form>
         {/each}
     </div>
     <h1>Pergunta {displayedQuestionIndex+1}</h1>

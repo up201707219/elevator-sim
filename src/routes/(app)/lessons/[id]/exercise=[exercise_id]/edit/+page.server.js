@@ -123,7 +123,6 @@ export const actions = {
             image: data.get('image')?.valueOf(),
             time: parseInt(data.get('time-hours'))*60*60+parseInt(data.get('time-minutes'))*60+parseInt(data.get('time-seconds'))
         };
-        console.log(val.image);
         if(val.image.size !== 0){
             insertImageExercise(val.id, val.image);
         }
@@ -175,13 +174,35 @@ export const actions = {
 
             values = [params.exercise_id, exerciseId, exerciseId];
 
-            console.log(values);
-
             await pool.query(query, values);
         } catch (error) {
             console.error(error);   
         }
 
         throw redirect(302, "/lessons/"+params.id+"/exercise="+exerciseId+"/edit");        
+    },
+    deleteExercise: async ({request, params}) => {
+        const data = await request.formData();
+        let val = {
+            id: data.get('question-id').valueOf(),
+            redirectPage: data.get('question-redirect').valueOf()
+        };
+        try {
+            const query = "DELETE FROM question_dev " + 
+            "WHERE id = $1;";
+
+            const values = [val.id];
+
+            await pool.query(query, values);
+
+        } catch (error) {
+            console.error(error);
+        }
+        if(params.exercise_id === val.id){
+            if(val.redirectPage === "0"){
+                throw redirect(307, "/lessons/"+params.id);
+            }
+            throw redirect(303, "/lessons/"+params.id+"/exercise="+val.redirectPage+"/edit");
+        }
     }
 }
