@@ -32,6 +32,7 @@
 		border-radius: 0.2em;
 		border: none;
         border-radius: 20px ;
+		overflow: hidden;
 		padding: 0.5rem;
 	}
 	dialog::backdrop {

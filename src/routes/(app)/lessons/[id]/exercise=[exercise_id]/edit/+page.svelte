@@ -33,6 +33,12 @@
     };
     let displayedDesc = defaultDesc;
 
+    let correctAns = data.option.filter((opt) => opt.points > 0 && opt.response==="answer");
+    let maxScore = 0;
+    correctAns.forEach((elem)=>{
+        maxScore += elem.points;
+    });
+
     function analiseTree(parent_id, level){
         let aux = data.option.filter((opt) => opt.parent === parent_id);
         if(!aux){
@@ -100,7 +106,7 @@
                 continue;
             }
             aux[i].forEach((elem, j) => {
-                if(arr.find(opt => opt.id === elem[0].parent).response !== "menu"){
+                if(arr.find(opt => opt.id === elem[0].parent)?.response !== "menu"){
                     aux[i].splice(j, 1);
                     if(aux[i].length === 0){
                         aux.splice(i, 1);
@@ -114,7 +120,7 @@
 
     // OPTIONS NAVIGATION
     function handleOption(index){
-        if(displayedOptions[index].response === "menu"){
+        if(displayedOptions[index]?.response === "menu"){
             prevOptions.push(displayedOptions);
             prevOptions = prevOptions;
 
@@ -124,7 +130,7 @@
             displayedDesc = displayedOptions[index];
             displayedOptions = data.option.filter((opt) => opt.parent === displayedOptions[index].id);
         }
-        else if(displayedOptions[index].response === "answer"){
+        else if(displayedOptions[index]?.response === "answer"){
             console.log("score setup")
         }
         previewImageMenu = null;
@@ -158,6 +164,8 @@
         title: "Nome do botão",
         response: "menu"  
     };
+
+    let newScore;
     
     function addNewButton(parent){
         newButtonMenu = true;
@@ -187,17 +195,25 @@
     <div>
         <a href="{$page.url.pathname}/..">Pré-visualizar</a>
         <form method="post" action="?/copyExercise">
-            <button type="submit">+ Nova pergunta</button>
+            <button type="submit">Copiar problema</button>
         </form>
+        <br>
+        <a href="/lessons/{$page.params.id}/exercise=0/edit">Novo problema</a>
+        <br>
+        <br>
+        {#each data.questions as question, i}
+            <a href="/lessons/{$page.params.id}/exercise={question.id}/edit">Pergunta {i+1}</a>
+            <br>
+        {/each}
     </div>
-    <h1>AVARIA</h1>
+    <h1>Pergunta {displayedQuestionIndex+1}</h1>
     
     <div class="container">
         <div class="exercise-details">
             <form method="POST" action="?/updateExercise" enctype="multipart/form-data">
                 <input type="hidden" name="id" value={$page.params.exercise_id}>
                 <label for="title">Enunciado: </label>
-                <textarea class="details-input" name="title" value={displayedQuestion.title}></textarea>
+                <textarea class="details-input" name="title" value={displayedQuestion?.title??""}></textarea>
                 <br>
                 <label for="time">Tempo: </label>
                 <input class="time-input" type="number" name="time-hours" value={hours}>h
@@ -225,7 +241,7 @@
         <div class="nav-options">
             {#if !newButtonMenu}
                 <div class="timer">
-                    {(hours === 0) ? "": hours+":"}{(minutes/10 >= 1) ? "":"0"}{minutes}:{(seconds/10 >= 1) ? "":"0"}{seconds}    
+                    {maxScore}/100
                 </div>
                 <div class="centered">
                     Escolha uma opção
@@ -233,7 +249,7 @@
                 {#each displayedOptions as opt, i}
                     <div class="option">
                         <form method="post" action="?/deleteButton">
-                            <button type="button" class="button-option {(opt.response === "menu") ? "":"single"}" on:click|preventDefault={() => handleOption(i)}> {opt.title} </button>
+                            <button type="button" class="button-option {(opt?.response === "menu") ? "":"single"}" on:click|preventDefault={() => handleOption(i)}> {opt.title??""} </button>
                             <button type="button" on:click={()=> {editButton(opt)}}>editar</button>
                             <input type="hidden" name="id" value={opt.id}>
                             <button type="submit">del</button>
@@ -250,28 +266,54 @@
         </div>
     </div>
     <div class="tree-display">
-        {#each sortedTree as level}
-            <div class="tree-level">
-                <h1>N{level[0][0].level}</h1>
-                {#each level as parentGroup}
-                    <div class="tree-parent-group">
-                        <h2>{parentGroup[0].parent? data.option.find((x)=> x.id ===parentGroup[0].parent).title :"Nó pai"}</h2>
-                        {#each parentGroup as button}
+        {#if sortedTree[0][0].length > 0}
+            {#each sortedTree as level}
+                <div class="tree-level">
+                    <h1>N{level[0][0].level}</h1>
+                    {#each level as parentGroup}
+                        <div class="tree-parent-group">
+                            <h2>{parentGroup[0].parent? data.option.find((x)=> x.id ===parentGroup[0].parent)?.title :"Nó pai"}</h2>
+                            {#each parentGroup as button}
+                                <div class="tree-button">
+                                    <button type="button" class="button-option {(button.response === "menu") ? "":"single"}" on:click={()=> {editButton(button)}}> {button.title??""} </button>
+                                    <div class="add-child-container">    
+                                        {#if button.response === "menu"}
+                                            <button type="button" class="add-child" on:click={()=> {addNewButton(button.id)}}> + </button>
+                                        {/if}
+                                    </div>
+                                </div>
+                            {/each}
                             <div class="tree-button">
-                                <button type="button" class="button-option {(button.response === "menu") ? "":"single"}" on:click={()=> {editButton(button)}}> {button.title} </button>
+                                <button type="button" class="button-option add" on:click={()=>{addNewButton(parentGroup[0].parent)}}> Adicionar opção</button>
+                                <div class="add-child-container">
+                                </div>
                             </div>
-                        {/each}
-                        <button type="button" class="button-option add" on:click={()=>{addNewButton(parentGroup[0].parent)}}> Adicionar opção</button>
+                        </div>
+                    {/each}
+                </div>
+            {/each}
+        {:else}
+            <div class="tree-level">
+                <h1>N1</h1>
+                <div class="tree-parent-group">
+                    <h2>Nó pai</h2>
+                    <div class="tree-button">
+                        <button type="button" class="button-option add" on:click={()=>{addNewButton(null)}}> Adicionar opção</button>
                     </div>
-                {/each}
+                </div>
             </div>
-        {/each}
+        {/if}
     </div>
     <form method="post" action="?/insertNewButton" enctype="multipart/form-data">
         <Modal bind:this={modal} bind:showModal={newButtonMenu}>
             <div class="edit-header" slot="header">
-                <h2>Editar</h2>
-
+                <h2>{data.option.find((elem) => elem.id === newButton.parent)?.title?? "Nó pai"}</h2>
+                <form method="post" action="?/deleteButton" class="delete-button">
+                    <input type="hidden" name="id" value={newButton.id}>
+                    {#if newButton.id}   
+                        <button type="submit">del</button>
+                    {/if}
+                </form>
             </div>
             <input type="hidden" name="id" value={newButton.id ?? "0"}>
             <input type="hidden" name="parent-id" value={newButton.parent}>
@@ -283,23 +325,30 @@
                 <option value="answer">resposta</option>
             </select>
             {#if newButton.response === "menu"}
-            <br>
-            <img class="input image-component" src={previewImageMenu} alt="imagem da opção"> 
-            <br>
-            <input type="file" name="image" accept="image/*" on:change={(e) => {handleImageUpload(e, "menu")}}>
-            <br>
+                <br>
+                <img class="input image-component" src={previewImageMenu} alt="imagem da opção"> 
+                <br>
+                <input type="file" name="image" accept="image/*" on:change={(e) => {handleImageUpload(e, "menu")}}>
+                <br>
             {:else}
-            <br>
-            <label for="description">Descrição: </label>
-            <textarea class="details-input" type="text" name="description" value={newButton.description}></textarea>
+                <br>
+                <label for="description">Descrição: </label>
+                <textarea class="details-input" type="text" name="description" value={newButton.description}></textarea>
+                <br>
+                <label for="points">Cotação</label>
+                <input type="number" name="points" bind:value={newButton.points}>
+                {#if !newButton.points}
+                    <br>
+                    Campo obrigatório
+                {:else if newButton.points+maxScore > 100}
+                    <br>
+                    Isto ultrupassa a cotação de 100%
+                {/if}
             {/if}
-            <br>
-            <label for="points">Cotação</label>
-            <input type="number" name="points" value={newButton.points?newButton.points:0}>
             <br>
 
             <div class="edit-actions" slot="actions">
-                <button type="submit">submeter</button>
+                <button disabled={newButton.response === "answer" && (!newButton?.points || newButton.points + maxScore > 100)} type="submit">submeter</button>
                 <button on:click|preventDefault={() => {newButtonMenu = false; modal.close()}}>sair</button>
             </div>
         
@@ -394,6 +443,22 @@
         background-color: green;
     }
 
+    .add-child-container{
+        width: 40px;
+    }
+    .add-child{
+        font: inherit;
+        color: white;
+        padding: 5px;
+        min-width: 35px;
+        border-radius: 8px;
+        position: relative;
+        left: 50%;
+        margin-top: 8px;
+        transform: translateX(-50%);
+        background-color: green;
+    }
+
     .timer{
         position: relative;
         grid-column-start: 2;
@@ -421,6 +486,7 @@
     }
 
     .tree-parent-group{
+        position: relative;
         border: 1px solid black;
         margin: 1rem;
         display:flex;
@@ -432,5 +498,20 @@
 
     .tree-button{
         width: fit-content;
+        display: flex;
+    }
+
+    .edit-header{
+        position: relative;
+    }
+    .edit-actions{
+        display: flex;
+        justify-content: space-around;
+    }
+    .delete-button{
+        position: absolute;
+        top: -45px;
+        left: 100%;
+        transform: translateX(-100%);
     }
 </style>

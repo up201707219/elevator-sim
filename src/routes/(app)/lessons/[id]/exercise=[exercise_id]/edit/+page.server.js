@@ -81,8 +81,6 @@ export const actions = {
                 query = 'INSERT INTO Question_Menu (Title, Question_Id, Descript, Response, Parent_ID, Points) ' +
                 'Values($1, $2, $3, $4, $5, $6) RETURNING ID;';
                 values = [val.title, params.exercise_id, val.description, val.response, val.parent ===""?null: val.parent, (isNaN(val.points) ? null : val.points)];
-                // console.log(query);
-                // console.log(values);
                 const res = await pool.query(query, values);
                 // if(val.response === "menu"){
                 //     query = "INSERT INTO Question_Menu (Title, Question_Id, Descript, Response, Parent_ID, Points)" +
@@ -163,6 +161,21 @@ export const actions = {
 
             // console.log(query);
             // console.log(values);
+
+            await pool.query(query, values);
+
+            query = "update question_menu "+
+            "SET parent_id = parent_id + (select (newer.id - older.id) as id_dif from (select id, title from question_menu "+
+            "where question_id = $1)as older " +
+            "inner join (select id, title from question_menu " +
+            "where question_id = $2) as newer "+
+            "on older.title = newer.title "+
+            "Limit 1) " +
+            "Where question_id = $3;"
+
+            values = [params.exercise_id, exerciseId, exerciseId];
+
+            console.log(values);
 
             await pool.query(query, values);
         } catch (error) {
