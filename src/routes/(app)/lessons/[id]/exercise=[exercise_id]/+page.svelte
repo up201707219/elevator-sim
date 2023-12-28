@@ -133,6 +133,7 @@
 
             displayedDesc = displayedOptions[index];
             displayedOptions = data.option.filter((opt) => opt.parent === displayedOptions[index].id);
+            console.log(displayedDesc);
         }
         else if(displayedOptions[index].response === "answer"){
             ind = index;

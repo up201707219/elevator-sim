@@ -59,6 +59,7 @@ async function getQuestionMenu(id){
             };
             val.push(option);
         });
+        console.log(val);
         return val;
     }catch (error){
         console.error(error);
@@ -127,10 +128,9 @@ export async function load({cookies, params}){
     };
     if(user.isAdmin !== "true"){
        exercise.questionState = await getUserSubmissions(user.id, params.exercise_id);
-       //console.log(exercise.questionState?.answer??0);
+       
     }
-    //console.log(aux);
-    //getImageByQuestionId(params.exercise_id);
+    
     return exercise;
 
 }

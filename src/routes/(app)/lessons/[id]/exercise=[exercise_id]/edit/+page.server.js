@@ -198,10 +198,10 @@ export const actions = {
         } catch (error) {
             console.error(error);
         }
+        if(val.redirectPage === "0"){
+            throw redirect(303, "/lessons/"+params.id);
+        }
         if(params.exercise_id === val.id){
-            if(val.redirectPage === "0"){
-                throw redirect(307, "/lessons/"+params.id);
-            }
             throw redirect(303, "/lessons/"+params.id+"/exercise="+val.redirectPage+"/edit");
         }
     }

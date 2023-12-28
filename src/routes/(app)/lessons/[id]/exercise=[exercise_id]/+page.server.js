@@ -24,12 +24,17 @@ export const actions = {
         const data = await request.formData();
         let val = {
             userId: cookies.get('userId'),
+            isAdmin: cookies.get('userIsAdmin'),
             questionId: params.exercise_id,
             answer: {
                 id: data.get('answer-id'),
                 points: data.get('answer-score')
             }
         };
+
+        if(val.isAdmin === "true"){
+            return;
+        }
 
         try {
             const query = "INSERT INTO user_answers (user_id, question_id, answer_id, score) "+

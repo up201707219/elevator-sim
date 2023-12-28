@@ -341,18 +341,19 @@
                 <br>
                 <label for="points">Cotação</label>
                 <input type="number" name="points" bind:value={newButton.points}>
-                {#if !newButton.points}
+                <!-- {#if !newButton.points}
                     <br>
                     Campo obrigatório
                 {:else if newButton.points+maxScore > 100}
                     <br>
                     Isto ultrupassa a cotação de 100%
-                {/if}
+                {/if} -->
             {/if}
             <br>
 
             <div class="edit-actions" slot="actions">
-                <button disabled={newButton.response === "answer" && (!newButton?.points || newButton.points + maxScore > 100)} type="submit">submeter</button>
+                <button type="submit">submeter</button>
+                <!-- <button disabled={newButton.response === "answer" && (!newButton?.points || newButton.points + maxScore > 100)} type="submit">submeter</button> -->
                 <button on:click|preventDefault={() => {newButtonMenu = false; modal.close()}}>sair</button>
             </div>
         
