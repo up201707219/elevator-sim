@@ -53,7 +53,9 @@
         {#if editable}
             <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons edit">
                 
-                <img src={module.image?"api/lessons/"+module.id:lessonModules[0].image} alt="Not found" class="lesson-image">
+                <div class="image-container">
+                    <img src={module.image?"api/lessons/"+module.id:lessonModules[0].image} alt="Not found" class="lesson-image">
+                </div>
                 <div class="lessons-edit">
                     <form method="POST" action="?/delete">
                         <input type="hidden" name="id" value={module.id}>
@@ -72,7 +74,9 @@
         {:else}
         <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
             
-            <img src={module.image?"api/lessons/"+module.id:lessonModules[0].image} alt="Not found" class="lesson-image">
+            <div class="image-container">
+                <img src={module.image?"api/lessons/"+module.id:lessonModules[0].image} alt="Not found" class="lesson-image">
+            </div>
             <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">
                 {module.name}
             </div>
@@ -106,7 +110,9 @@
         {#each nonActiveCourses as module}
         <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
             
-            <img src={module.image?"api/lessons/"+module.id:lessonModules[0].image} alt="Not found" class="lesson-image">
+            <div class="image-container">
+                <img src={module.image?"api/lessons/"+module.id:lessonModules[0].image} alt="Not found" class="lesson-image">
+            </div>
             <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">
                 {module.name}
             </div>
@@ -212,12 +218,21 @@
         text-decoration: none;
         color: black;
     }
-    .lesson-image{
-        min-width: 100%;
-        width: auto;
-        max-height: 10rem;
-        text-align: center;
+
+    .image-container{
+        width: 100%;
+        height: 10rem;
         margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+    }
+    .lesson-image{
+        width: 100%;
+        height: auto;
+        min-height: 10rem;
+        text-align: center;
+
     }
     .completion{
         width: 100%;

@@ -1,6 +1,6 @@
 import example1 from "$lib/assets/img/example1.jpg"
 import example2 from "$lib/assets/img/example2.jpg"
-import example3 from "$lib/assets/img/example3.jpg"
+import example3 from "$lib/assets/img/S+_squareLogo.png"
 
 export const lessonModules = [
     {

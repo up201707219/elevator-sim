@@ -14,7 +14,6 @@
     }
 </script>
 
-<body>
     {#if hasSidebar}
         <Navbar navbarFixed={navbarFixed} hasSidebar on:click={onMenuClick}/>
         <Sidebar bind:toggleSidebar={toggleSidebar}/>
@@ -25,10 +24,9 @@
     <div class="footer">
         <span class="author">@author: Gonçalo Resende</span>
     </div>
-</body>
 
 <style>
-    body{
+    :global(body){
         min-width: 100%;
         min-height: 100vh;
         display: flex;

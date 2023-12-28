@@ -59,7 +59,6 @@ async function getQuestionMenu(id){
             };
             val.push(option);
         });
-        console.log(val);
         return val;
     }catch (error){
         console.error(error);

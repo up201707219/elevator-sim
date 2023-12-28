@@ -11,8 +11,8 @@
         </div>
         <div class="description">
             <p>
-                Esta plataforma destina-se ao desenvolvimento de competências dos técnicos de manutenção da Schmitt-Elevadores,
-                 aqui vai poder encontrar vários cursos para desenvolver as suas competências na manutenção de elevadores.
+                Esta plataforma destina-se ao desenvolvimento de competências dos técnicos de manutenção da Schmitt-Elevadores.
+                 Aqui vai poder encontrar vários cursos para desenvolver as suas competências na manutenção de elevadores.
                   Tem acesso também ao simulador de avarias onde pode praticar a resolução de avarias simuladas pelo formador, de modo a replicar situações reais.
             </p>
         </div>
@@ -27,8 +27,10 @@
         <div class="container-grid">
             {#each data.lessonModules as module, i}
             <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
-            
-                <img src={module.image?"":lessonModules[0].image} alt="Not found" class="lesson-image">
+                <div class="image-container">
+                    <img src={module.image?"":lessonModules[0].image} alt="Not found" class="lesson-image">
+                </div>
+                
                 <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">
                     {module.name}
                 </div>
@@ -79,7 +81,7 @@
         width: 80%;
         margin: 2rem auto;
         font-size: 16pt;
-        text-align: end;
+        text-align: center;
         /* border-bottom: 1px solid black; */
     }
     .container-grid{
@@ -123,12 +125,20 @@
         text-decoration: none;
         color: black;
     }
-    .lesson-image{
-        min-width: 100%;
-        width: auto;
-        max-height: 10rem;
-        text-align: center;
+    .image-container{
+        width: 100%;
+        height: 10rem;
         margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+    }
+    .lesson-image{
+        width: 100%;
+        height: auto;
+        min-height: 10rem;
+        text-align: center;
+
     }
     .completion{
         width: 100%;
