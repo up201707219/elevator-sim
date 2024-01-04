@@ -120,7 +120,7 @@
             <form method="POST" action="?/updateContent">
                 <input type="hidden" name="module-id" value={data.moduleId}>
                 <input type="hidden" name="content-id" value={displayedContent.id}>
-                <label for="module-title">Título do módulo: </label>
+                <label for="module-title">Título do sub-módulo: </label>
                 <input class="title-input" type="text" name="module-title" value={displayedContent.title}>
                 <br>
                 <label for="module-content">Conteúdo da página: </label>

@@ -66,7 +66,7 @@
                 <form method="POST" action="?/changeTitle">
                     <input type="hidden" name="id" value={module.id}>
                     <label for="lesson-name">Título: </label>
-                    <input type="text" name="lesson-name" value={module.name} autocomplete="off">
+                    <input on:click|preventDefault type="text" name="lesson-name" value={module.name} autocomplete="off">
                     <button type="submit" class="confirm-title-button">✔️</button>
                 </form>
                 {message[i]}
