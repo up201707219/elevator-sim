@@ -28,7 +28,7 @@
             {#each data.lessonModules as module, i}
             <a data-sveltekit-reload href="/lessons/{module.id}" class="lessons {module.lessonsDone !== null?"":"unvisited"}">
                 <div class="image-container">
-                    <img src={module.image?"":lessonModules[0].image} alt="Not found" class="lesson-image">
+                    <img src={module.image?"api/lessons/"+module.id:lessonModules[0].image} alt="Not found" class="lesson-image">
                 </div>
                 
                 <div style="margin: -1rem 0rem 1rem 2rem; padding:0px">

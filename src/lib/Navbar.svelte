@@ -37,10 +37,10 @@
   <div class="navbar-menu">
     <a href="/home">Início</a>
     <a href="/lessons">Cursos</a>
-    <a href="/quiz">Formações</a>
+    <!-- <a href="/quiz">Formações</a>
     {#if user.isAdmin === "true"}
       <a href="/in_construction">Admin</a>
-    {/if}
+    {/if} -->
   </div>
   
   <div class="right">
