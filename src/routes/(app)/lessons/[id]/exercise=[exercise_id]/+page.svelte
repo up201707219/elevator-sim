@@ -318,8 +318,8 @@
                 </div>
             {:else}
                 <div class="summary">
-                    <div class="pass">
-                        PASS
+                    <div class={getScore()*100/totalMaxScore >= 70?"pass":"fail"}>
+                        {getScore()*100/totalMaxScore >= 70?"PASS":"FAIL"}
                     </div>
                     <div class="answer-stats">
                         <div class="stats-labels">
@@ -329,7 +329,7 @@
                         </div>
                         <div class="stats-values">
                             <p>{getScore()*100/totalMaxScore}%</p>
-                            <p>0%</p>
+                            <p>70%</p>
                             <p>
                                 {getTimeUsed()}    
                             </p>
@@ -386,7 +386,6 @@
             {:else}
                 <div class="submitted-answers">
                     <div class="centered">
-                        <p>{sumPenalties >= 100 ? "Fizeste muitos erros não passaste a prova" : correctAns.length <= 0 ? "Achaste todas as tapas de resolução":"Não achaste todas as etapas"}</p>
                         <p>Respostas submetidas:</p>
                     </div>
                     {#each answersSubmited as answer}
@@ -563,6 +562,14 @@
         font-size: 45pt;
         padding: 1rem 0;
         background-color: green;
+    }
+    .fail{
+        width: 100%;
+        text-align: center;
+        color: white;
+        font-size: 45pt;
+        padding: 1rem 0;
+        background-color: red;
     }
     .answer-stats{
         display: flex;

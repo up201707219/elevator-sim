@@ -192,23 +192,8 @@
 
 <!-- svelte-ignore a11y-autofocus -->
 <main>
-    <div>
+    <div style="text-align: center;">
         <a href="{$page.url.pathname}/..">Pré-visualizar</a>
-        <form method="post" action="?/copyExercise">
-            <button type="submit">Copiar problema</button>
-        </form>
-        <br>
-        <a data-sveltekit-reload href="/lessons/{$page.params.id}/exercise=0/edit">Novo problema</a>
-        <br>
-        <br>
-        {#each data.questions as question, i}
-            <form method="post" action="?/deleteExercise">
-                <a data-sveltekit-reload href="/lessons/{$page.params.id}/exercise={question.id}/edit">Pergunta {i+1}</a>
-                <input type="hidden" name="question-redirect" value={data.questions.length <= 1? "0":i === 0 ? data.questions[i+1].id:data.questions[i-1].id}>
-                <input type="hidden" name="question-id" value={question.id}>
-                <button type="submit">del</button>
-            </form>
-        {/each}
     </div>
     <h1>Pergunta {displayedQuestionIndex+1}</h1>
     
@@ -242,7 +227,7 @@
                 {/if}
             {/if}
         </div>
-        <div class="nav-options">
+        <!-- <div class="nav-options">
             {#if !newButtonMenu}
                 <div class="timer">
                     {maxScore}/100
@@ -267,6 +252,24 @@
                     <button class="button-option return" on:click={() => optionGoBack()}>Voltar</button>
                 {/if}
             {/if}
+        </div> -->
+        <div>
+           
+            <form method="post" action="?/copyExercise">
+                <button type="submit">Copiar problema</button>
+            </form>
+            <br>
+            <a data-sveltekit-reload href="/lessons/{$page.params.id}/exercise=0/edit">Novo problema</a>
+            <br>
+            <br>
+            {#each data.questions as question, i}
+                <form method="post" action="?/deleteExercise">
+                    <a data-sveltekit-reload href="/lessons/{$page.params.id}/exercise={question.id}/edit">Pergunta {i+1}</a>
+                    <input type="hidden" name="question-redirect" value={data.questions.length <= 1? "0":i === 0 ? data.questions[i+1].id:data.questions[i-1].id}>
+                    <input type="hidden" name="question-id" value={question.id}>
+                    <button type="submit">del</button>
+                </form>
+            {/each}
         </div>
     </div>
     <div class="tree-display">
@@ -391,12 +394,6 @@
         text-align: end;
     }
 
-    .nav-options{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
     .image-component-container{
         max-width: 600px;
         max-height: 600px;
@@ -441,9 +438,7 @@
     .button-option.single{
         background-color: darkblue;
     }
-    .button-option.return{
-        background-color: black;
-    }
+
     .button-option.add{
         background-color: green;
     }
@@ -462,16 +457,6 @@
         margin-top: 8px;
         transform: translateX(-50%);
         background-color: green;
-    }
-
-    .timer{
-        position: relative;
-        grid-column-start: 2;
-        grid-column-end: 3;
-        justify-self: center;
-        margin-left: 15rem;
-        margin-bottom: 1rem;
-        font-size: 18pt;
     }
 
     .input{
