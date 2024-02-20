@@ -218,7 +218,7 @@ export const actions = {
         else{
             try{
                 let query = "UPDATE Module_content "+
-                "SET content = '" + val.content + "',c " +
+                "SET content = '" + val.content + "', " +
                 "title = '" + val.title + "' " +
                 "WHERE ID = '" + val.id + "';";
     

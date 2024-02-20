@@ -209,6 +209,9 @@
                 <input class="time-input" type="number" name="time-minutes" value={minutes}>min
                 <input class="time-input" type="number" name="time-seconds" value={seconds}>s
                 <br>
+                <label for="cot">Cotação minima</label>
+                <input class="time-input" type="number" name="cot" value=70>%
+                <br>
                 <img class="input image-exercise" src={previewImageExercise} alt="imagem da opção"> 
                 <br>
                 <input type="file" name="image" accept="image/*" on:change={(e) => {handleImageUpload(e, "exercise")}}>
@@ -256,18 +259,18 @@
         <div>
            
             <form method="post" action="?/copyExercise">
-                <button type="submit">Copiar problema</button>
+                <button class="question-opt" type="submit">Copiar problema</button>
             </form>
             <br>
-            <a data-sveltekit-reload href="/lessons/{$page.params.id}/exercise=0/edit">Novo problema</a>
+            <a class="question-opt" data-sveltekit-reload href="/lessons/{$page.params.id}/exercise=0/edit">Novo problema</a>
             <br>
             <br>
             {#each data.questions as question, i}
-                <form method="post" action="?/deleteExercise">
-                    <a data-sveltekit-reload href="/lessons/{$page.params.id}/exercise={question.id}/edit">Pergunta {i+1}</a>
+                <form style="margin-bottom: 1rem;" method="post" action="?/deleteExercise">
+                    <a class="question-nav" data-sveltekit-reload href="/lessons/{$page.params.id}/exercise={question.id}/edit">Pergunta {i+1}</a>
                     <input type="hidden" name="question-redirect" value={data.questions.length <= 1? "0":i === 0 ? data.questions[i+1].id:data.questions[i-1].id}>
                     <input type="hidden" name="question-id" value={question.id}>
-                    <button type="submit">del</button>
+                    <button class="exercise-del" type="submit">del</button>
                 </form>
             {/each}
         </div>
@@ -503,5 +506,31 @@
         top: -45px;
         left: 100%;
         transform: translateX(-100%);
+    }
+    .question-opt{
+        width: 17.6rem;
+        height: 2rem;
+        background-color: greenyellow;
+        border: 1px solid black;
+        border-radius: 10px;
+        font: inherit;
+    }
+    a.question-opt{
+        text-decoration: none;
+        color: inherit;
+        padding: 0.2rem 5rem;
+    }
+    .question-nav{
+        text-decoration: none;
+        color: inherit;
+        padding: 0.2rem 6rem;
+        background-color: rgb(47, 206, 255);
+        border: 1px solid black;
+        border-radius: 10px;
+        margin-bottom: 4rem;
+    }
+    .exercise-del{
+        background-color: red;
+        color: white;
     }
 </style>

@@ -292,7 +292,7 @@
     }
     .course-image{
         max-width: 100%;
-        height: 20rem;
+        min-height: 15rem;
         /* position: absolute; */
         margin-left: 50%;
         border: 1px solid black;
